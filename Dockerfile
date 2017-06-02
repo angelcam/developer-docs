@@ -12,15 +12,14 @@ RUN cd /go/src/ && \
 
 # compile
 WORKDIR /go/src/dapperdox-${ver}
-RUN go-wrapper download   # "go get -d -v ./..."
-RUN go-wrapper install    # "go install -v ./..."
+RUN go-wrapper download         # "go get -d -v ./..."
+RUN go-wrapper install          # "go install -v ./..."
 
-# Dappedox default port
-EXPOSE 3123
-
-# Default configuration
+# default configuration
 ENV SPEC_DIR /dapperdox/specs
 ENV ASSETS_DIR /dapperdox/assets
+ENV BIND_ADDR 0.0.0.0:3123      # listen on ALL interfaces
+EXPOSE 3123
 
 # run
 CMD ["go-wrapper", "run"] # ["app"]
