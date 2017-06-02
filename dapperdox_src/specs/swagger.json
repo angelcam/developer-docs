@@ -1,0 +1,464 @@
+{
+    "schemes": [
+        "https"
+    ],
+    "x-navigateMethodsByName": true,
+    "definitions": {
+        "RecordingTimelineResponse": {
+            "type": "object",
+            "title": "Recording timeline object",
+            "properties": {
+                "start": {
+                    "description": "Start time of timeline (the value you entered in the query parameter). Example: `2017-01-01T00:00:00Z`.\n",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "end": {
+                    "description": "End time of timeline (the value you entered in the query parameter). Example: `2017-01-01T00:00:00Z`.\n",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "segments": {
+                    "description": "Array of recording segments.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Segment"
+                    }
+                }
+            }
+        },
+        "RecordingStreamResponse": {
+            "type": "object",
+            "title": "Recording stream object",
+            "properties": {
+                "stream_info": {
+                    "description": "URL of a recorded stream info endpoint.",
+                    "type": "string",
+                    "example": "https://api.test.angelcam.com/v1/recording/stream/rec-streamer-eu-central-1/cefa6471a38f469585b46675fc992614/"
+                },
+                "url": {
+                    "description": "URL of a stream.",
+                    "type": "string",
+                    "example": "https://rec-streamer-eu-central-1.test.angelcam.com/streams/cefa6471a38f469585b46675fc992614/playlist.m3u8\n"
+                },
+                "format": {
+                    "description": "Stream format.",
+                    "type": "string",
+                    "enum": [
+                        "hls",
+                        "fmp4",
+                        "mjpeg"
+                    ],
+                    "example": "hls"
+                }
+            }
+        },
+        "RecordingStreamInfoResponse": {
+            "type": "object",
+            "title": "Recording stream information",
+            "properties": {
+                "current_time": {
+                    "description": "Current time in a stream.",
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2017-01-01T00:00:00Z"
+                }
+            }
+        },
+        "UserMeResponse": {
+            "type": "object",
+            "required": [
+                "id",
+                "email"
+            ],
+            "title": "User object",
+            "properties": {
+                "phone": {
+                    "description": "User's phone.",
+                    "type": "string",
+                    "example": "+123 558 951 14"
+                },
+                "last_name": {
+                    "description": "User's last or family name.",
+                    "type": "string",
+                    "example": "Appleseed"
+                },
+                "id": {
+                    "description": "User ID.",
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 2929
+                },
+                "first_name": {
+                    "description": "User's first or given name.",
+                    "type": "string",
+                    "example": "John"
+                },
+                "email": {
+                    "description": "User's email.",
+                    "type": "string",
+                    "format": "email",
+                    "example": "john@apple.com"
+                }
+            }
+        },
+        "RecordingResponse": {
+            "example": {
+                "retention": "P7D",
+                "status": "RECORDING"
+            },
+            "type": "object",
+            "required": [
+                "status",
+                "retention"
+            ],
+            "title": "Recording information",
+            "properties": {
+                "retention": {
+                    "description": "Retention period in ISO 8601 duration format tells how long in past we store the footage. Example: P7D means 7 days.\n",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Recording status values have the following meaning:\n\n* `READY` - Not recording (recording is ready to be started)\n* `CONNECTING` - Recorder is trying to connect to the stream (this usually indicates camera connectivity problems; the recorder keeps trying to connect).\n* `RECORDING` - Recorder is connected to the stream and records are being created\n* `STOPPING` - Recording is stopping\n* `ERROR` - Error occurred when recording (this indicates a possible issue with Angelcam infrastructure)\n",
+                    "type": "string",
+                    "enum": [
+                        "READY",
+                        "CONNECTING",
+                        "RECORDING",
+                        "STOPPING",
+                        "ERROR"
+                    ]
+                }
+            }
+        },
+        "Error404NotFound": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/ErrorGeneric"
+                }
+            ],
+            "example": {
+                "detail": "Not Found",
+                "title": "not_found",
+                "status": 404
+            },
+            "title": "Error 404 Not Found"
+        },
+        "Error401Unauthorized": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/ErrorGeneric"
+                }
+            ],
+            "example": {
+                "detail": "Authentication credentials were not provided",
+                "title": "not_authenticated",
+                "status": 401
+            },
+            "title": "Error 401 Unauthorized"
+        },
+        "ErrorGeneric": {
+            "type": "object",
+            "title": "Error object",
+            "properties": {
+                "detail": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "Segment": {
+            "type": "object",
+            "title": "Segment object",
+            "properties": {
+                "start": {
+                    "description": "Start of record segment. Example: `2017-01-01T00:00:00Z`.",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "end": {
+                    "description": "End of record segment. Example: `2017-01-01T00:00:00Z`.",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        }
+    },
+    "info": {
+        "description": "tbd",
+        "version": "1.0.0",
+        "title": "Angelcam API"
+    },
+    "basePath": "/v1",
+    "tags": [
+        {
+            "name": "user",
+            "description": "User"
+        },
+        {
+            "name": "camera",
+            "description": "Camera"
+        },
+        {
+            "name": "recording",
+            "description": "Recording"
+        }
+    ],
+    "parameters": {
+        "cameraId": {
+            "name": "camera_id",
+            "description": "Camera ID.",
+            "minimum": 1,
+            "required": true,
+            "in": "path",
+            "type": "integer"
+        }
+    },
+    "swagger": "2.0",
+    "produces": [
+        "application/json"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "paths": {
+        "/recording/stream/{streamer_name}/{streamer_id}/": {
+            "get": {
+                "summary": "Retrieve recording stream info",
+                "parameters": [
+                    {
+                        "name": "streamer_name",
+                        "description": "Streamer server name.",
+                        "type": "string",
+                        "required": true,
+                        "in": "path"
+                    },
+                    {
+                        "name": "streamer_id",
+                        "description": "Stream ID.",
+                        "type": "string",
+                        "required": true,
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid request. For example if:\n\n* start and/or end date are not ISO 8601 format\n* start time is in the future\n"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/RecordingStreamInfoResponse"
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/responses/Error401Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/responses/Error404CraNotAdded"
+                    }
+                },
+                "tags": [
+                    "recording"
+                ]
+            }
+        },
+        "/cameras/{camera_id}/recording/stream/": {
+            "get": {
+                "summary": "Create and return recorded stream for a specified time",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/cameraId"
+                    },
+                    {
+                        "name": "start",
+                        "description": "Start time of a stream. Example: `2016-03-19T08:00:00Z`.",
+                        "required": true,
+                        "in": "query",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "end",
+                        "description": "End time of a stream. If missing, stream will play till the very end of recorded footage. Example: `2016-03-19T14:00:00Z.`\n",
+                        "required": false,
+                        "in": "query",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid request. For example if:\n\n* start and/or end date are not ISO 8601 format\n* start time is in the future\n"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/RecordingStreamResponse"
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/responses/Error401Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/responses/Error404CraNotAdded"
+                    }
+                },
+                "tags": [
+                    "recording"
+                ]
+            }
+        },
+        "/me/": {
+            "get": {
+                "summary": "Current user info",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "id",
+                                "email"
+                            ],
+                            "title": "User object",
+                            "properties": {
+                                "phone": {
+                                    "description": "User's phone.",
+                                    "type": "string",
+                                    "example": "+123 558 951 14"
+                                },
+                                "last_name": {
+                                    "description": "User's last or family name.",
+                                    "type": "string",
+                                    "example": "Appleseed"
+                                },
+                                "id": {
+                                    "description": "User ID.",
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "example": 2929
+                                },
+                                "first_name": {
+                                    "description": "User's first or given name.",
+                                    "type": "string",
+                                    "example": "John"
+                                },
+                                "email": {
+                                    "description": "User's email.",
+                                    "type": "string",
+                                    "format": "email",
+                                    "example": "john@apple.com"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "user"
+                ]
+            }
+        },
+        "/cameras/{camera_id}/recording/timeline/": {
+            "get": {
+                "description": "Please keep in mind that maximum length of timeline is 1 day.\n",
+                "summary": "Retrieve timeline of records for given camera",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/cameraId"
+                    },
+                    {
+                        "name": "start",
+                        "description": "Start time of a timeline. Example: `2016-03-19T08:00:00Z`.",
+                        "required": true,
+                        "in": "query",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "end",
+                        "description": "End time of a timeline. Example: `2016-03-19T14:00:00Z.`",
+                        "required": true,
+                        "in": "query",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid request. For example if:\n\n* start and/or end date are not ISO 8601 format\n* length (end - start) is more than 1 day\n"
+                    },
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/RecordingTimelineResponse"
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/responses/Error401Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/responses/Error404CraNotAdded"
+                    }
+                },
+                "tags": [
+                    "recording"
+                ]
+            }
+        },
+        "/cameras/{camera_id}/recording/": {
+            "get": {
+                "description": "desc",
+                "summary": "General recording information",
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/cameraId"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns general recording information.",
+                        "schema": {
+                            "$ref": "#/definitions/RecordingResponse"
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/responses/Error401Unauthorized"
+                    },
+                    "404": {
+                        "$ref": "#/responses/Error404CraNotAdded"
+                    }
+                },
+                "tags": [
+                    "recording"
+                ]
+            }
+        }
+    },
+    "responses": {
+        "Error404NotFound": {
+            "description": "The specified resource was not found",
+            "schema": {
+                "$ref": "#/definitions/Error404NotFound"
+            }
+        },
+        "Error401Unauthorized": {
+            "description": "Missing or invalid authorization.",
+            "schema": {
+                "$ref": "#/definitions/Error401Unauthorized"
+            }
+        },
+        "Error404CraNotAdded": {
+            "description": "This camera doesn't have Cloud Recording Application (CRA).",
+            "schema": {
+                "$ref": "#/definitions/Error404NotFound"
+            }
+        }
+    },
+    "host": "api.angelcam.com"
+}
