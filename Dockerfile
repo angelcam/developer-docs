@@ -18,7 +18,9 @@ RUN go-wrapper install          # "go install -v ./..."
 # default configuration
 ENV SPEC_DIR /dapperdox/specs
 ENV ASSETS_DIR /dapperdox/assets
-ENV BIND_ADDR 0.0.0.0:3123      # listen on ALL interfaces
+ENV THEME sectionbar
+# listen on ALL interfaces
+ENV BIND_ADDR 0.0.0.0:3123
 EXPOSE 3123
 
 # run

@@ -4,7 +4,9 @@ Sources for http://developers.angelcam.com, API and guides documentation, genera
 
 ## Running
 
-To run Dapperdox developer website from this image:
+For your convenience there is `build_run.sh` script for quick rebuild and run during your local development.
+
+Advanced users might want to run run Dapperdox developer website from this image themselves. In order to do so they must
 
 * choose host machine port - Dapperdox runs on 3123 and it's best to use the same on host
 * map your Dapperdox sources to `/dapperdox/` in container
@@ -12,24 +14,24 @@ To run Dapperdox developer website from this image:
 
 In words of commandline e.g.:
 
-    $ docker run --rm --name developer-docs -p 3123:3123 -v ~/git/developer-docs/dapperdox_src:/dapperdox angelcam/develop-docs
+    $ docker run --rm --name developer-docs -p 3123:3123 -v ~/git/developer-docs/dapperdox_src:/dapperdox angelcam/developer-docs
     
 Then go to http://localhost:3123 in your web browser and enjoy!
 
 ## Configuration
 
-Dapperdox running inside Docker container support configuration via environment variable only. Equivalent variable names to commandline options is found in [Dapperdox configuration guide](http://dapperdox.io/docs/configuration-guide).
+It is recommended to configure Dapperdox running inside Docker container via environment variables. Equivalent variable names for commandline options is found in [Dapperdox configuration guide](http://dapperdox.io/docs/configuration-guide).
 
-By default specdir is set to `/dapperdox/specs` and assets to `/dapperdox/assets`. Because folders in `dapperdox_src/` have already these names you typically only map `/dapperdox/` to `dapperdox_src/`.
+By default specdir is set to `/dapperdox/specs` and assets to `/dapperdox/assets`. Because subfolders in `dapperdox_src/` have already these names, Dapperdox is configured to only map `/dapperdox/` to `dapperdox_src/`.
 
-For example to change a specdir, set environment variable `SPEC_DIR` with `-e`:
+To override or modify configuration, for example to change a specdir, set environment variable `SPEC_DIR` with `-e`:
 
-    $ docker run --rm --name developer-docs -p 3123:3123 -v ~/git/developer-docs/dapperdox_src:dapperdox_src:/dapperdox -e SPEC_DIR /path/to/my/specdir angelcam/develop-docs
+    $ docker run --rm --name developer-docs -p 3123:3123 -v ~/git/developer-docs/dapperdox_src:dapperdox_src:/dapperdox -e "SPEC_DIR=/path/to/my/specdir" angelcam/developer-docs
     
 ## Rebuild and push image
 
-After every change in Markdown or Swagger file(s), you must rebuild and push image. From this repo directory:
+After every change in Markdown or Swagger file(s), you must rebuild and push image.
 
-    $ ./build_publish.sh
+For your convenience there is `build_push.sh` script for quick rebuild and pushing under `angelcam/developer-docs`. You must be `docker login` to push as Docker Hub angelcam user.
 
-This script does build and publish under `angelcam/developer-docs`. You must be `docker login` to push as Docker Hub angelcam user.
+To build only, run `build.sh`. To perform all three steps, run `build_push_run.sh`.
