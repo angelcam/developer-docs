@@ -16,12 +16,18 @@ RUN go-wrapper download         # "go get -d -v ./..."
 RUN go-wrapper install          # "go install -v ./..."
 
 # default configuration
-ENV SPEC_DIR /dapperdox/specs
-ENV ASSETS_DIR /dapperdox/assets
+ENV DAPPERDOX_ROOT /dapperdox
+ENV SPEC_DIR $DAPPERDOX_ROOT/specs
+ENV ASSETS_DIR $DAPPERDOX_ROOT/assets
 ENV THEME sectionbar
 # listen on ALL interfaces
 ENV BIND_ADDR 0.0.0.0:3123
 EXPOSE 3123
 
-# run
-CMD ["go-wrapper", "run"] # ["app"]
+# script to convert specs in YAML to JSON (Dapperdox supports JSON only)
+RUN apt-get install -y python3 python3-pip
+RUN pip3 install pyaml
+COPY yaml_to_json.py /usr/local/bin
+
+# run Dapperdox
+CMD ["go-wrapper", "run"]       # ["app"]
