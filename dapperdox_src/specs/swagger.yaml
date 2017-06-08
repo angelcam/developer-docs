@@ -16,11 +16,11 @@ produces:
 
 tags:
   - name: user
-    description: User
+    description: User resource
   - name: camera
-    description: Camera
+    description: Camera resource
   - name: recording
-    description: Recording
+    description: Recording resource
 
 # DapperDox: use endpoint summary instead of HTTP method name
 x-navigateMethodsByName: true
@@ -37,10 +37,64 @@ paths:
           schema:
             $ref: '#/definitions/UserMeResponse'
 
+  '/cameras/':
+    get:
+      summary: Retrieve camera list
+      tags:
+      - camera
+      parameters:
+        - name: limit
+          in: query
+          type: integer
+          minimum: 1
+          required: true
+          description: 'Limit result set. Example: `1`.'
+        - name: offset
+          in: query
+          type: integer
+          minimum: 1
+          required: true
+          description: 'Return results starting at `offset`. Example: `10`.'
+        - name: refresh_rate
+          in: query
+          type: float
+          minimum: 1
+          required: true
+          description: '
+Set a maximum number of keyframes sent in MJPEG stream per second. For example if you want to have MJPEG stream with keyframe sent every 10 seconds, post value 0.1.'
+      responses:
+        '200':
+          description: Returns camera list.
+          schema:
+            $ref: '#/definitions/CameraListResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+
+  '/cameras/{camera_id}/':
+    get:
+      summary: Retrieve camera
+      tags:
+        - camera
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - name: refresh_rate
+          in: query
+          type: float
+          minimum: 1
+          required: true
+          description: '
+Set a maximum number of keyframes sent in MJPEG stream per second. For example if you want to have MJPEG stream with keyframe sent every 10 seconds, post value 0.1.'
+      responses:
+        '200':
+          description: Camera object
+          schema:
+            $ref: '#/definitions/CameraObject'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+
   '/cameras/{camera_id}/recording/':
     get:
       summary: General recording information
-      description: desc
       tags:
         - recording
       parameters:
@@ -170,27 +224,175 @@ definitions:
         type: integer
         minimum: 0
         description: User ID.
-        example: 2929
       first_name:
         type: string
         description: User's first or given name.
-        example: John
       last_name:
         type: string
         description: User's last or family name.
-        example: Appleseed
       email:
         type: string
         format: email
         description: User's email.
-        example: john@apple.com
       phone:
         type: string
         description: User's phone.
-        example: +123 558 951 14
     required:
       - id
       - email
+    example:
+      id: 2929
+      first_name: "John"
+      last_name: "Appleseed"
+      email: "john@apple.com"
+      phone: "+123 558 951 14"
+
+  CameraListResponse:
+    type: object
+    title: Camera list
+    properties:
+      count:
+        type: integer
+        description: Count of all cameras
+      next:
+        type: string
+        format: uri
+        description: Next page from pagination
+      previous:
+        type: string
+        format: uri
+        description: Previous page from pagination
+      results:
+        type: array
+        description: List of cameras owned by the user
+        items:
+          $ref: '#/definitions/CameraObject'
+    required:
+      - count
+      - next
+      - previous
+      - results
+# TODO:
+#    example:
+#      count: 10
+#      next: 'https://api.angelcam.com/cameras/?limit=10&offset=10'
+#      previous: 'https://api.angelcam.com/cameras/?limit=10&offset=0'
+
+  CameraObject:
+    type: object
+    title: Camera object
+    properties:
+      id:
+        type: integer
+        minimum: 1
+        description: Camera ID
+      name:
+        type: string
+        description: Camera name
+      type:       # todo camera type should be enum!
+        type: string
+        enum:
+          - h264
+          - mjpeg
+        description: Camera type
+      snapshot:
+        $ref: '#/definitions/SnapshotObject'
+      status:
+        type: string
+        enum:
+          - offline
+          - online
+          - unknown
+      streams:
+        type: array
+        items:
+          $ref: '#/definitions/StreamObject'
+        description: Available camera streams
+      applications:
+        type: array
+        items:
+          $ref: '#/definitions/ApplicationObject'
+    required:
+      - id
+      - name
+      - type
+      - snapshot
+      - status
+      - streams
+      - applications
+    example:
+      id: 157
+      name: 'Parkside Office'
+      type: 'h264'
+      snapshot:
+        - url:  'https://dsw4ncxjbie85.cloudfront.net/snapshot/81/y8jol6kbn0ol1gh2.jpg'
+        - created_at: '2017-03-29T15:41:39Z'
+      status: online
+      streams:
+        - format: "mjpeg"
+          url: "http://m1.test.angelcam.com/stream/81/stream.mjpeg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c"
+        - format: "mp4"
+          url: "http://m1.test.angelcam.com/stream/81/stream.mp4?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjMxNiwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.b5b4cf405cf054701a75b359f4069d2af8a102c5ffd8f33cbb560a4638c7cb71"
+        - format: "hls"
+          url: "http://m1.test.angelcam.com/stream/81/playlist.m3u8?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjQwMSwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.8ac35b434e768e8f10161b2d74da492f5fd8a8c115c18cbb421017665acd908a"
+      applications:
+        - LSA
+        - CRA
+
+  SnapshotObject:
+    type: object
+    title: Snapshot object
+    properties:
+      url:
+        type: string
+        format: uri
+        description: URL of the snapshot image
+      created_at:
+        type: string
+        format: date-time
+        description: 'The date and time when the snapshot was created for the first time'
+    required:
+      - url
+      - created_at
+    example:
+      url: 'https://dsw4ncxjbie85.cloudfront.net/snapshot/157/h8yeodu1mrjtiiok.jpg'
+      created_at: '2017-03-31T12:29:10Z'
+
+  StreamObject:
+    type: object
+    properties:
+      url:
+        type: string
+        format: uri
+        description: Stream URL
+      format:
+        type: string
+        enum:
+          - hls
+          - fmp4
+          - mjpeg
+    required:
+      - url
+      - format
+    example:
+      url: 'http://m2-eu1.test.angelcam.com/stream/157/stream.mjpeg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE4Mjc3OCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiMTU3In0%3D.d365e2a6fbdfae0bfa5b27175a6ea57de1ae31844fdcd22ff5f56da10a970d65'
+      format: 'mjpeg'
+
+  ApplicationObject:
+    type: object
+    properties:
+      code:
+        type: string
+        enum:
+          - LSA
+          - CRA
+          - VVA
+          - VPA
+          - TLA
+    required:
+      - code
+    example:
+      code: LSA
 
   RecordingResponse:
     type: object
@@ -244,9 +446,9 @@ definitions:
         type: array
         description: Array of recording segments.
         items:
-          $ref: '#/definitions/Segment'
+          $ref: '#/definitions/SegmentObject'
 
-  Segment:
+  SegmentObject:
     type: object
     title: Segment object
     properties:
