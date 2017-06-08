@@ -22,7 +22,7 @@ Study yourself [Dapperdox authoring content concepts](http://dapperdox.io/docs/a
 
 ## Running
 
-*We strongly recommend perform all the boring steps bellow with  convenient `build_run.sh` script.*
+*We strongly recommend perform all the boring steps bellow with  convenient `run.sh` or `build_run.sh` script.*
 
 First prerequirements is convert Swagger in YAML to JSON which Dapperdox only supports. Image contains a script to do it. If you use `build_run.sh` this is done for you. To call it manually, execute command similar to this:
 
