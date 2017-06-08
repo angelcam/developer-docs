@@ -1,33 +1,14 @@
-FROM golang:1.8
-ENV ver 1.1.1
+FROM bircow/dapperdox:1.1.1
 
-# install unzip utility
-RUN apt-get -y update && apt-get -y install zip
+# Customize your assets or specs dir names
+COPY assets/ $ASSETS_DIR
+COPY specs/ $SPEC_DIR
 
-# download and unzip Dapperdox sources
-RUN cd /go/src/ && \
-    curl -L -o dapperdox.zip https://github.com/DapperDox/dapperdox/archive/v${ver}.zip && \
-    unzip dapperdox.zip && \
-    rm dapperdox.zip
+# Convert swagger.yaml to swagger.json
+RUN yaml_to_json.py $SPEC_DIR
 
-# compile
-WORKDIR /go/src/dapperdox-${ver}
-RUN go-wrapper download         # "go get -d -v ./..."
-RUN go-wrapper install          # "go install -v ./..."
+# Custom configuration comes here
+# ENV THEME my_own_theme
 
-# default configuration
-ENV DAPPERDOX_ROOT /dapperdox
-ENV SPEC_DIR $DAPPERDOX_ROOT/specs
-ENV ASSETS_DIR $DAPPERDOX_ROOT/assets
-ENV THEME sectionbar
-# listen on ALL interfaces
-ENV BIND_ADDR 0.0.0.0:3123
-EXPOSE 3123
-
-# script to convert specs in YAML to JSON (Dapperdox supports JSON only)
-RUN apt-get install -y python3 python3-pip
-RUN pip3 install pyaml
-COPY yaml_to_json.py /usr/local/bin
-
-# run Dapperdox
-CMD ["go-wrapper", "run"]       # ["app"]
+# Launch Dapperdox and open http://localhost:3123
+CMD ["go-wrapper", "run"]

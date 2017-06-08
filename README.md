@@ -16,21 +16,19 @@ All content lies in `dapperdox_src/` folder:
 * `dapperdox_src/assets/` contains guides and content overlays
 * `dapperdox_src/specs/` contains only one file `swagger.yaml`
 
-OpenAPI specification must be exactly named `swagger.yaml`. No other filename or writing in JSON is supported. Dapperdox can read only OpenAPI in JSON thus this image convert `dapperdox_src/specs/swagger.yaml` to `swagger.json` on each build. In other words, don't create or modify `swagger.json` as it will be overwritten.
+OpenAPI specification must be exactly named `swagger.yaml`. No other filename or writing in JSON is supported. Dapperdox can read only OpenAPI in JSON thus this image convert `specs/swagger.yaml` to `swagger.json` on each build. In other words, don't create or modify `swagger.json` as it will be overwritten.
 
 Study yourself [Dapperdox authoring content concepts](http://dapperdox.io/docs/author-concepts) how to write a new content.
 
-## Running
+## Build and run
 
-*We strongly recommend perform all the boring steps bellow with  convenient `run.sh` or `build_run.sh` script.*
+Image contains both Dapperdox and sources (assets and specs).
 
-First prerequirements is convert Swagger in YAML to JSON which Dapperdox only supports. Image contains a script to do it. If you use `build_run.sh` this is done for you. To call it manually, execute command similar to this:
+To build image with sources:
 
-    $ docker run --rm -it -v ~/git/developer-docs/dapperdox_src:/dapperdox angelcam/developer-docs yaml_to_json.py /dapperdox/specs
-    
-For example above, it will create `~/git/developer-docs/dapperdox_src/specs/swagger.json`.
+    $ docker build -t angelcam/developer-docs .
 
-To run run Dapperdox developer website from this image you also must:
+To run developer website from this image you must
 
 * choose host machine port - Dapperdox runs on 3123 and it's best to use the same on host
 * map your Dapperdox sources to `/dapperdox/` in container
@@ -38,24 +36,16 @@ To run run Dapperdox developer website from this image you also must:
 
 In words of commandline e.g.:
 
-    $ docker run --rm --name developer-docs -p 3123:3123 -v ~/git/developer-docs/dapperdox_src:/dapperdox angelcam/developer-docs
+    $ docker run --rm --name developer-docs \
+            -p 3123:3123 \
+            -v ~/git/developer-docs/:/dapperdox angelcam/developer-docs
 
 Then go to http://localhost:3123 in your web browser and enjoy!
 
-## Configuration
-
-It is recommended to configure Dapperdox running inside Docker container via environment variables. Equivalent variable names for commandline options is found in [Dapperdox configuration guide](http://dapperdox.io/docs/configuration-guide).
-
-By default specdir is set to `/dapperdox/specs` and assets to `/dapperdox/assets`. Because subfolders in `dapperdox_src/` have already these names, Dapperdox is configured to only map `/dapperdox/` to `dapperdox_src/`.
-
-To override or modify configuration, for example to change a specdir, set environment variable `SPEC_DIR` with `-e`:
-
-    $ docker run --rm --name developer-docs -p 3123:3123 -v ~/git/developer-docs/dapperdox_src:dapperdox_src:/dapperdox -e "SPEC_DIR=/path/to/my/specdir" angelcam/developer-docs
-    
 ## Rebuild and push image
 
 After every change in Markdown or Swagger file(s), you must rebuild and push image.
 
-For your convenience there is `build_push.sh` script for quick rebuild and pushing under `angelcam/developer-docs`. You must be `docker login` to push as Docker Hub angelcam user.
+For your convenience there is `build_push.sh` script for quick rebuild and pushing under `angelcam/developer-docs:latest` tag. You must be `docker login` to push as Angelcam Docker Hub account.
 
-To build only, run `build.sh`. To perform all three steps, run `build_push_run.sh`.
+To build only, run `build.sh`.

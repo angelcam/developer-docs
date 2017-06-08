@@ -1,4 +1,4 @@
 .idea/
 
 # Write in YAML!
-/dapperdox_src/specs/*.json
+/specs/*.json
