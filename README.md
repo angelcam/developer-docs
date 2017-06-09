@@ -22,23 +22,22 @@ Study yourself [Dapperdox authoring content concepts](http://dapperdox.io/docs/a
 
 ## Build and run
 
-Image contains both Dapperdox and sources (assets and specs).
+_For your convenience, steps bellow are scripted in `./build_run.sh`._
 
-To build image with sources:
+Image contains both Dapperdox and sources (assets and specs). To build image with sources:
 
     $ docker build -t angelcam/developer-docs .
 
 To run developer website from this image you must
 
 * choose host machine port - Dapperdox runs on 3123 and it's best to use the same on host
-* map your Dapperdox sources to `/dapperdox/` in container
 * choose container meaningful name like 'developer-docs`
 
 In words of commandline e.g.:
 
     $ docker run --rm --name developer-docs \
             -p 3123:3123 \
-            -v ~/git/developer-docs/:/dapperdox angelcam/developer-docs
+            angelcam/developer-docs
 
 Then go to http://localhost:3123 in your web browser and enjoy!
 
