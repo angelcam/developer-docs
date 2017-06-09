@@ -1,0 +1,30 @@
+nav.navbar.navbar-fixed-top.shadow {
+    box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.2);
+}
+
+nav div.container-fluid div.row {
+    background-color: #10171e;
+}
+
+nav div.container-fluid div.row.navbar-section,
+.navbar-section {
+    background-color: #0B94DB;
+}
+
+pre,
+code,
+pre code,
+pre code .comment,
+td.resource {
+    color: #60656d;
+}
+
+.btn-success,
+.btn-success:hover {
+    background-color: #286090;
+    border: none;
+}
+
+.nav-toggle.open {
+    color: #286090;
+}
