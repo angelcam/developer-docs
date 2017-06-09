@@ -11,10 +11,10 @@ Dapperdox is tool for documenting APIs. Every API documentation can contain
 
 Dapperdox combines both into single portal website. We currently publish only API ("Angelcam API") but it supports even multiple API documentations (in future it can be "billing API", "dispatcher API" etc.)
 
-All content lies in `dapperdox_src/` folder:
+Sources folder are:
 
-* `dapperdox_src/assets/` contains guides and content overlays
-* `dapperdox_src/specs/` contains only one file `swagger.yaml`
+* `assets/` contains guides, content overlays, themes styles etc.
+* `specs/` contains only one file `swagger.yaml`
 
 OpenAPI specification must be exactly named `swagger.yaml`. No other filename or writing in JSON is supported. Dapperdox can read only OpenAPI in JSON thus this image convert `specs/swagger.yaml` to `swagger.json` on each build. In other words, don't create or modify `swagger.json` as it will be overwritten.
 
