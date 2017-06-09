@@ -27,6 +27,18 @@ tags:
 # DapperDox: use endpoint summary instead of HTTP method name
 x-navigateMethodsByName: true
 
+securityDefinitions:
+  OAuth2:
+    type: oauth2
+    flow: code
+    authorizationUrl: https://api.test.angelcam.com/oauth/authorize/
+    tokenUrl: https://api.test.angelcam.com/oauth/token/
+    scopes:
+      read: API supports read only operations
+
+security:
+  - OAuth2: [read]
+
 paths:
   /me/:
     get:
