@@ -21,6 +21,8 @@ tags:
     description: Camera resource
   - name: recording
     description: Recording resource
+  - name: event
+    description: Event resource
 
 # DapperDox: use endpoint summary instead of HTTP method name
 x-navigateMethodsByName: true
@@ -215,6 +217,84 @@ Set a maximum number of keyframes sent in MJPEG stream per second. For example i
         '404':
           $ref: '#/responses/Error404CraNotAdded'
 
+  '/events/':
+    get:
+      summary: Retrieve event list
+      tags:
+        - event
+      description: Retrieves the list of events for the current user
+      parameters:
+          - name: start
+            in: query
+            type: string
+            format: date-time
+            required: true
+            description: 'Example: `2017-03-07T14:00:00Z`.'
+          - name: end
+            in: query
+            type: string
+            format: date-time
+            required: true
+            description: 'Example: `2017-03-08T14:00:00Z`.'
+          - name: limit
+            in: query
+            type: integer
+            minimum: 1
+            required: false
+            description: 'Limit result set. Example: `1`.'
+          - name: offset
+            in: query
+            type: integer
+            minimum: 1
+            required: false
+            description: 'Return results starting at `offset`. Example: `10`.'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/EventListResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+
+  '/events/{camera_id}/':
+    get:
+      summary: Retrieve camera event list
+      tags:
+        - event
+      description: 'Retrieves the list of events for the current user belonging to given camera'
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - name: start
+          in: query
+          type: string
+          format: date-time
+          description: 'Example: `2017-03-07T14:00:00Z`.'
+          required: true
+        - name: end
+          id: query
+          type: string
+          format: date-time
+          description: 'Example: `2017-03-07T16:00:00Z`.'
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          minimum: 1
+          description: 'Limit result set. Example: `1`.'
+          required: false
+        - name: offset
+          type: integer
+          minimum: 1
+          description: 'Return results starting at offset. Example: `10`.'
+          required: false
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/EventListResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+
 definitions:
   UserMeResponse:
     type: object
@@ -388,7 +468,6 @@ definitions:
           - CRA
           - VVA
           - VPA
-          - TLA
     required:
       - code
     example:
@@ -447,6 +526,14 @@ definitions:
         description: Array of recording segments.
         items:
           $ref: '#/definitions/SegmentObject'
+    example:
+      start: '2017-01-01T00:00:00Z'
+      end: '2017-01-01T03:32:19Z'
+      segments:
+        - start: '2017-06-09T00:00:18Z'
+          end: '2017-06-09T03:25:28Z'
+        - start: '2017-06-09T04:19:42Z'
+          end: '2017-06-09T010:39:31Z'
 
   SegmentObject:
     type: object
@@ -482,6 +569,10 @@ definitions:
         type: string
         description: URL of a recorded stream info endpoint.
         example: 'https://api.test.angelcam.com/v1/recording/stream/rec-streamer-eu-central-1/cefa6471a38f469585b46675fc992614/'
+    example:
+      url: 'https://rec-streamer-eu-central-1.test.angelcam.com/streams/df0600b7487a44d480217db7713720d3/playlist.m3u8'
+      format: 'hls'
+      stream_info: 'https://api.test.angelcam.com/v1/recording/stream/rec-streamer-eu-central-1/df0600b7487a44d480217db7713720d3/'
 
   RecordingStreamInfoResponse:
     type: object
@@ -491,7 +582,77 @@ definitions:
         type: string
         format: date-time
         description: Current time in a stream.
-        example: '2017-01-01T00:00:00Z'
+    example:
+      current_time: '2017-01-01T00:00:00Z'
+
+  EventListResponse:
+    type: object
+    title: Event list
+    properties:
+      count:
+        type: integer
+        minimum: 1
+        description: Count of all events
+      next:
+        type: string
+        format: uri
+        description: Next page from pagination
+      previous:
+        type: string
+        format: uri
+        description: Previous page from pagination
+      results:
+        type: array
+        description: List of events owned by the user
+        items:
+          $ref: '#/definitions/EventObject'
+    required:
+      - count
+      - next
+      - previous
+      - results
+    example:
+      count: 10
+      next: 'https://api.angelcam.com/v1/events/?limit=10&offset=10'
+      previous: 'https://api.angelcam.com/v1/events/?limit=10&offset=0'
+      results:
+        - camera: 20
+          title: Door open
+          source: IFTTT
+          received: '2017-01-01T00:00:16Z'
+        - camera: 219
+          title: Door closed
+          source: IFTTT
+          received: '2017-01-02T03:09:26Z'
+
+  EventObject:
+    type: object
+    title: Event object
+    properties:
+      camera:
+        type: integer
+        minimum: 1
+        description: Camera ID
+      title:
+        type: string
+        description: Event title
+      source:
+        type: string
+        description: Name of event source
+      received_at:
+        type: string
+        description: Time when event was occurred or been received by Angelcam
+    required:
+      - camera
+      - title
+      - source
+      - received_at
+    example:
+      camera: 20
+      title: Door open
+      source: IFTTT
+      received: '2017-01-01T00:00:16Z'
+
 
   ErrorGeneric:
     type: object

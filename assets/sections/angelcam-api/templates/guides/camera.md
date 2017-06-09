@@ -46,6 +46,5 @@ We currently support these applications in this API with the following codes (up
 * CRA - Cloud Recording
 * VVA - Video Verification
 * VPA - Video Guard
-* TLA - Time-Lapse
 
 The applications added to a camera depend on the user's country as some of them are not available in every country.
