@@ -1,0 +1,10 @@
+---
+- hosts: all
+  remote_user: root
+  tasks:
+   - name: create run directory
+     file: path=/srv/developer-docs state=directory
+   - name: create run.sh
+     template: src=run.sh dest=/srv/developer-docs/run.sh mode=0755
+   - name: restart developer-docs
+     shell: /srv/developer-docs/run.sh

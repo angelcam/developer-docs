@@ -48,3 +48,13 @@ After every change in Markdown or Swagger file(s), you must rebuild and push ima
 For your convenience there is `build_push.sh` script for quick rebuild and pushing under `angelcam/developer-docs:latest` tag. You must be `docker login` to push as Angelcam Docker Hub account.
 
 To build only, run `build.sh`.
+
+## Deployment
+
+Test environment (developers.test.angelcam.com):
+
+    cd ci/deploy && ansible-playbook -i inventory/test deploy.yml
+
+Production (developers.angelcam.com):
+
+    cd ci/deploy && ansible-playbook -i inventory/prod deploy.yml
