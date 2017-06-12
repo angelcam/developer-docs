@@ -61,19 +61,19 @@ paths:
           in: query
           type: integer
           minimum: 1
-          required: true
+          required: false
           description: 'Limit result set. Example: `1`.'
         - name: offset
           in: query
           type: integer
           minimum: 1
-          required: true
+          required: false
           description: 'Return results starting at `offset`. Example: `10`.'
         - name: refresh_rate
           in: query
           type: float
           minimum: 1
-          required: true
+          required: false
           description: '
 Set a maximum number of keyframes sent in MJPEG stream per second. For example if you want to have MJPEG stream with keyframe sent every 10 seconds, post value 0.1.'
       responses:
@@ -95,7 +95,7 @@ Set a maximum number of keyframes sent in MJPEG stream per second. For example i
           in: query
           type: float
           minimum: 1
-          required: true
+          required: false
           description: '
 Set a maximum number of keyframes sent in MJPEG stream per second. For example if you want to have MJPEG stream with keyframe sent every 10 seconds, post value 0.1.'
       responses:
@@ -240,13 +240,13 @@ Set a maximum number of keyframes sent in MJPEG stream per second. For example i
             in: query
             type: string
             format: date-time
-            required: true
+            required: false
             description: 'Example: `2017-03-07T14:00:00Z`.'
           - name: end
             in: query
             type: string
             format: date-time
-            required: true
+            required: false
             description: 'Example: `2017-03-08T14:00:00Z`.'
           - name: limit
             in: query

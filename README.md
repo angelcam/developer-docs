@@ -51,6 +51,8 @@ To build only, run `build.sh`.
 
 ## Deployment
 
+If you experience network problems, try dial-up VPN. 
+
 Test environment (developers.test.angelcam.com):
 
     cd ci/deploy && ansible-playbook -i inventory/test deploy.yml
