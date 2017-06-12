@@ -1,5 +1,5 @@
 dck2-prod-us-west-2.acnet.us
 
 [all:vars]
-virtual_host=camchecker.angelcam.com
+virtual_host=developers.angelcam.com
 cert_name=wildcard.angelcam.com
