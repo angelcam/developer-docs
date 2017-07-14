@@ -12,16 +12,23 @@ camera information:
 * status (online, offline, unknown, ...)
 * list of live stream URLs in various formats to watch
 
+
 ## Snapshot
 
 A snapshot is an affordable and quick way to give your users a sample of their on-going live stream, by periodically
 saving a picture of it. It's intended to give a preview of the camera's content without actually creating a connection
 to the live stream, which can be a resource-expensive operation.
 
-Please note, a snapshot may be up to 15 minutes old and you can't initiate it’s refresh from the API. If age is
-important to you, check the created_at field in the snapshots array returned by the `cameras/{camera_id}/` and
-`cameras/` endpoints. In cases where a more recent preview is required, you can use an MJPEG stream with a low
-framerate instead.
+Please note, a snapshot may be up to 24 hours old but we'll auto initiate refreshing when you access camera endoints in
+API. If age is important to you, check the created_at field in the snapshots array returned by the
+`cameras/{camera_id}/` and `cameras/` endpoints.
+ 
+In cases where a more recent image is required, you can use a live snapshot or a MJPEG stream with a low frame rate
+instead.
+
+## Live snapshot
+The live snapshot is a static picture of what the camera is currently shooting at the moment. This actually creates
+a connection to the camera and extracts the last keyframe from the camera stream.
 
 ## Live stream from camera
 
