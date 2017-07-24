@@ -30,7 +30,7 @@ x-navigateMethodsByName: true
 securityDefinitions:
   OAuth2:
     type: oauth2
-    flow: code
+    flow: accessCode
     authorizationUrl: https://api.test.angelcam.com/oauth/authorize/
     tokenUrl: https://api.test.angelcam.com/oauth/token/
     scopes:
@@ -50,7 +50,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/UserMeResponse'
-
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
   '/cameras/':
     get:
       summary: Retrieve camera list
@@ -71,20 +72,21 @@ paths:
           description: 'Return results starting at `offset`. Example: `10`.'
         - name: refresh_rate
           in: query
-          type: float
+          type: number
+          format: float
           minimum: 0
           required: false
           description: 'Set a maximum number of keyframes sent in MJPEG stream per second. For example if you want to
            have MJPEG stream with keyframe sent every 10 seconds, post value 0.1.'
         - name: max_width
           in: query
-          type: int
+          type: integer
           minimum: 1
           required: false
           description: 'Maximum width of MJPEG stream and LIVE SNAPSHOT.'
         - name: max_height
           in: query
-          type: int
+          type: integer
           minimum: 1
           required: false
           description: 'Maximum height of MJPEG stream and LIVE SNAPSHOT.'
@@ -93,6 +95,8 @@ paths:
           description: Returns camera list.
           schema:
             $ref: '#/definitions/CameraListResponse'
+        '400':
+          $ref: '#/responses/Error400Invalid'
         '401':
           $ref: '#/responses/Error401Unauthorized'
 
@@ -105,20 +109,21 @@ paths:
         - $ref: '#/parameters/cameraId'
         - name: refresh_rate
           in: query
-          type: float
+          type: number
+          format: float
           minimum: 1
           required: false
           description: 'Set a maximum number of keyframes sent in MJPEG stream per second. For example if you want to
           have MJPEG stream with keyframe sent every 10 seconds, post value 0.1.'
         - name: max_width
           in: query
-          type: int
+          type: integer
           minimum: 1
           required: false
           description: 'Maximum width of MJPEG stream and LIVE SNAPSHOT.'
         - name: max_height
           in: query
-          type: int
+          type: integer
           minimum: 1
           required: false
           description: 'Maximum height of MJPEG stream and LIVE SNAPSHOT.'
@@ -127,8 +132,12 @@ paths:
           description: Camera object
           schema:
             $ref: '#/definitions/CameraObject'
+        '400':
+          $ref: '#/responses/Error400Invalid'
         '401':
           $ref: '#/responses/Error401Unauthorized'
+        '404':
+          $ref: '#/responses/Error404NotFound'
 
   '/cameras/{camera_id}/recording/':
     get:
@@ -162,23 +171,21 @@ paths:
           format: date-time
           required: true
           description: 'Start time of a timeline. Example: `2016-03-19T08:00:00Z`.'
+          x-example: 2017-01-01T00:00:00Z
         - name: end
           in: query
           type: string
           format: date-time
           required: true
           description: 'End time of a timeline. Example: `2016-03-19T14:00:00Z.`'
+          x-example: 2017-01-01T00:00:00Z
       responses:
         '200':
           description: OK
           schema:
             $ref: '#/definitions/RecordingTimelineResponse'
         '400':
-          description: |
-            Invalid request. For example if:
-
-            * start and/or end date are not ISO 8601 format
-            * length (end - start) is more than 1 day
+          $ref: '#/responses/Error400Invalid'
         '401':
           $ref: '#/responses/Error401Unauthorized'
         '404':
@@ -197,6 +204,7 @@ paths:
           format: date-time
           required: true
           description: 'Start time of a stream. Example: `2016-03-19T08:00:00Z`.'
+          x-example: 2017-01-01T00:00:00Z
         - name: end
           in: query
           type: string
@@ -205,17 +213,14 @@ paths:
           description: >
             End time of a stream. If missing, stream will play till the very end of recorded footage.
             Example: `2016-03-19T14:00:00Z.`
+          x-example: 2017-01-01T00:00:00Z
       responses:
         '200':
           description: OK
           schema:
             $ref: '#/definitions/RecordingStreamResponse'
         '400':
-          description: |
-            Invalid request. For example if:
-
-            * start and/or end date are not ISO 8601 format
-            * start time is in the future
+          $ref: '#/responses/Error400Invalid'
         '401':
           $ref: '#/responses/Error401Unauthorized'
         '404':
@@ -232,26 +237,22 @@ paths:
           type: string
           required: true
           description: Streamer server name.
+          x-example: rec-streamer-eu-central-1
         - name: streamer_id
           in: path
           type: string
           required: true
           description: Stream ID.
+          x-example: 61c59a859e9244a19713fdfec6e50184
       responses:
         '200':
           description: OK
           schema:
             $ref: '#/definitions/RecordingStreamInfoResponse'
-        '400':
-          description: |
-            Invalid request. For example if:
-
-            * start and/or end date are not ISO 8601 format
-            * start time is in the future
         '401':
           $ref: '#/responses/Error401Unauthorized'
         '404':
-          $ref: '#/responses/Error404CraNotAdded'
+          $ref: '#/responses/Error404NotFound'
 
   '/events/':
     get:
@@ -289,6 +290,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/EventListResponse'
+        '400':
+          $ref: '#/responses/Error400Invalid'
         '401':
           $ref: '#/responses/Error401Unauthorized'
 
@@ -329,9 +332,12 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/EventListResponse'
+        '400':
+          $ref: '#/responses/Error400Invalid'
         '401':
           $ref: '#/responses/Error401Unauthorized'
-
+        '404':
+          $ref: '#/responses/Error404NotFound'
 definitions:
   UserMeResponse:
     type: object
@@ -352,7 +358,7 @@ definitions:
         format: email
         description: User's email.
       phone:
-        type: string
+        type: ['string','null']
         description: User's phone.
     required:
       - id
@@ -372,11 +378,11 @@ definitions:
         type: integer
         description: Count of all cameras
       next:
-        type: string
+        type: ['string','null']
         format: uri
         description: Next page from pagination
       previous:
-        type: string
+        type: ['string','null']
         format: uri
         description: Previous page from pagination
       results:
@@ -413,7 +419,7 @@ definitions:
           - mjpeg
         description: Camera type
       snapshot:
-        $ref: '#/definitions/SnapshotObject'
+        x-$ref: '#/definitions/SnapshotObject'
       status:
         type: string
         enum:
@@ -421,7 +427,7 @@ definitions:
           - online
           - unknown
       live_snapshot:
-        type: string
+        type: ['string', 'null']
         format: uri
         description: Live snapshot URL
       streams:
@@ -496,13 +502,12 @@ definitions:
           - fmp4
           - mjpeg
       refresh_rate:
-        type: float
+        type: number
+        format: float
         description: Stream refresh rate
     required:
       - url
       - format
-    optional:
-      - refresh_rate
     example:
       url: 'http://m2-eu1.test.angelcam.com/stream/157/stream.mjpeg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE4Mjc3OCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiMTU3In0%3D.d365e2a6fbdfae0bfa5b27175a6ea57de1ae31844fdcd22ff5f56da10a970d65'
       format: 'mjpeg'
@@ -517,6 +522,7 @@ definitions:
           - CRA
           - VVA
           - VPA
+          - TLA
     required:
       - code
     example:
@@ -640,14 +646,14 @@ definitions:
     properties:
       count:
         type: integer
-        minimum: 1
+        minimum: 0
         description: Count of all events
       next:
-        type: string
+        type: ['string','null']
         format: uri
         description: Next page from pagination
       previous:
-        type: string
+        type: ['string','null']
         format: uri
         description: Previous page from pagination
       results:
@@ -732,12 +738,34 @@ definitions:
       detail: Authentication credentials were not provided
       status: 401
 
+  Error400Invalid:
+    type: object
+    title: Error 400 Bad Request
+    properties:
+      title:
+        type: string
+      detail:
+        type: object
+      status:
+        type: integer
+    example:
+      title: invalid
+      detail:
+        - refresh_rate:
+          - 'valid number is required.'
+          - 'Ensure this value is greater than 0.'
+        - max_width:
+          - 'valid number is required.'
+          - 'Ensure this value is greater than or equal to 1.'
+      status: 400
+
 parameters:
   cameraId:
     name: camera_id
     in: path
     type: integer
     minimum: 1
+    x-example: 3
     required: true
     description: Camera ID.
 
@@ -748,7 +776,7 @@ responses:
       $ref: '#/definitions/Error404NotFound'
 
   Error404CraNotAdded:
-    description: This camera doesn't have Cloud Recording Application (CRA).
+    description: This camera was not find or it doesn't have enabled Cloud Recording Application (CRA).
     schema:
       $ref: '#/definitions/Error404NotFound'
 
@@ -756,3 +784,8 @@ responses:
     description: Missing or invalid authorization.
     schema:
       $ref: '#/definitions/Error401Unauthorized'
+
+  Error400Invalid:
+    description: Query params are invalid.
+    schema:
+      $ref: '#/definitions/Error400Invalid'
