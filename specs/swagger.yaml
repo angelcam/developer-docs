@@ -454,7 +454,7 @@ definitions:
       type: 'h264'
       snapshot:
         - url:  'https://dsw4ncxjbie85.cloudfront.net/snapshot/81/y8jol6kbn0ol1gh2.jpg'
-        - created_at: '2017-03-29T15:41:39Z'
+          created_at: '2017-03-29T15:41:39Z'
       status: online
       live_snapshot: "http://m1.test.angelcam.com/stream/81/snapshot.jpg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c"
       streams:
