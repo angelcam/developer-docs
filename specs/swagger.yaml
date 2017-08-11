@@ -675,10 +675,9 @@ definitions:
           title: Door open
           source: IFTTT
           received: '2017-01-01T00:00:16Z'
-        - camera: 219
-          title: Door closed
-          source: IFTTT
-          received: '2017-01-02T03:09:26Z'
+          snapshot:
+            - url:  'https://dsw4ncxjbie85.cloudfront.net/snapshot/81/y8jol6kbn0ol1gh2.jpg'
+              created_at: '2017-01-01T00:00:20'
 
   EventObject:
     type: object
@@ -697,16 +696,23 @@ definitions:
       received_at:
         type: string
         description: Time when event was occurred or been received by Angelcam
+      snapshot:
+        x-$ref: '#/definitions/SnapshotObject'
+
     required:
       - camera
       - title
       - source
       - received_at
+      - snapshot
     example:
       camera: 20
       title: Door open
       source: IFTTT
       received: '2017-01-01T00:00:16Z'
+      snapshot:
+        - url:  'https://dsw4ncxjbie85.cloudfront.net/snapshot/81/y8jol6kbn0ol1gh2.jpg'
+          created_at: '2017-01-01T00:00:20'
 
 
   ErrorGeneric:
