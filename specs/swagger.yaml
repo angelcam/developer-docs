@@ -338,6 +338,95 @@ paths:
           $ref: '#/responses/Error401Unauthorized'
         '404':
           $ref: '#/responses/Error404NotFound'
+
+  '/shared-cameras/':
+    get:
+      summary: Retrieve shared camera list
+      tags:
+      - camera
+      parameters:
+        - name: limit
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Limit result set. Example: `1`.'
+        - name: offset
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Return results starting at `offset`. Example: `10`.'
+        - name: refresh_rate
+          in: query
+          type: number
+          format: float
+          minimum: 0
+          required: false
+          description: 'Set a maximum number of keyframes sent in MJPEG stream per second. For example if you want to
+           have MJPEG stream with keyframe sent every 10 seconds, post value 0.1.'
+        - name: max_width
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Maximum width of MJPEG stream and LIVE SNAPSHOT.'
+        - name: max_height
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Maximum height of MJPEG stream and LIVE SNAPSHOT.'
+      responses:
+        '200':
+          description: Returns shared camera list.
+          schema:
+            $ref: '#/definitions/SharedCameraListResponse'
+        '400':
+          $ref: '#/responses/Error400Invalid'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+
+  '/shared-cameras/{camera_id}/':
+    get:
+      summary: Retrieve shared camera
+      tags:
+        - camera
+      parameters:
+        - $ref: '#/parameters/sharedCameraId'
+        - name: refresh_rate
+          in: query
+          type: number
+          format: float
+          minimum: 1
+          required: false
+          description: 'Set a maximum number of keyframes sent in MJPEG stream per second. For example if you want to
+          have MJPEG stream with keyframe sent every 10 seconds, post value 0.1.'
+        - name: max_width
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Maximum width of MJPEG stream and LIVE SNAPSHOT.'
+        - name: max_height
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Maximum height of MJPEG stream and LIVE SNAPSHOT.'
+      responses:
+        '200':
+          description: Camera object
+          schema:
+            $ref: '#/definitions/SharedCameraObject'
+        '400':
+          $ref: '#/responses/Error400Invalid'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+
+
 definitions:
   UserMeResponse:
     type: object
@@ -370,6 +459,27 @@ definitions:
       email: "john@apple.com"
       phone: "+123 558 951 14"
 
+  OwnerObject:
+    type: object
+    title: Owner object
+    properties:
+      first_name:
+        type: string
+        description: User's first or given name.
+      last_name:
+        type: string
+        description: User's last or family name.
+      email:
+        type: string
+        format: email
+        description: User's email.
+    required:
+      - email
+    example:
+      first_name: "John"
+      last_name: "Appleseed"
+      email: "john@apple.com"
+
   CameraListResponse:
     type: object
     title: Camera list
@@ -395,6 +505,34 @@ definitions:
       - next
       - previous
       - results
+
+  SharedCameraListResponse:
+    type: object
+    title: Shared Camera list
+    properties:
+      count:
+        type: integer
+        description: Count of all shared cameras
+      next:
+        type: ['string','null']
+        format: uri
+        description: Next page from pagination
+      previous:
+        type: ['string','null']
+        format: uri
+        description: Previous page from pagination
+      results:
+        type: array
+        description: List of cameras shared with the user
+        items:
+          $ref: '#/definitions/SharedCameraObject'
+    required:
+      - count
+      - next
+      - previous
+      - results
+
+
 # TODO:
 #    example:
 #      count: 10
@@ -468,6 +606,73 @@ definitions:
       applications:
         - LSA
         - CRA
+
+  SharedCameraObject:
+    type: object
+    title: Shared camera object
+    properties:
+      id:
+        type: integer
+        minimum: 1
+        description: Camera ID
+      name:
+        type: string
+        description: Camera name
+      type:       # todo camera type should be enum!
+        type: string
+        enum:
+          - h264
+          - mjpeg
+        description: Camera type
+      snapshot:
+        x-$ref: '#/definitions/SnapshotObject'
+      status:
+        type: string
+        enum:
+          - offline
+          - online
+          - unknown
+      live_snapshot:
+        type: ['string', 'null']
+        format: uri
+        description: Live snapshot URL
+      streams:
+        type: array
+        items:
+          $ref: '#/definitions/StreamObject'
+        description: Available camera streams
+      owner:
+        $ref: '#/definitions/OwnerObject'
+    required:
+      - id
+      - name
+      - type
+      - snapshot
+      - status
+      - live_snapshot
+      - streams
+      - owner
+    example:
+      id: 157
+      name: 'Parkside Office'
+      type: 'h264'
+      snapshot:
+        - url:  'https://dsw4ncxjbie85.cloudfront.net/snapshot/81/y8jol6kbn0ol1gh2.jpg'
+          created_at: '2017-03-29T15:41:39Z'
+      status: online
+      live_snapshot: "http://m1.test.angelcam.com/stream/81/snapshot.jpg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c"
+      streams:
+        - format: "mjpeg"
+          url: "http://m1.test.angelcam.com/stream/81/stream.mjpeg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c"
+          refresh_rate: 0.1
+        - format: "mp4"
+          url: "http://m1.test.angelcam.com/stream/81/stream.mp4?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjMxNiwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.b5b4cf405cf054701a75b359f4069d2af8a102c5ffd8f33cbb560a4638c7cb71"
+        - format: "hls"
+          url: "http://m1.test.angelcam.com/stream/81/playlist.m3u8?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjQwMSwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.8ac35b434e768e8f10161b2d74da492f5fd8a8c115c18cbb421017665acd908a"
+      owner:
+        - email: "john@apple.com"
+          first_name: "John"
+          last_name: "Appleseed"
 
   SnapshotObject:
     type: object
@@ -772,6 +977,15 @@ parameters:
     type: integer
     minimum: 1
     x-example: 3
+    required: true
+    description: Camera ID.
+
+  sharedCameraId:
+    name: camera_id
+    in: path
+    type: integer
+    minimum: 1
+    x-example: 21
     required: true
     description: Camera ID.
 
