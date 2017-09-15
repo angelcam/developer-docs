@@ -171,14 +171,14 @@ paths:
           format: date-time
           required: true
           description: 'Start time of a timeline. Example: `2016-03-19T08:00:00Z`.'
-          x-example: 2017-01-01T00:00:00Z
+          x-example: '2017-01-01T00:00:00Z'
         - name: end
           in: query
           type: string
           format: date-time
           required: true
           description: 'End time of a timeline. Example: `2016-03-19T14:00:00Z.`'
-          x-example: 2017-01-01T00:00:00Z
+          x-example: '2017-01-01T00:00:00Z'
       responses:
         '200':
           description: OK
@@ -204,7 +204,7 @@ paths:
           format: date-time
           required: true
           description: 'Start time of a stream. Example: `2016-03-19T08:00:00Z`.'
-          x-example: 2017-01-01T00:00:00Z
+          x-example: '2017-01-01T00:00:00Z'
         - name: end
           in: query
           type: string
@@ -213,7 +213,7 @@ paths:
           description: >
             End time of a stream. If missing, stream will play till the very end of recorded footage.
             Example: `2016-03-19T14:00:00Z.`
-          x-example: 2017-01-01T00:00:00Z
+          x-example: '2017-01-01T00:00:00Z'
       responses:
         '200':
           description: OK
@@ -591,7 +591,7 @@ definitions:
       name: 'Parkside Office'
       type: 'h264'
       snapshot:
-        - url:  'https://dsw4ncxjbie85.cloudfront.net/snapshot/81/y8jol6kbn0ol1gh2.jpg'
+          url:  'https://dsw4ncxjbie85.cloudfront.net/snapshot/81/y8jol6kbn0ol1gh2.jpg'
           created_at: '2017-03-29T15:41:39Z'
       status: online
       live_snapshot: "http://m1.test.angelcam.com/stream/81/snapshot.jpg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c"
@@ -657,7 +657,7 @@ definitions:
       name: 'Parkside Office'
       type: 'h264'
       snapshot:
-        - url:  'https://dsw4ncxjbie85.cloudfront.net/snapshot/81/y8jol6kbn0ol1gh2.jpg'
+          url:  'https://dsw4ncxjbie85.cloudfront.net/snapshot/81/y8jol6kbn0ol1gh2.jpg'
           created_at: '2017-03-29T15:41:39Z'
       status: online
       live_snapshot: "http://m1.test.angelcam.com/stream/81/snapshot.jpg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c"
@@ -670,7 +670,7 @@ definitions:
         - format: "hls"
           url: "http://m1.test.angelcam.com/stream/81/playlist.m3u8?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjQwMSwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.8ac35b434e768e8f10161b2d74da492f5fd8a8c115c18cbb421017665acd908a"
       owner:
-        - email: "john@apple.com"
+          email: "john@apple.com"
           first_name: "John"
           last_name: "Appleseed"
 
