@@ -13,7 +13,7 @@ pipeline {
     stage('Deploy stack to Swarm test') {
       when { branch 'develop' }
         steps {
-          sh '${SWARM_TEST} stack deploy --prune -c stacks/develop-stack.yml ${STACK}'
+          sh '${SWARM_TEST} stack deploy --prune -c ci/deploy/develop-stack.yml ${STACK}'
     }}
     stage('Deploy stack to Swarm production?') {
       when { branch 'master' }
