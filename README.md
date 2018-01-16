@@ -55,7 +55,9 @@ If you experience network problems, try dial-up VPN.
 
 Test environment (developers.test.angelcam.com):
 
-    cd ci/deploy && ansible-playbook -i inventory/test deploy.yml
+ push repo to bitbucket, Jenkins will deploy develop-stack.yml to swarm-test
+ or when you are connected to swam-test: `docker stack deploy -c ci/deploy/develop-stack.yml developer-docs`
+
 
 Production (developers.angelcam.com):
 
