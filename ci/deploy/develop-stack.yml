@@ -3,8 +3,8 @@ version: "3.4"
 services:
 
   web:
-    image: angelcam/developer-docs
-    hostname: '{{ index .Service.Labels "com.angelcam.name" }}-{{ index .Service.Labels "com.angelcam.env" }}-{{ .Node.ID }}'
+    image: angelcam/developer-docs:latest
+    hostname: '{{ index .Service.Labels "com.angelcam.name" }}-{{ index .Service.Labels "com.angelcam.env" }}-{{ .Node.Hostname }}'
     deploy:
       replicas: 2
       placement:
