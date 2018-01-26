@@ -3,7 +3,7 @@ version: "3.4"
 services:
 
   web:
-    image: angelcam/developer-docs:latest
+    image: angelcam/developer-docs:${TAG}
     hostname: '{{ index .Service.Labels "com.angelcam.name" }}-{{ index .Service.Labels "com.angelcam.env" }}-{{ .Node.Hostname }}'
     deploy:
       replicas: 2
