@@ -6,7 +6,7 @@ pipeline {
     PATH = '${PATH}:/bin:/usr/bin' // Environment for PATH must be set until Jenkins resolves: https://issues.jenkins-ci.org/browse/JENKINS-41339
     SWARM_TEST = 'docker -H localhost:2374' // SSH tunnel to one of the Swarm test Manager nodes.
     SWARM_PROD = '' // SSH tunnel to one of the Swarm test Manager nodes.
-    DOCKER_REPO = angelcam
+    DOCKER_REPO = 'angelcam'
     APP = 'developer-docs'
     STACK = '${APP}'
     }
