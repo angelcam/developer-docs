@@ -7,7 +7,7 @@ pipeline {
     SWARM_TEST = 'docker -H localhost:2374' // SSH tunnel to one of the Swarm test Manager nodes.
     SWARM_PROD = '' // SSH tunnel to one of the Swarm test Manager nodes.
     DOCKER_REPO = angelcam
-    APP = developer-docs
+    APP = 'developer-docs'
     STACK = '${APP}'
     }
 
