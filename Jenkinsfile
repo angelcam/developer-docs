@@ -11,20 +11,20 @@ pipeline {
 
   stages {
 
-//    stage('Build docker image') {
-//      steps {
-//        sh 'docker build -t $DOCKER_REPO/$APP:$(git rev-parse HEAD) .'
-//    }}
+    stage('Build docker image') {
+      steps {
+        sh 'docker build -t $DOCKER_REPO/$APP:$(git rev-parse HEAD) .'
+    }}
 
-//    stage('Inspect image') {
-//      steps {
-//        sh 'docker inspect $DOCKER_REPO/$APP:$(git rev-parse HEAD)'
-//    }}
+    stage('Inspect image') {
+      steps {
+        sh 'docker inspect $DOCKER_REPO/$APP:$(git rev-parse HEAD)'
+    }}
 
-//    stage('Publish image to Docker Repository') {
-//      steps {
-//        sh 'docker push $DOCKER_REPO/$APP:$(git rev-parse HEAD)'
-//    }}
+    stage('Publish image to Docker Repository') {
+      steps {
+        sh 'docker push $DOCKER_REPO/$APP:$(git rev-parse HEAD)'
+    }}
 
     stage('Deploy stack to Swarm test') {
       when { branch 'develop' }
