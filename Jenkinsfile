@@ -8,7 +8,7 @@ pipeline {
     SWARM_PROD = '' // SSH tunnel to one of the Swarm test Manager nodes.
     DOCKER_REPO = 'angelcam'
     APP = 'developer-docs'
-    STACK = '${APP}'
+    STACK = "${APP}"
     }
 
   stages {
