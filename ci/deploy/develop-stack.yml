@@ -4,7 +4,7 @@ services:
 
   web:
     image: angelcam/developer-docs:${TAG}
-    hostname: '{{ index .Service.Labels "com.angelcam.name" }}-{{ index .Service.Labels "com.angelcam.env" }}-{{ .Node.Hostname }}'
+    hostname: 'developer-docs-test-{{ .Node.Hostname }}'
     deploy:
       replicas: 2
       placement:
