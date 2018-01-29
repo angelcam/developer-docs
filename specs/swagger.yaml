@@ -19,6 +19,10 @@ tags:
     description: User resource
   - name: camera
     description: Camera resource
+  - name: camera-guest
+    description: Camera guest resource
+  - name: shared-camera
+    description: Shared camera resource
   - name: recording
     description: Recording resource
   - name: event
@@ -34,10 +38,8 @@ securityDefinitions:
     authorizationUrl: https://api.test.angelcam.com/oauth/authorize/
     tokenUrl: https://api.test.angelcam.com/oauth/token/
     scopes:
-      read: API supports read only operations
-
-security:
-  - OAuth2: [read]
+      read: Grants read access
+      write: Grants write access
 
 paths:
   /me/:
@@ -45,6 +47,8 @@ paths:
       summary: Current user info
       tags:
         - user
+      security:
+        - OAuth2: [read]
       responses:
         '200':
           description: OK
@@ -90,13 +94,15 @@ paths:
           minimum: 1
           required: false
           description: 'Maximum height of MJPEG stream and LIVE SNAPSHOT.'
+      security:
+        - OAuth2: [read]
       responses:
         '200':
           description: Returns camera list.
           schema:
             $ref: '#/definitions/CameraListResponse'
         '400':
-          $ref: '#/responses/Error400Invalid'
+          $ref: '#/responses/Error400InvalidParams'
         '401':
           $ref: '#/responses/Error401Unauthorized'
 
@@ -127,13 +133,15 @@ paths:
           minimum: 1
           required: false
           description: 'Maximum height of MJPEG stream and LIVE SNAPSHOT.'
+      security:
+        - OAuth2: [read]
       responses:
         '200':
           description: Camera object
           schema:
             $ref: '#/definitions/CameraObject'
         '400':
-          $ref: '#/responses/Error400Invalid'
+          $ref: '#/responses/Error400InvalidParams'
         '401':
           $ref: '#/responses/Error401Unauthorized'
         '404':
@@ -146,6 +154,8 @@ paths:
         - recording
       parameters:
         - $ref: '#/parameters/cameraId'
+      security:
+        - OAuth2: [read]
       responses:
         '200':
           description: Returns general recording information.
@@ -179,13 +189,15 @@ paths:
           required: true
           description: 'End time of a timeline. Example: `2016-03-19T14:00:00Z.`'
           x-example: '2017-01-01T00:00:00Z'
+      security:
+        - OAuth2: [read]
       responses:
         '200':
           description: OK
           schema:
             $ref: '#/definitions/RecordingTimelineResponse'
         '400':
-          $ref: '#/responses/Error400Invalid'
+          $ref: '#/responses/Error400InvalidParams'
         '401':
           $ref: '#/responses/Error401Unauthorized'
         '404':
@@ -214,23 +226,149 @@ paths:
             End time of a stream. If missing, stream will play till the very end of recorded footage.
             Example: `2016-03-19T14:00:00Z.`
           x-example: '2017-01-01T00:00:00Z'
+      security:
+        - OAuth2: [read]
       responses:
         '200':
           description: OK
           schema:
             $ref: '#/definitions/RecordingStreamResponse'
         '400':
-          $ref: '#/responses/Error400Invalid'
+          $ref: '#/responses/Error400InvalidParams'
         '401':
           $ref: '#/responses/Error401Unauthorized'
         '404':
           $ref: '#/responses/Error404CraNotAdded'
 
+  '/cameras/{camera_id}/guests/':
+    get:
+      summary: Retrieve camera guests list
+      tags:
+      - camera-guest
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - name: limit
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Limit result set. Example: `1`.'
+        - name: offset
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Return results starting at `offset`. Example: `10`.'
+      security:
+        - OAuth2: [read]
+      responses:
+        '200':
+          description: Returns camera guests list.
+          schema:
+            $ref: '#/definitions/CameraGuestListResponse'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+    post:
+      summary: Create camera guest
+      tags:
+      - camera-guest
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - in: body
+          name: guest
+          schema:
+            type: object
+            title: guest
+            required:
+              - email
+            properties:
+              email:
+                type: string
+                format: email
+              permissions:
+                $ref: '#/definitions/CameraGuestPermissionObject'
+      security:
+        - OAuth2: [read,write]
+      responses:
+        '201':
+          description: Created
+          schema:
+            $ref: '#/definitions/CameraGuestObject'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+
+  '/cameras/{camera_id}/guests/{guest_id}/':
+    get:
+      summary: Retrieve camera guest
+      tags:
+        - camera-guest
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - $ref: '#/parameters/guestId'
+      security:
+        - OAuth2: [read]
+      responses:
+        '200':
+          description: Camera guest object
+          schema:
+            $ref: '#/definitions/CameraGuestObject'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+    put:
+      summary: Update camera guest
+      tags:
+      - camera-guest
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - $ref: '#/parameters/guestId'
+        - in: body
+          name: guest
+          schema:
+            type: object
+            title: guest
+            properties:
+              permissions:
+                $ref: '#/definitions/CameraGuestPermissionObject'
+      security:
+        - OAuth2: [read,write]
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CameraGuestObject'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+    delete:
+      summary: Remove camera guest
+      tags:
+        - camera-guest
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - $ref: '#/parameters/guestId'
+      security:
+        - OAuth2: [read,write]
+      responses:
+        '204':
+          description: No content
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '404':
+          $ref: '#/responses/Error404NotFound'
   '/recording/stream/{streamer_name}/{streamer_id}/':
     get:
       summary: Retrieve recording stream info
       tags:
         - recording
+      security:
+        - OAuth2: [read]
       parameters:
         - name: streamer_name
           in: path
@@ -285,15 +423,49 @@ paths:
             minimum: 1
             required: false
             description: 'Return results starting at `offset`. Example: `10`.'
+      security:
+        - OAuth2: [read]
       responses:
         '200':
           description: OK
           schema:
             $ref: '#/definitions/EventListResponse'
         '400':
-          $ref: '#/responses/Error400Invalid'
+          $ref: '#/responses/Error400InvalidParams'
         '401':
           $ref: '#/responses/Error401Unauthorized'
+    post:
+        summary: Create event
+        tags:
+        - event
+        parameters:
+          - in: body
+            name: event
+            schema:
+              type: object
+              title: event
+              required:
+                - hash
+              properties:
+                hash:
+                  type: string
+                  description: 'Event API hash (a unique token for each camera found in My Angelcam dashboard or
+                  obtained via Camera Resource) - used to authenticate the request and pair the event with corresponding camera.'
+                title:
+                  type: string
+              example:
+                hash: "50yxnlu2o2"
+        security: []
+        responses:
+          '201':
+            description: Event was received
+            schema:
+              $ref: '#/definitions/EventObject'
+          '400':
+            description: "The event hash is invalid or there's another error in the request"
+            schema:
+              $ref: '#/definitions/Error400Invalid'
+
 
   '/events/{camera_id}/':
     get:
@@ -327,13 +499,15 @@ paths:
           minimum: 1
           description: 'Return results starting at offset. Example: `10`.'
           required: false
+      security:
+        - OAuth2: [read]
       responses:
         '200':
           description: OK
           schema:
             $ref: '#/definitions/EventListResponse'
         '400':
-          $ref: '#/responses/Error400Invalid'
+          $ref: '#/responses/Error400InvalidParams'
         '401':
           $ref: '#/responses/Error401Unauthorized'
         '404':
@@ -343,7 +517,7 @@ paths:
     get:
       summary: Retrieve shared camera list
       tags:
-      - camera
+      - shared-camera
       parameters:
         - name: limit
           in: query
@@ -377,13 +551,15 @@ paths:
           minimum: 1
           required: false
           description: 'Maximum height of MJPEG stream and LIVE SNAPSHOT.'
+      security:
+        - OAuth2: [read]
       responses:
         '200':
           description: Returns shared camera list.
           schema:
             $ref: '#/definitions/SharedCameraListResponse'
         '400':
-          $ref: '#/responses/Error400Invalid'
+          $ref: '#/responses/Error400InvalidParams'
         '401':
           $ref: '#/responses/Error401Unauthorized'
 
@@ -391,7 +567,7 @@ paths:
     get:
       summary: Retrieve shared camera
       tags:
-        - camera
+        - shared-camera
       parameters:
         - $ref: '#/parameters/sharedCameraId'
         - name: refresh_rate
@@ -414,17 +590,112 @@ paths:
           minimum: 1
           required: false
           description: 'Maximum height of MJPEG stream and LIVE SNAPSHOT.'
+      security:
+        - OAuth2: [read]
       responses:
         '200':
           description: Camera object
           schema:
             $ref: '#/definitions/SharedCameraObject'
         '400':
-          $ref: '#/responses/Error400Invalid'
+          $ref: '#/responses/Error400InvalidParams'
         '401':
           $ref: '#/responses/Error401Unauthorized'
         '404':
           $ref: '#/responses/Error404NotFound'
+
+  '/shared-cameras/{camera_id}/recording/':
+    get:
+      summary: General shared recording information
+      tags:
+        - recording
+      parameters:
+        - $ref: '#/parameters/sharedCameraId'
+      security:
+        - OAuth2: [read]
+      responses:
+        '200':
+          description: Returns general recording information.
+          schema:
+            $ref: '#/definitions/RecordingResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '404':
+          $ref: '#/responses/Error404CraNotAdded'
+
+  '/shared-cameras/{camera_id}/recording/timeline/':
+    get:
+      summary: Retrieve timeline of records for given shared camera
+      tags:
+        - recording
+      description: |
+        Please keep in mind that maximum length of timeline is 1 day.
+      parameters:
+        - $ref: '#/parameters/sharedCameraId'
+        - name: start
+          in: query
+          type: string
+          format: date-time
+          required: true
+          description: 'Start time of a timeline. Example: `2016-03-19T08:00:00Z`.'
+          x-example: '2017-01-01T00:00:00Z'
+        - name: end
+          in: query
+          type: string
+          format: date-time
+          required: true
+          description: 'End time of a timeline. Example: `2016-03-19T14:00:00Z.`'
+          x-example: '2017-01-01T00:00:00Z'
+      security:
+        - OAuth2: [read]
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/RecordingTimelineResponse'
+        '400':
+          $ref: '#/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '404':
+          $ref: '#/responses/Error404CraNotAdded'
+
+  '/shared-cameras/{camera_id}/recording/stream/':
+    get:
+      summary: Create and return recorded stream of shared camera for a specified time
+      tags:
+        - recording
+      parameters:
+        - $ref: '#/parameters/sharedCameraId'
+        - name: start
+          in: query
+          type: string
+          format: date-time
+          required: true
+          description: 'Start time of a stream. Example: `2016-03-19T08:00:00Z`.'
+          x-example: '2017-01-01T00:00:00Z'
+        - name: end
+          in: query
+          type: string
+          format: date-time
+          required: false
+          description: >
+            End time of a stream. If missing, stream will play till the very end of recorded footage.
+            Example: `2016-03-19T14:00:00Z.`
+          x-example: '2017-01-01T00:00:00Z'
+      security:
+        - OAuth2: [read]
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/RecordingStreamResponse'
+        '400':
+          $ref: '#/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '404':
+          $ref: '#/responses/Error404CraNotAdded'
 
 
 definitions:
@@ -506,6 +777,32 @@ definitions:
       - previous
       - results
 
+  CameraGuestListResponse:
+    type: object
+    title: Camera guests list
+    properties:
+      count:
+        type: integer
+        description: Count of all camera guests
+      next:
+        type: ['string','null']
+        format: uri
+        description: Next page from pagination
+      previous:
+        type: ['string','null']
+        format: uri
+        description: Previous page from pagination
+      results:
+        type: array
+        description: List of camera guests
+        items:
+          $ref: '#/definitions/CameraGuestObject'
+    required:
+      - count
+      - next
+      - previous
+      - results
+
   SharedCameraListResponse:
     type: object
     title: Shared Camera list
@@ -564,6 +861,9 @@ definitions:
           - offline
           - online
           - unknown
+      event_api_hash:
+        type: string
+        description: 'Event API hash - unique token for posting events to camera timeline from embedded devices without authentication (do not disclose)'
       live_snapshot:
         type: ['string', 'null']
         format: uri
@@ -607,6 +907,45 @@ definitions:
         - LSA
         - CRA
 
+  CameraGuestObject:
+    type: object
+    title: Guest object
+    properties:
+      id:
+        type: integer
+        description: Guest id
+      first_name:
+        type: ['string', 'null']
+        description: Guest's first or given name.
+      last_name:
+        type: ['string', 'null']
+        description: Guest's last or family name.
+      email:
+        type: string
+        format: email
+        description: Guest's email.
+      permissions:
+        $ref: '#/definitions/CameraGuestPermissionObject'
+    required:
+      - email
+      - permissions
+    example:
+      id: 35
+      first_name: "Saint"
+      last_name: "Michael"
+      email: "michael@angelcam.com"
+      permisions:
+        can_view_rec: true
+
+  CameraGuestPermissionObject:
+    type: object
+    title: Guest permission
+    properties:
+      can_view_rec:
+        type: boolean
+        description: Can view camera recordings
+        x-example: false
+
   SharedCameraObject:
     type: object
     title: Shared camera object
@@ -641,6 +980,10 @@ definitions:
         items:
           $ref: '#/definitions/StreamObject'
         description: Available camera streams
+      applications:
+        type: array
+        items:
+          $ref: '#/definitions/SharedApplicationObject'
       owner:
         $ref: '#/definitions/OwnerObject'
     required:
@@ -651,6 +994,7 @@ definitions:
       - status
       - live_snapshot
       - streams
+      - applications
       - owner
     example:
       id: 157
@@ -669,6 +1013,8 @@ definitions:
           url: "http://m1.test.angelcam.com/stream/81/stream.mp4?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjMxNiwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.b5b4cf405cf054701a75b359f4069d2af8a102c5ffd8f33cbb560a4638c7cb71"
         - format: "hls"
           url: "http://m1.test.angelcam.com/stream/81/playlist.m3u8?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjQwMSwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.8ac35b434e768e8f10161b2d74da492f5fd8a8c115c18cbb421017665acd908a"
+      applications:
+        - CRA
       owner:
           email: "john@apple.com"
           first_name: "John"
@@ -733,6 +1079,18 @@ definitions:
     example:
       code: LSA
 
+  SharedApplicationObject:
+    type: object
+    properties:
+      code:
+        type: string
+        enum:
+          - CRA
+    required:
+      - code
+    example:
+      code: CRA
+
   RecordingResponse:
     type: object
     title: Recording information
@@ -757,7 +1115,7 @@ definitions:
             * `STOPPING` - Recording is stopping
             * `ERROR` - Error occurred when recording (this indicates a possible issue with Angelcam infrastructure)
       retention:
-        type: string
+        type: ['string','null']
         description: >
             Retention period in ISO 8601 duration format tells how long in past we store the footage. Example:
             P7D means 7 days.
@@ -900,16 +1258,14 @@ definitions:
         description: Name of event source
       received_at:
         type: string
-        description: Time when event was occurred or been received by Angelcam
+        description: Time when event occurred or was received by Angelcam
       snapshot:
+        description: Snapshot is created by Angelcam when certain types of events are received
         x-$ref: '#/definitions/SnapshotObject'
-
     required:
       - camera
-      - title
       - source
       - received_at
-      - snapshot
     example:
       camera: 20
       title: Door open
@@ -930,6 +1286,10 @@ definitions:
         type: string
       status:
         type: integer
+    required:
+      - title
+      - detail
+      - status
 
   Error404NotFound:
     allOf:
@@ -950,8 +1310,17 @@ definitions:
       status: 401
 
   Error400Invalid:
-    type: object
+    allOf:
+      - $ref: '#/definitions/ErrorGeneric'
     title: Error 400 Bad Request
+    example:
+      title: invalid
+      detail: Invalid hash
+      status: 400
+
+  Error400InvalidParams:
+    type: object
+    title: Error 400 Invalid Parameters
     properties:
       title:
         type: string
@@ -959,6 +1328,10 @@ definitions:
         type: object
       status:
         type: integer
+    required:
+      - title
+      - detail
+      - status
     example:
       title: invalid
       detail:
@@ -979,6 +1352,15 @@ parameters:
     x-example: 3
     required: true
     description: Camera ID.
+
+  guestId:
+    name: guest_id
+    in: path
+    type: integer
+    minimum: 1
+    x-example: 4
+    required: true
+    description: Guest ID.
 
   sharedCameraId:
     name: camera_id
@@ -1006,6 +1388,11 @@ responses:
       $ref: '#/definitions/Error401Unauthorized'
 
   Error400Invalid:
-    description: Query params are invalid.
+    description: Bad Request
     schema:
       $ref: '#/definitions/Error400Invalid'
+
+  Error400InvalidParams:
+    description: Query params are invalid.
+    schema:
+      $ref: '#/definitions/Error400InvalidParams'
