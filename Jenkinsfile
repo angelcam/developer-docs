@@ -36,7 +36,7 @@ pipeline {
         steps {
           sh '''
 	     export TAG=$(git rev-parse HEAD)
-	     export SWARM_TEST="ssh ${SSH_OPTS} docker@$(${SWARM_TEST_MANAGER}) docker)"
+	     export SWARM_TEST=ssh ${SSH_OPTS} docker@$(${SWARM_TEST_MANAGER}) docker)
 	     ${SWARM_TEST} stack deploy --prune -c ci/deploy/develop-stack.yml ${STACK}
 	     '''
     }}
