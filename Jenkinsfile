@@ -36,7 +36,8 @@ pipeline {
         steps {
           sh '''
 	     export TAG=$(git rev-parse HEAD)
-	     export SWARM_TEST=ssh ${SSH_OPTS} docker@$(${SWARM_TEST_MANAGER}) docker)
+	     export SWARM_TEST_MANAGER=$(aws --profile describe-instances ec2 describe-instances --filters Name=tag:Name,Values=swarm-test-Manager --query=Reservations[0].Instances[0].PublicDnsName)
+	     export SWARM_TEST="ssh ${SSH_OPTS} docker@\$(${SWARM_TEST_MANAGER}) docker"
 	     ${SWARM_TEST} stack deploy --prune -c ci/deploy/develop-stack.yml ${STACK}
 	     '''
     }}
