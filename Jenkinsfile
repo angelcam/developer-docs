@@ -4,7 +4,10 @@ pipeline {
   agent any
   environment {
     PATH = '${PATH}:/bin:/usr/bin' // Environment for PATH must be set until Jenkins resolves: https://issues.jenkins-ci.org/browse/JENKINS-41339
-    SWARM_TEST = 'docker -H localhost:2374' // SSH tunnel to one of the Swarm test Manager nodes.
+    SSH_OPTS = '-oStrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa'
+    SWARM_TEST_MANAGER = "aws --profile describe-instances ec2 describe-instances --filters \"Name=tag:Name,Values=swarm-test-Manager\" --query='Reservations[0].Instances[0].PublicDnsName'"
+    SWARM_PROD_MANAGER = "aws --profile describe-instances ec2 describe-instances --filters \"Name=tag:Name,Values=swarm-prod-Manager\" --query='Reservations[0].Instances[0].PublicDnsName'"
+    SWARM_TEST = "ssh ${SSH_OPTS} docker@${SWARM_TEST_MANAGER} docker" // SSH tunnel to one of the Swarm test Manager nodes.
     SWARM_PROD = '' // SSH tunnel to one of the Swarm test Manager nodes.
     DOCKER_REPO = 'angelcam'
     APP = 'developer-docs'
