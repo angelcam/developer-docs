@@ -34,10 +34,11 @@ pipeline {
     stage('Deploy stack to Swarm test') {
       when { branch 'develop' }
         steps {
-          sh """
+          sh '''
 	     export TAG=$(git rev-parse HEAD)
+	     export SWARM_TEST="ssh ${SSH_OPTS} docker@$(${SWARM_TEST_MANAGER}) docker)
 	     ${SWARM_TEST} stack deploy --prune -c ci/deploy/develop-stack.yml ${STACK}
-	     """
+	     '''
     }}
     stage('Deploy stack to Swarm production?') {
       when { branch 'master' }
