@@ -5,8 +5,8 @@ pipeline {
   environment {
     PATH = '${PATH}:/bin:/usr/bin:/usr/local/bin' // Environment for PATH must be set until Jenkins resolves: https://issues.jenkins-ci.org/browse/JENKINS-41339
     SSH_OPTS = '-oStrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa'
-    SWARM_TEST_MANAGER = 'aws --profile describe-instances ec2 describe-instances --filters Name=tag:Name,Values=swarm-test-Manager --query=Reservations[0].Instances[0].PublicDnsName'
-    SWARM_PROD_MANAGER = 'aws --profile describe-instances ec2 describe-instances --filters Name=tag:Name,Values=swarm-prod-Manager --query=Reservations[0].Instances[0].PublicDnsName'
+    GET_TEST_MANAGER = 'aws --profile describe-instances ec2 describe-instances --filters Name=tag:Name,Values=swarm-test-Manager --query=Reservations[0].Instances[0].PublicDnsName'
+    GET_PROD_MANAGER = 'aws --profile describe-instances ec2 describe-instances --filters Name=tag:Name,Values=swarm-prod-Manager --query=Reservations[0].Instances[0].PublicDnsName'
     SWARM_TEST = "ssh ${SSH_OPTS} docker@\$(${SWARM_TEST_MANAGER}) docker"
     SWARM_PROD = '' // SSH tunnel to one of the Swarm test Manager nodes.
     DOCKER_REPO = 'angelcam'
@@ -18,6 +18,7 @@ pipeline {
 
     stage('Build docker image') {
       steps {
+      	sh 'export testujeme="prase"'
         sh 'docker build -t $DOCKER_REPO/$APP:$(git rev-parse HEAD) .'
     }}
 
@@ -35,9 +36,10 @@ pipeline {
       when { branch 'develop' }
         steps {
           sh '''
+	     echo $testujeme
 	     export TAG=$(git rev-parse HEAD)
-	     export SWARM_TEST_MANAGER=$(aws --output text --profile describe-instances ec2 describe-instances --filters Name=tag:Name,Values=swarm-test-Manager --query=Reservations[0].Instances[0].PublicDnsName)
-	     export SWARM_TEST="ssh ${SSH_OPTS} docker@${SWARM_TEST_MANAGER} docker"
+#	     export SWARM_TEST_MANAGER=$(${GET_TEST_MANAGER})
+#	     export SWARM_TEST="ssh ${SSH_OPTS} docker@${SWARM_TEST_MANAGER} docker"
 	     ${SWARM_TEST} stack deploy --prune -c ci/deploy/develop-stack.yml ${STACK}
 	     '''
     }}
