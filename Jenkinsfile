@@ -7,7 +7,7 @@ pipeline {
     SSH_OPTS = '-oStrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa'
     GET_TEST_MANAGER = 'aws --profile describe-instances ec2 describe-instances --filters Name=tag:Name,Values=swarm-test-Manager --query=Reservations[0].Instances[0].PublicDnsName'
     GET_PROD_MANAGER = 'aws --profile describe-instances ec2 describe-instances --filters Name=tag:Name,Values=swarm-prod-Manager --query=Reservations[0].Instances[0].PublicDnsName'
-    SWARM_TEST = "ssh ${SSH_OPTS} docker@\$(${SWARM_TEST_MANAGER}) docker"
+    SWARM_TEST = "docker -H localhost:2374"
     SWARM_PROD = '' // SSH tunnel to one of the Swarm test Manager nodes.
     DOCKER_REPO = 'angelcam'
     APP = 'developer-docs'
@@ -18,7 +18,6 @@ pipeline {
 
     stage('Build docker image') {
       steps {
-      	sh 'export testujeme="prase"'
         sh 'docker build -t $DOCKER_REPO/$APP:$(git rev-parse HEAD) .'
     }}
 
@@ -36,12 +35,22 @@ pipeline {
       when { branch 'develop' }
         steps {
           sh '''
-	     echo $testujeme
-	     export TAG=$(git rev-parse HEAD)
-#	     export SWARM_TEST_MANAGER=$(${GET_TEST_MANAGER})
-#	     export SWARM_TEST="ssh ${SSH_OPTS} docker@${SWARM_TEST_MANAGER} docker"
-	     ${SWARM_TEST} stack deploy --prune -c ci/deploy/develop-stack.yml ${STACK}
-	     '''
+             export TAG=$(git rev-parse HEAD)
+
+             # Run SSH tunnel if Swarm response fails
+             ${SWARM-TEST} node ls && echo "Connections to Swarm works"
+             if [ $? -ne 0 ]
+              then
+                autossh -f ${SSH_OPTS} docker@\$(${GET_TEST_MANAGER}) -NL localhost:2374:/var/run/docker.sock &
+                ${SWARM-TEST} docker node ls || echo "SWARM DOES NOT WORK"
+             fi
+
+             ${SWARM_TEST} stack deploy --prune -c ci/deploy/develop-stack.yml ${STACK}
+             # Test deployed services
+             for service in $(${SWARM_TEST} stack services --format '{{ .Name }}' ${STACK})
+              do ${SWARM_TEST} service update ${service}
+             done
+          '''
     }}
     stage('Deploy stack to Swarm production?') {
       when { branch 'master' }
