@@ -40,7 +40,7 @@ pipeline {
              # Run SSH tunnel if Swarm response fails
              ${SWARM_TEST} node ls \
              && echo "SSH Tunnel to Swarm works" \
-             || autossh -f ${SSH_OPTS} docker@\$(${GET_TEST_MANAGER}) -NL localhost:2374:/var/run/docker.sock
+             || nohup autossh -f ${SSH_OPTS} docker@\$(${GET_TEST_MANAGER}) -NL localhost:2374:/var/run/docker.sock &
              ${SWARM_TEST} node ls
 
              ${SWARM_TEST} stack deploy --prune -c ci/deploy/develop-stack.yml ${STACK}
