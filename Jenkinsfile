@@ -5,8 +5,8 @@ pipeline {
   environment {
     PATH = '${PATH}:/bin:/usr/bin:/usr/local/bin' // Environment for PATH must be set until Jenkins resolves: https://issues.jenkins-ci.org/browse/JENKINS-41339
     SSH_OPTS = '-oStrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa'
-    GET_TEST_MANAGER = 'aws --profile describe-instances ec2 describe-instances --filters Name=tag:Name,Values=swarm-test-Manager --query=Reservations[0].Instances[0].PublicDnsName'
-    GET_PROD_MANAGER = 'aws --profile describe-instances ec2 describe-instances --filters Name=tag:Name,Values=swarm-prod-Manager --query=Reservations[0].Instances[0].PublicDnsName'
+    GET_TEST_MANAGER = 'aws --output text --profile describe-instances ec2 describe-instances --filters Name=tag:Name,Values=swarm-test-Manager --query=Reservations[0].Instances[0].PublicDnsName'
+    GET_PROD_MANAGER = 'aws --output text --profile describe-instances ec2 describe-instances --filters Name=tag:Name,Values=swarm-prod-Manager --query=Reservations[0].Instances[0].PublicDnsName'
     SWARM_TEST = "docker -H localhost:2374"
     SWARM_PROD = '' // SSH tunnel to one of the Swarm test Manager nodes.
     DOCKER_REPO = 'angelcam'
@@ -38,11 +38,11 @@ pipeline {
              export TAG=$(git rev-parse HEAD)
 
              # Run SSH tunnel if Swarm response fails
-             ${SWARM-TEST} node ls && echo "Connections to Swarm works"
+             ${SWARM_TEST} node ls && echo "Connections to Swarm works"
              if [ $? -ne 0 ]
               then
                 autossh -f ${SSH_OPTS} docker@\$(${GET_TEST_MANAGER}) -NL localhost:2374:/var/run/docker.sock &
-                ${SWARM-TEST} docker node ls || echo "SWARM DOES NOT WORK"
+                ${SWARM_TEST} docker node ls || echo "SWARM DOES NOT WORK"
              fi
 
              ${SWARM_TEST} stack deploy --prune -c ci/deploy/develop-stack.yml ${STACK}
