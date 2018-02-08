@@ -35,20 +35,33 @@ pipeline {
       when { branch 'develop' }
         steps {
           sh '''
+             #!/bin/sh
              export TAG=$(git rev-parse HEAD)
 
-             # Run SSH tunnel if Swarm response fails
-             ${SWARM_TEST} node ls \
-             || echo "Trying to create new ssh tunnel" \
-             && ssh ${SSH_OPTS} docker@\$(${GET_TEST_MANAGER}) -NL localhost:2374:/var/run/docker.sock &
-             ${SWARM_TEST} node ls
+             deploy_stack() {
+               ${SWARM_TEST} stack deploy --prune -c ci/deploy/develop-stack.yml ${STACK} \
+               && echo "Stack deployed to Swarm test"
+             }
 
-             ${SWARM_TEST} stack deploy --prune -c ci/deploy/develop-stack.yml ${STACK}
-             # Test deployed services
-             for service in $(${SWARM_TEST} stack services --format '{{ .Name }}' ${STACK})
-              do ${SWARM_TEST} service update ${service}
-             done
-          '''
+             check_stack() {
+               for service in $(${SWARM_TEST} stack services --format '{{ .Name }}' ${STACK})
+                do ${SWARM_TEST} service update ${service} \
+                && echo "Services seems in good mood."
+               done
+             }
+
+             if ${SWARM_TEST} node ls
+             then
+              echo "Swarm works, Let's deploy Stack!"
+              deploy_stack
+              check_stack
+             else
+              echo "Creating tunnel"
+              ssh -f ${SSH_OPTS} docker@\$(${GET_TEST_MANAGER}) -NL localhost:2374:/var/run/docker.sock
+              deploy_stack
+              check_stack
+             fi
+            '''
     }}
     stage('Deploy stack to Swarm production?') {
       when { branch 'master' }
