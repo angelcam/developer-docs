@@ -38,8 +38,8 @@ pipeline {
              export TAG=$(git rev-parse HEAD)
 
              # Run SSH tunnel if Swarm response fails
-             ${SWARM_TEST} node ls
-             && echo "SSH Tunnel to Swarm works"
+             ${SWARM_TEST} node ls \
+             && echo "SSH Tunnel to Swarm works" \
              || autossh -f ${SSH_OPTS} docker@\$(${GET_TEST_MANAGER}) -NL localhost:2374:/var/run/docker.sock
              ${SWARM_TEST} docker node ls
 
