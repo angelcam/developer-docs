@@ -3,11 +3,6 @@ SortOrder: 200
 
 # Nuts & bolts
 
-## Read-only
-
-The API currently supports read-only operations. To create or modify users, cameras, or camera recordings
-please use our full-fledged [web application](https://my.angelcam.com).
-
 ## Plain JSON
 
 The RESTful API runs over HTTP/1.1 and communicates using plain `application/json`.

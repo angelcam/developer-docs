@@ -1,5 +1,5 @@
 Navigation: Date and time formats
-SortOrder: 700
+SortOrder: 600
 
 # Time and duration formats
 

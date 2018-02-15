@@ -1,5 +1,5 @@
 Navigation: Camera information
-SortOrder: 400
+SortOrder: 300
 
 # Camera information
 

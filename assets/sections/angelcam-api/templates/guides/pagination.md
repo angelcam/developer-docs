@@ -1,5 +1,5 @@
 Navigation: Pagination
-SortOrder: 800
+SortOrder: 700
 
 # Pagination
 

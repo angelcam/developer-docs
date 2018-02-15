@@ -1,12 +1,12 @@
-Navigation: Cloud recording application
-SortOrder: 600
+Navigation: Recording
+SortOrder: 400
 
-# Cloud recording application
+# Recording
 
-![Cloud recording sequence diagram](https://www.lucidchart.com/publicSegments/view/d0b70503-ac78-4e87-b6b8-e74f3cdc7490/image.png)
+![Recording sequence diagram](https://www.lucidchart.com/publicSegments/view/d0b70503-ac78-4e87-b6b8-e74f3cdc7490/image.png)
 
 The Cloud Recording application (CRA) safely stores any content captured by your camera to the cloud. If a camera
-doesn't have the CRA application, all CRA endpoints will return 404. Otherwise, you can start by asking general
+doesn't have the CRA application, all camera recording endpoints will return 404. Otherwise, you can start by asking general
 recording information using the `cameras/{camera_id}/recording/` endpoint.
 
 Most notably, this endpoint tells you whether the camera is currently recording or not (i.e. recording might not have
