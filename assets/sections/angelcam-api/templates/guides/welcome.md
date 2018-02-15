@@ -26,7 +26,7 @@ You will need the client ID as well as the username and password of your Angelca
 client ID is `DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo` and your Angelcam account is `user@example.com` with
 password `secret` the request would be
 
-    $ curl -X POST https://my.angelcam.com/oauth/token/ -d client_id=DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo&grant_type=password&username=user%40example.com&password=secret
+    $ curl -X POST https://my.angelcam.com/oauth/token/ -d "client_id=DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo&grant_type=password&username=user%40example.com&password=secret"
 
 The API response should look like
 
