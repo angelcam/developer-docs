@@ -3,8 +3,11 @@ pipeline {
 
   agent any
   environment {
-    PATH = '${PATH}:/bin:/usr/bin' // Environment for PATH must be set until Jenkins resolves: https://issues.jenkins-ci.org/browse/JENKINS-41339
-    SWARM_TEST = 'docker -H localhost:2374' // SSH tunnel to one of the Swarm test Manager nodes.
+    PATH = '${PATH}:/bin:/usr/bin:/usr/local/bin' // Environment for PATH must be set until Jenkins resolves: https://issues.jenkins-ci.org/browse/JENKINS-41339
+    SSH_OPTS = '-oStrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa'
+    GET_TEST_MANAGER = 'aws --output text --profile describe-instances ec2 describe-instances --filters Name=tag:Name,Values=swarm-test-Manager --query=Reservations[0].Instances[0].PublicDnsName'
+    GET_PROD_MANAGER = 'aws --output text --profile describe-instances ec2 describe-instances --filters Name=tag:Name,Values=swarm-prod-Manager --query=Reservations[0].Instances[0].PublicDnsName'
+    SWARM_TEST = "docker -H localhost:2374"
     SWARM_PROD = '' // SSH tunnel to one of the Swarm test Manager nodes.
     DOCKER_REPO = 'angelcam'
     APP = 'developer-docs'
@@ -32,9 +35,33 @@ pipeline {
       when { branch 'develop' }
         steps {
           sh '''
-	     export TAG=$(git rev-parse HEAD)
-	     ${SWARM_TEST} stack deploy --prune -c ci/deploy/develop-stack.yml ${STACK}
-	     '''
+             #!/bin/sh
+             export TAG=$(git rev-parse HEAD)
+
+             deploy_stack() {
+               ${SWARM_TEST} stack deploy --prune -c ci/deploy/develop-stack.yml ${STACK} \
+               && echo "Stack deployed to Swarm test"
+             }
+
+             check_stack() {
+               for service in $(${SWARM_TEST} stack services --format '{{ .Name }}' ${STACK})
+                do ${SWARM_TEST} service update ${service} \
+                && echo "Services seems in good mood."
+               done
+             }
+
+             if ${SWARM_TEST} node ls
+             then
+              echo "Swarm works, Let's deploy Stack!"
+              deploy_stack
+              check_stack
+             else
+              echo "Creating tunnel"
+              ssh -f ${SSH_OPTS} docker@\$(${GET_TEST_MANAGER}) -NL localhost:2374:/var/run/docker.sock
+              deploy_stack
+              check_stack
+             fi
+            '''
     }}
     stage('Deploy stack to Swarm production?') {
       when { branch 'master' }
