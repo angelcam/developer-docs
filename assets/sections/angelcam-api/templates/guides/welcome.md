@@ -24,7 +24,8 @@ authorization, and an authorization grant type.
 
 You will need the client ID as well as the username and password of your Angelcam account. E.g. if your
 client ID is `DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo` and your Angelcam account is `user@example.com` with
-password `secret` the request would be
+password `mypassword` (this is the password you use to login to My Angelcam site; if you were given
+client secret by Angelcam support, you don't need it at the moment) the request would be
 
     $ curl -X POST https://my.angelcam.com/oauth/token/ -d "client_id=DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo&grant_type=password&username=user%40example.com&password=secret"
 
