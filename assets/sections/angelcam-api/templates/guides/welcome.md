@@ -35,7 +35,7 @@ The API response should look like
 
 ### Verify the authorization worked
 
-    $ curl -H "Authorization: Bearer 1CP9xR6tqpRHzaZxWcFAp3GtkFcXEQ" -X GET "https://api.test.angelcam.com/v1/me/"
+    $ curl -H "Authorization: Bearer 1CP9xR6tqpRHzaZxWcFAp3GtkFcXEQ" -X GET "https://api.angelcam.com/v1/me/"
 
 You should see information about your account
 
