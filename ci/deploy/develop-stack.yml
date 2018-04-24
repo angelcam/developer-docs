@@ -6,7 +6,7 @@ services:
     image: angelcam/developer-docs:${TAG}
     hostname: 'developer-docs-test-{{ .Node.Hostname }}'
     deploy:
-      replicas: 1
+      replicas: 2
       placement:
         constraints:
           - node.role == worker
