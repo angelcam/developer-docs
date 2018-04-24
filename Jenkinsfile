@@ -16,8 +16,8 @@ pipeline {
   stages {
 
     stage('Build, inspect and push (commit, develop) docker image') {
+      when { branch 'develop' }
       steps {
-        when { branch 'develop' }
         sh '''
         docker build -t $DOCKER_REPO/$APP:${GIT_COMMIT} -t $DOCKER_REPO/$APP:develop .
         docker inspect $DOCKER_REPO/$APP:${GIT_COMMIT}
@@ -27,8 +27,8 @@ pipeline {
     }}
 
     stage('Build, inspect and push (commit, latest) docker image') {
+      when { branch 'master' }
       steps {
-        when { branch 'master' }
         sh '''
         docker build -t $DOCKER_REPO/$APP:${GIT_COMMIT} -t $DOCKER_REPO/$APP:latest .
         docker inspect $DOCKER_REPO/$APP:${GIT_COMMIT}
