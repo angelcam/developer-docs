@@ -2,6 +2,11 @@
 pipeline {
 
   agent any
+
+  options {
+    ansiColor('xterm')
+  }
+
   environment {
     PATH = '${PATH}:/bin:/usr/bin:/usr/local/bin' // Environment for PATH must be set until Jenkins resolves: https://issues.jenkins-ci.org/browse/JENKINS-41339
     SSH_OPTS = '-oStrictHostKeyChecking=no -i /var/lib/jenkins/.ssh/id_rsa'
@@ -16,19 +21,14 @@ pipeline {
 
   stages {
 
-    stage('Build docker image') {
+    stage('Build, inspect and push (commit, develop) docker image') {
       steps {
-        sh 'docker build -t $DOCKER_REPO/$APP:$(git rev-parse HEAD) .'
-    }}
-
-    stage('Inspect image') {
-      steps {
-        sh 'docker inspect $DOCKER_REPO/$APP:$(git rev-parse HEAD)'
-    }}
-
-    stage('Publish image to Docker Repository') {
-      steps {
-        sh 'docker push $DOCKER_REPO/$APP:$(git rev-parse HEAD)'
+        sh '''
+        docker build -t $DOCKER_REPO/$APP:${GIT_COMMIT} -t $DOCKER_REPO/$APP:develop .
+        docker inspect $DOCKER_REPO/$APP:${GIT_COMMIT}
+        docker push $DOCKER_REPO/$APP:${GIT_COMMIT}
+        docker push $DOCKER_REPO/$APP:develop
+        '''
     }}
 
     stage('Deploy stack to Swarm test') {
@@ -45,7 +45,7 @@ pipeline {
 
              check_stack() {
                for service in $(${SWARM_TEST} stack services --format '{{ .Name }}' ${STACK})
-                do ${SWARM_TEST} service update ${service} \
+                do ${SWARM_TEST} service update -q ${service} \
                 && echo "Services seems in good mood."
                done
              }
@@ -63,8 +63,11 @@ pipeline {
              fi
             '''
     }}
-    stage('Deploy stack to Swarm production?') {
+    stage('Deploy stack to Docker production?') {
       when { branch 'master' }
         steps {
-          sh 'echo "I will be big boy one day and i will deploy to production then"'
+          ansiblePlaybook(
+            inventory: 'ci/deploy/prod',
+            playbook: 'ci/deploy/deploy.yml'
+          )
      }}}}

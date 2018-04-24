@@ -1,4 +1,4 @@
-dck2-prod-us-west-2.acnet.us
+dck-prod-eu-central-1.acnet.us
 
 [all:vars]
 virtual_host=developers.angelcam.com
