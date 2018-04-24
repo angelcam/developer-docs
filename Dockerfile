@@ -1,4 +1,4 @@
-FROM angelcam/dapperdox
+FROM bircow/dapperdox:1.1.1
 
 # Customize your assets or specs dir names
 COPY assets/ $ASSETS_DIR
