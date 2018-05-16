@@ -1,0 +1,14 @@
+type: object
+properties:
+  code:
+    type: string
+    enum:
+      - LSA
+      - CRA
+      - VVA
+      - VPA
+      - TLA
+required:
+  - code
+example:
+  code: LSA

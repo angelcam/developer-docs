@@ -1,0 +1,9 @@
+type: object
+title: Recording stream information
+properties:
+  current_time:
+    type: string
+    format: date-time
+    description: Current time in a stream.
+example:
+  current_time: '2017-01-01T00:00:00Z'

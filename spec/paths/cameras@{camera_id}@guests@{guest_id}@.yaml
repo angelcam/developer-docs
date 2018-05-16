@@ -1,0 +1,66 @@
+get:
+  operationId: my-cameras-guest
+  summary: Retrieve camera guest
+  tags:
+    - camera-guest
+  parameters:
+    - $ref: '#/parameters/cameraId'
+    - $ref: '#/parameters/guestId'
+  security:
+    - OAuth2-accessCode: [read]
+    - OAuth2-passwordGrant: [read]
+  responses:
+    '200':
+      description: Camera guest object
+      schema:
+        $ref: '#/definitions/CameraGuestObject'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '404':
+      $ref: '#/responses/Error404NotFound'
+put:
+  operationId: my-cameras-guest-update
+  summary: Update camera guest
+  tags:
+  - camera-guest
+  parameters:
+    - $ref: '#/parameters/cameraId'
+    - $ref: '#/parameters/guestId'
+    - in: body
+      name: guest
+      schema:
+        type: object
+        title: guest
+        properties:
+          permissions:
+            $ref: '#/definitions/CameraGuestPermissionObject'
+  security:
+    - OAuth2-accessCode: [read,write]
+    - OAuth2-passwordGrant: [read,write]
+  responses:
+    '200':
+      description: OK
+      schema:
+        $ref: '#/definitions/CameraGuestObject'
+    '404':
+      $ref: '#/responses/Error404NotFound'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+delete:
+  operationId: my-cameras-guest-remove
+  summary: Remove camera guest
+  tags:
+    - camera-guest
+  parameters:
+    - $ref: '#/parameters/cameraId'
+    - $ref: '#/parameters/guestId'
+  security:
+    - OAuth2-accessCode: [read,write]
+    - OAuth2-passwordGrant: [read,write]
+  responses:
+    '204':
+      description: No content
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '404':
+      $ref: '#/responses/Error404NotFound'

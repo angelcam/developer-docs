@@ -1,0 +1,21 @@
+get:
+      operationId: my-cameras-clips-detail
+      summary: Retrieve a single clip
+      tags:
+        - clip
+      description: 'Retrieves the details of a recording clip'
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - $ref: '#/parameters/clipId'
+      security:
+        - OAuth2-accessCode: [read]
+        - OAuth2-passwordGrant: [read]
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ClipObject'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '404':
+          $ref: '#/responses/Error404NotFound'

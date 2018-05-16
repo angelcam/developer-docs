@@ -1,0 +1,1 @@
+curl -d '{"hash": "50yxnlu2o2"}' -H "Accept: application/json" -H "Content-Type: application/json" -X POST "https://api.angelcam.com/v1/events/"

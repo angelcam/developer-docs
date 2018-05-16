@@ -1,0 +1,11 @@
+{
+  "generator-openapi-repo": {
+    "importExistingSpec": true,
+    "importedSpec": "./specs/swagger.yaml",
+    "name": "Angelcam",
+    "repo": "angelcam/developer-docs",
+    "splitSpec": true,
+    "samples": true,
+    "installSwaggerUI": true
+  }
+}

@@ -1,0 +1,7 @@
+type: object
+title: Guest permission
+properties:
+  can_view_rec:
+    type: boolean
+    description: Can view camera recordings
+    x-example: false

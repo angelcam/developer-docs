@@ -1,0 +1,1 @@
+curl -d '{"name": "Frontdoor loitering", "start": "2017-01-01T00:00:00.000Z", "end": "2017-01-01T00:25:00.000Z"}' -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer {access_token}" -X POST "https://api.angelcam.com/v1/cameras/{camera_id}/clips/"

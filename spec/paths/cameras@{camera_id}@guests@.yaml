@@ -1,0 +1,63 @@
+get:
+  operationId: my-cameras-guests
+  summary: Retrieve camera guests list
+  tags:
+  - camera-guest
+  parameters:
+    - $ref: '#/parameters/cameraId'
+    - name: limit
+      in: query
+      type: integer
+      minimum: 1
+      required: false
+      description: 'Limit result set. Example: `1`.'
+    - name: offset
+      in: query
+      type: integer
+      minimum: 1
+      required: false
+      description: 'Return results starting at `offset`. Example: `10`.'
+  security:
+    - OAuth2-accessCode: [read]
+    - OAuth2-passwordGrant: [read]
+  responses:
+    '200':
+      description: Returns camera guests list.
+      schema:
+        $ref: '#/definitions/CameraGuestListResponse'
+    '404':
+      $ref: '#/responses/Error404NotFound'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+post:
+  operationId: my-cameras-guest-create
+  summary: Create camera guest
+  tags:
+  - camera-guest
+  parameters:
+    - $ref: '#/parameters/cameraId'
+    - in: body
+      name: guest
+      schema:
+        type: object
+        title: guest
+        required:
+          - email
+        properties:
+          email:
+            type: string
+            format: email
+          permissions:
+            $ref: '#/definitions/CameraGuestPermissionObject'
+  security:
+    - OAuth2-accessCode: [read,write]
+    - OAuth2-passwordGrant: [read,write]
+  responses:
+    '201':
+      description: Created
+      schema:
+        $ref: '#/definitions/CameraGuestObject'
+    '404':
+      $ref: '#/responses/Error404NotFound'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'

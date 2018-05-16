@@ -1,0 +1,22 @@
+type: object
+properties:
+  url:
+    type: string
+    format: uri
+    description: Stream URL
+  format:
+    type: string
+    enum:
+      - hls
+      - fmp4
+      - mjpeg
+  refresh_rate:
+    type: number
+    format: float
+    description: Stream refresh rate
+required:
+  - url
+  - format
+example:
+  url: 'http://m2-eu1.angelcam.com/stream/157/stream.mjpeg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE4Mjc3OCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiMTU3In0%3D.d365e2a6fbdfae0bfa5b27175a6ea57de1ae31844fdcd22ff5f56da10a970d65'
+  format: 'mjpeg'

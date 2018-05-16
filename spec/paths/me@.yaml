@@ -1,0 +1,15 @@
+get:
+  operationId: me
+  summary: Current user info
+  tags:
+    - user
+  security:
+    - OAuth2-accessCode: [read]
+    - OAuth2-passwordGrant: [read]
+  responses:
+    '200':
+      description: OK
+      schema:
+        $ref: '#/definitions/UserMeResponse'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'

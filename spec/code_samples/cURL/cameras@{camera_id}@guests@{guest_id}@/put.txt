@@ -1,0 +1,1 @@
+curl -d '{"permissions": {"can_view_rec": true}' -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer {access_token}" -X PUT "https://api.angelcam.com/v1/cameras/{camera_id}/guests/{guest_id}"

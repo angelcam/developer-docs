@@ -1,0 +1,29 @@
+type: object
+title: User object
+properties:
+  id:
+    type: integer
+    minimum: 0
+    description: User ID.
+  first_name:
+    type: string
+    description: User's first or given name.
+  last_name:
+    type: string
+    description: User's last or family name.
+  email:
+    type: string
+    format: email
+    description: User's email.
+  phone:
+    type: ['string','null']
+    description: User's phone.
+required:
+  - id
+  - email
+example:
+  id: 2929
+  first_name: "John"
+  last_name: "Appleseed"
+  email: "john@apple.com"
+  phone: "+123 558 951 14"

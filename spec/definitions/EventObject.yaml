@@ -1,0 +1,30 @@
+type: object
+title: Event object
+properties:
+  camera:
+    type: integer
+    minimum: 1
+    description: Camera ID
+  title:
+    type: string
+    description: Event title
+  source:
+    type: string
+    description: Name of event source
+  received_at:
+    type: string
+    description: Time when event occurred or was received by Angelcam
+  snapshot:
+    $ref: '#/definitions/SnapshotObject'
+required:
+  - camera
+  - source
+  - received_at
+example:
+  camera: 20
+  title: Door open
+  source: IFTTT
+  received: '2017-01-01T00:00:16Z'
+  snapshot:
+    - url:  'https://dsw4ncxjbie85.cloudfront.net/snapshot/81/y8jol6kbn0ol1gh2.jpg'
+      created_at: '2017-01-01T00:00:20'

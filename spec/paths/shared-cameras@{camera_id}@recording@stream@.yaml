@@ -1,0 +1,38 @@
+get:
+      operationId: shared-cameras-recordings-stream
+      summary: Retrieve recording stream for shared camera
+      description: Create and return recorded stream of shared camera for a specified time
+      tags:
+        - shared-camera-recording
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - name: start
+          in: query
+          type: string
+          format: date-time
+          required: true
+          description: 'Start time of a stream. Example: `2016-03-19T08:00:00Z`.'
+          x-example: '2017-01-01T00:00:00Z'
+        - name: end
+          in: query
+          type: string
+          format: date-time
+          required: false
+          description: >
+            End time of a stream. If missing, stream will play till the very end of recorded footage.
+            Example: `2016-03-19T14:00:00Z.`
+          x-example: '2017-01-01T00:00:00Z'
+      security:
+        - OAuth2-accessCode: [read]
+        - OAuth2-passwordGrant: [read]
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/RecordingStreamResponse'
+        '400':
+          $ref: '#/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '404':
+          $ref: '#/responses/Error404NotFound'

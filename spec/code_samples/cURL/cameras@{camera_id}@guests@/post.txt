@@ -1,0 +1,1 @@
+curl -d '{"email": "user@example.com", "permissions": {"can_view_rec": true}}' -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer {access_token}" -X POST "https://api.angelcam.com/v1/cameras/{camera_id}/guests/"

@@ -1,0 +1,13 @@
+type: object
+title: Error object
+properties:
+  title:
+    type: string
+  detail:
+    type: string
+  status:
+    type: integer
+required:
+  - title
+  - detail
+  - status

@@ -1,0 +1,30 @@
+get:
+      operationId: my-cameras-recordings-stream-info
+      summary: Retrieve recording stream info
+      tags:
+        - recording
+      security:
+        - OAuth2-accessCode: [read]
+        - OAuth2-passwordGrant: [read]
+      parameters:
+        - name: streamer_name
+          in: path
+          type: string
+          required: true
+          description: Streamer server name.
+          x-example: rec-streamer-eu-central-1
+        - name: streamer_id
+          in: path
+          type: string
+          required: true
+          description: Stream ID.
+          x-example: 61c59a859e9244a19713fdfec6e50184
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/RecordingStreamInfoResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '404':
+          $ref: '#/responses/Error404NotFound'

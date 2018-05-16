@@ -1,0 +1,19 @@
+get:
+      operationId: shared-cameras-recordings-info
+      summary: General shared recording information
+      tags:
+        - shared-camera-recording
+      parameters:
+        - $ref: '#/parameters/cameraId'
+      security:
+        - OAuth2-accessCode: [read]
+        - OAuth2-passwordGrant: [read]
+      responses:
+        '200':
+          description: Returns general recording information.
+          schema:
+            $ref: '#/definitions/RecordingResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '404':
+          $ref: '#/responses/Error404NotFound'

@@ -1,0 +1,37 @@
+type: object
+title: Event list
+properties:
+  count:
+    type: integer
+    minimum: 0
+    description: Count of all events
+  next:
+    type: ['string','null']
+    format: uri
+    description: Next page from pagination
+  previous:
+    type: ['string','null']
+    format: uri
+    description: Previous page from pagination
+  results:
+    type: array
+    description: List of events owned by the user
+    items:
+      $ref: '#/definitions/EventObject'
+required:
+  - count
+  - next
+  - previous
+  - results
+example:
+  count: 10
+  next: 'https://api.angelcam.com/v1/events/?limit=10&offset=10'
+  previous: 'https://api.angelcam.com/v1/events/?limit=10&offset=0'
+  results:
+    - camera: 20
+      title: Door open
+      source: IFTTT
+      received: '2017-01-01T00:00:16Z'
+      snapshot:
+        - url:  'https://dsw4ncxjbie85.cloudfront.net/snapshot/81/y8jol6kbn0ol1gh2.jpg'
+          created_at: '2017-01-01T00:00:20'
