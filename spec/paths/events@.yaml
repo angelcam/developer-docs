@@ -46,6 +46,8 @@ post:
     summary: Create event
     tags:
     - event
+    description: 'This endpoint has rate limiting in place. The endpoint will accept at most 10 requests per minute
+      for a given hash (see [Nuts and bolts](#section/Nuts-and-bolts) for more details).'
     parameters:
       - in: body
         name: event
@@ -73,3 +75,7 @@ post:
         description: "The event hash is invalid or there's another error in the request"
         schema:
           $ref: '#/definitions/Error400Invalid'
+      '429':
+        description: The rate limit has been reached
+        schema:
+          $ref: '#/definitions/Error429TooManyRequests'
