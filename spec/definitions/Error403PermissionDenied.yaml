@@ -1,0 +1,7 @@
+allOf:
+  - $ref: '#/definitions/ErrorGeneric'
+title: Error 403 Permission Denied
+example:
+  title: permission_denied
+  detail: You do not have permission to perform this action.
+  status: 403

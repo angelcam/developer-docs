@@ -4,8 +4,10 @@ get:
   tags:
     - user
   security:
-    - OAuth2-accessCode: [read]
-    - OAuth2-passwordGrant: [read]
+    - OAuth2-accessCode:
+        - user_access
+    - OAuth2-passwordGrant:
+        - user_access
   responses:
     '200':
       description: OK
@@ -13,3 +15,5 @@ get:
         $ref: '#/definitions/UserMeResponse'
     '401':
       $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'

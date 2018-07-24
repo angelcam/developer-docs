@@ -2,7 +2,7 @@ get:
   operationId: my-cameras-guests
   summary: Retrieve camera guests list
   tags:
-  - camera-guest
+    - camera-guest
   parameters:
     - $ref: '#/parameters/cameraId'
     - name: limit
@@ -18,22 +18,26 @@ get:
       required: false
       description: 'Return results starting at `offset`. Example: `10`.'
   security:
-    - OAuth2-accessCode: [read]
-    - OAuth2-passwordGrant: [read]
+    - OAuth2-accessCode:
+        - camera_guest_access
+    - OAuth2-passwordGrant:
+        - camera_guest_access
   responses:
     '200':
       description: Returns camera guests list.
       schema:
         $ref: '#/definitions/CameraGuestListResponse'
-    '404':
-      $ref: '#/responses/Error404NotFound'
     '401':
       $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'
 post:
   operationId: my-cameras-guest-create
   summary: Create camera guest
   tags:
-  - camera-guest
+    - camera-guest
   parameters:
     - $ref: '#/parameters/cameraId'
     - in: body
@@ -50,14 +54,18 @@ post:
           permissions:
             $ref: '#/definitions/CameraGuestPermissionObject'
   security:
-    - OAuth2-accessCode: [read,write]
-    - OAuth2-passwordGrant: [read,write]
+    - OAuth2-accessCode:
+        - camera_guest_manage
+    - OAuth2-passwordGrant:
+        - camera_guest_manage
   responses:
     '201':
       description: Created
       schema:
         $ref: '#/definitions/CameraGuestObject'
-    '404':
-      $ref: '#/responses/Error404NotFound'
     '401':
       $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'

@@ -1,19 +1,23 @@
 get:
-      operationId: my-cameras-recording-info
-      summary: General recording information
-      tags:
-        - recording
-      parameters:
-        - $ref: '#/parameters/cameraId'
-      security:
-        - OAuth2-accessCode: [read]
-        - OAuth2-passwordGrant: [read]
-      responses:
-        '200':
-          description: Returns general recording information.
-          schema:
-            $ref: '#/definitions/RecordingResponse'
-        '401':
-          $ref: '#/responses/Error401Unauthorized'
-        '404':
-          $ref: '#/responses/Error404NotFound'
+  operationId: my-cameras-recording-info
+  summary: General recording information
+  tags:
+    - recording
+  parameters:
+    - $ref: '#/parameters/cameraId'
+  security:
+    - OAuth2-accessCode:
+        - recording_access
+    - OAuth2-passwordGrant:
+        - recording_access
+  responses:
+    '200':
+      description: Returns general recording information.
+      schema:
+        $ref: '#/definitions/RecordingResponse'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'

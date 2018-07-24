@@ -1,41 +1,47 @@
 get:
-      operationId: shared-cameras-detail
-      summary: Retrieve shared camera
-      tags:
-        - shared-camera
-      parameters:
-        - $ref: '#/parameters/cameraId'
-        - name: refresh_rate
-          in: query
-          type: number
-          format: float
-          minimum: 1
-          required: false
-          description: 'Set a maximum number of keyframes sent in MJPEG stream per second. For example if you want to
-          have MJPEG stream with keyframe sent every 10 seconds, post value 0.1.'
-        - name: max_width
-          in: query
-          type: integer
-          minimum: 1
-          required: false
-          description: 'Maximum width of MJPEG stream and LIVE SNAPSHOT.'
-        - name: max_height
-          in: query
-          type: integer
-          minimum: 1
-          required: false
-          description: 'Maximum height of MJPEG stream and LIVE SNAPSHOT.'
-      security:
-        - OAuth2-accessCode: [read]
-        - OAuth2-passwordGrant: [read]
-      responses:
-        '200':
-          description: Camera object
-          schema:
-            $ref: '#/definitions/SharedCameraObject'
-        '400':
-          $ref: '#/responses/Error400InvalidParams'
-        '401':
-          $ref: '#/responses/Error401Unauthorized'
-        '404':
-          $ref: '#/responses/Error404NotFound'
+  operationId: shared-cameras-detail
+  summary: Retrieve shared camera
+  tags:
+    - shared-camera
+  parameters:
+    - $ref: '#/parameters/sharedCameraId'
+    - name: refresh_rate
+      in: query
+      type: number
+      format: float
+      minimum: 0
+      required: false
+      description: >-
+        Set a maximum number of keyframes sent in MJPEG stream per second. For
+        example if you want to have MJPEG stream with keyframe sent every 10
+        seconds, post value 0.1.
+    - name: max_width
+      in: query
+      type: integer
+      minimum: 1
+      required: false
+      description: Maximum width of MJPEG stream and LIVE SNAPSHOT.
+    - name: max_height
+      in: query
+      type: integer
+      minimum: 1
+      required: false
+      description: Maximum height of MJPEG stream and LIVE SNAPSHOT.
+  security:
+    - OAuth2-accessCode:
+        - camera_access
+    - OAuth2-passwordGrant:
+        - camera_access
+  responses:
+    '200':
+      description: Camera object
+      schema:
+        $ref: '#/definitions/SharedCameraObject'
+    '400':
+      $ref: '#/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'

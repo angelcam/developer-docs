@@ -1,8 +1,8 @@
-type: object
+type: ['object','null']
 title: Snapshot object
 properties:
   url:
-    type: string
+    type: ['string','null']
     format: uri
     description: URL of the snapshot image
   created_at:

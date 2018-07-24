@@ -5,33 +5,35 @@ get:
     - event
   description: Retrieves the list of events for the current user
   parameters:
-      - name: start
-        in: query
-        type: string
-        format: date-time
-        required: false
-        description: 'Example: `2017-03-07T14:00:00Z`.'
-      - name: end
-        in: query
-        type: string
-        format: date-time
-        required: false
-        description: 'Example: `2017-03-08T14:00:00Z`.'
-      - name: limit
-        in: query
-        type: integer
-        minimum: 1
-        required: false
-        description: 'Limit result set. Example: `1`.'
-      - name: offset
-        in: query
-        type: integer
-        minimum: 1
-        required: false
-        description: 'Return results starting at `offset`. Example: `10`.'
+    - name: start
+      in: query
+      type: string
+      format: date-time
+      required: false
+      description: 'Example: `2017-03-07T14:00:00Z`.'
+    - name: end
+      in: query
+      type: string
+      format: date-time
+      required: false
+      description: 'Example: `2017-03-08T14:00:00Z`.'
+    - name: limit
+      in: query
+      type: integer
+      minimum: 1
+      required: false
+      description: 'Limit result set. Example: `1`.'
+    - name: offset
+      in: query
+      type: integer
+      minimum: 1
+      required: false
+      description: 'Return results starting at `offset`. Example: `10`.'
   security:
-    - OAuth2-accessCode: [read]
-    - OAuth2-passwordGrant: [read]
+    - OAuth2-accessCode:
+        - event_access
+    - OAuth2-passwordGrant:
+        - event_access
   responses:
     '200':
       description: OK
@@ -41,35 +43,40 @@ get:
       $ref: '#/responses/Error400InvalidParams'
     '401':
       $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
 post:
-    operationId: events-create
-    summary: Create event
-    tags:
+  operationId: events-create
+  summary: Create event
+  tags:
     - event
-    parameters:
-      - in: body
-        name: event
-        schema:
-          type: object
-          title: event
-          required:
-            - hash
-          properties:
-            hash:
-              type: string
-              description: 'Event API hash (a unique token for each camera found in My Angelcam dashboard or
-              obtained via Camera Resource) - used to authenticate the request and pair the event with corresponding camera.'
-            title:
-              type: string
-          example:
-            hash: "50yxnlu2o2"
-    security: []
-    responses:
-      '201':
-        description: Event was received
-        schema:
-          $ref: '#/definitions/EventObject'
-      '400':
-        description: "The event hash is invalid or there's another error in the request"
-        schema:
-          $ref: '#/definitions/Error400Invalid'
+  parameters:
+    - in: body
+      name: event
+      schema:
+        type: object
+        title: event
+        required:
+          - hash
+        properties:
+          hash:
+            type: string
+            description: >-
+              Event API hash (a unique token for each camera found in My
+              Angelcam dashboard or obtained via Camera Resource) - used to
+              authenticate the request and pair the event with corresponding
+              camera.
+          title:
+            type: string
+        example:
+          hash: 50yxnlu2o2
+  security: []
+  responses:
+    '201':
+      description: Event was received
+      schema:
+        $ref: '#/definitions/EventObject'
+    '400':
+      description: The event hash is invalid or there's another error in the request
+      schema:
+        $ref: '#/definitions/Error400Invalid'

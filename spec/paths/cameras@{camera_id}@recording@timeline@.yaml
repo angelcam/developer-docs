@@ -1,37 +1,41 @@
 get:
-      operationId: my-cameras-recording-timeline
-      summary: Retrieve timeline of records for given camera
-      tags:
-        - recording
-      description: |
-        Please keep in mind that maximum length of timeline is 1 day.
-      parameters:
-        - $ref: '#/parameters/cameraId'
-        - name: start
-          in: query
-          type: string
-          format: date-time
-          required: true
-          description: 'Start time of a timeline. Example: `2016-03-19T08:00:00Z`.'
-          x-example: '2017-01-01T00:00:00Z'
-        - name: end
-          in: query
-          type: string
-          format: date-time
-          required: true
-          description: 'End time of a timeline. Example: `2016-03-19T14:00:00Z.`'
-          x-example: '2017-01-01T00:00:00Z'
-      security:
-        - OAuth2-accessCode: [read]
-        - OAuth2-passwordGrant: [read]
-      responses:
-        '200':
-          description: OK
-          schema:
-            $ref: '#/definitions/RecordingTimelineResponse'
-        '400':
-          $ref: '#/responses/Error400InvalidParams'
-        '401':
-          $ref: '#/responses/Error401Unauthorized'
-        '404':
-          $ref: '#/responses/Error404NotFound'
+  operationId: my-cameras-recording-timeline
+  summary: Retrieve timeline of records for given camera
+  tags:
+    - recording
+  description: |
+    Please keep in mind that maximum length of timeline is 1 day.
+  parameters:
+    - $ref: '#/parameters/cameraId'
+    - name: start
+      in: query
+      type: string
+      format: date-time
+      required: true
+      description: 'Start time of a timeline. Example: `2016-03-19T08:00:00Z`.'
+      x-example: '2017-01-01T00:00:00Z'
+    - name: end
+      in: query
+      type: string
+      format: date-time
+      required: true
+      description: 'End time of a timeline. Example: `2016-03-19T14:00:00Z.`'
+      x-example: '2017-01-01T00:10:00Z'
+  security:
+    - OAuth2-accessCode:
+        - recording_access
+    - OAuth2-passwordGrant:
+        - recording_access
+  responses:
+    '200':
+      description: OK
+      schema:
+        $ref: '#/definitions/RecordingTimelineResponse'
+    '400':
+      $ref: '#/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'

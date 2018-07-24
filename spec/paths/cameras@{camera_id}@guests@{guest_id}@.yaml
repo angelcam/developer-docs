@@ -7,8 +7,10 @@ get:
     - $ref: '#/parameters/cameraId'
     - $ref: '#/parameters/guestId'
   security:
-    - OAuth2-accessCode: [read]
-    - OAuth2-passwordGrant: [read]
+    - OAuth2-accessCode:
+        - camera_guest_access
+    - OAuth2-passwordGrant:
+        - camera_guest_access
   responses:
     '200':
       description: Camera guest object
@@ -16,13 +18,15 @@ get:
         $ref: '#/definitions/CameraGuestObject'
     '401':
       $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
     '404':
       $ref: '#/responses/Error404NotFound'
 put:
   operationId: my-cameras-guest-update
   summary: Update camera guest
   tags:
-  - camera-guest
+    - camera-guest
   parameters:
     - $ref: '#/parameters/cameraId'
     - $ref: '#/parameters/guestId'
@@ -35,17 +39,19 @@ put:
           permissions:
             $ref: '#/definitions/CameraGuestPermissionObject'
   security:
-    - OAuth2-accessCode: [read,write]
-    - OAuth2-passwordGrant: [read,write]
+    - OAuth2-accessCode:
+        - camera_guest_manage
+    - OAuth2-passwordGrant:
+        - camera_guest_manage
   responses:
     '200':
       description: OK
       schema:
         $ref: '#/definitions/CameraGuestObject'
-    '404':
-      $ref: '#/responses/Error404NotFound'
     '401':
       $ref: '#/responses/Error401Unauthorized'
+    '404':
+      $ref: '#/responses/Error404NotFound'
 delete:
   operationId: my-cameras-guest-remove
   summary: Remove camera guest
@@ -55,12 +61,16 @@ delete:
     - $ref: '#/parameters/cameraId'
     - $ref: '#/parameters/guestId'
   security:
-    - OAuth2-accessCode: [read,write]
-    - OAuth2-passwordGrant: [read,write]
+    - OAuth2-accessCode:
+        - camera_guest_manage
+    - OAuth2-passwordGrant:
+        - camera_guest_manage
   responses:
     '204':
       description: No content
     '401':
       $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
     '404':
       $ref: '#/responses/Error404NotFound'

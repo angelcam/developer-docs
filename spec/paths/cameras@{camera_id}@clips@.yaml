@@ -5,8 +5,10 @@ get:
     - clip
   description: Retrieves the list of recording clips of given camera
   security:
-    - OAuth2-accessCode: [read]
-    - OAuth2-passwordGrant: [read]
+    - OAuth2-accessCode:
+        - recording_clips_access
+    - OAuth2-passwordGrant:
+        - recording_clips_access
   parameters:
     - $ref: '#/parameters/cameraId'
   responses:
@@ -18,6 +20,8 @@ get:
       $ref: '#/responses/Error400InvalidParams'
     '401':
       $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
     '404':
       $ref: '#/responses/Error404NotFound'
 post:
@@ -54,8 +58,12 @@ post:
           start: 2017-01-01T00:00:00.000Z
           end: 2017-01-01T00:25:00.000Z
   security:
-    - OAuth2-accessCode: [read, write]
-    - OAuth2-passwordGrant: [read, write]
+    - OAuth2-accessCode:
+        - recording_clips_access
+        - recording_clips_create
+    - OAuth2-passwordGrant:
+        - recording_clips_access
+        - recording_clips_create
   responses:
     '201':
       description: Clip request was received and clip processing will start
@@ -67,3 +75,7 @@ post:
         exceeds 3 hours or there's another error in the request
       schema:
         $ref: '#/definitions/Error400Invalid'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
