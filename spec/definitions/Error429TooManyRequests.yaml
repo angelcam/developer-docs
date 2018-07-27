@@ -1,0 +1,7 @@
+allOf:
+  - $ref: '#/definitions/ErrorGeneric'
+title: Error 429 Too Many Requests
+example:
+  title: rate_limited
+  detail: The rate limit has been reached
+  status: 429

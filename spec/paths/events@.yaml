@@ -50,6 +50,12 @@ post:
   summary: Create event
   tags:
     - event
+  description: >
+    This endpoint has rate limiting in place. The endpoint will accept at most
+    10 requests per minute
+
+    for a given hash (see [Nuts and bolts](#section/Angelcam-API/Nuts-and-bolts)
+    for more details).
   parameters:
     - in: body
       name: event
@@ -61,10 +67,13 @@ post:
         properties:
           hash:
             type: string
-            description: >-
+            description: >
               Event API hash (a unique token for each camera found in My
-              Angelcam dashboard or obtained via Camera Resource) - used to
-              authenticate the request and pair the event with corresponding
+              Angelcam dashboard or obtained
+
+              via Camera Resource) - used to authenticate the request and pair
+              the event with corresponding
+
               camera.
           title:
             type: string
@@ -80,3 +89,7 @@ post:
       description: The event hash is invalid or there's another error in the request
       schema:
         $ref: '#/definitions/Error400Invalid'
+    '429':
+      description: The rate limit has been reached
+      schema:
+        $ref: '#/definitions/Error429TooManyRequests'
