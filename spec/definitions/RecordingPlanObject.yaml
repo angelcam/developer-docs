@@ -1,0 +1,28 @@
+type: object
+title: Recording plan description
+properties:
+  code:
+    type: string
+    description: Plan identifier
+  retention:
+    type: string
+    description: Recording retention
+  price:
+    type: string
+    format: decimal
+    description: Price of the plan
+  billing_period:
+    type: string
+    enum:
+      - month
+      - year
+required:
+  - code
+  - retention
+  - price
+  - billing_period
+example:
+  code: cra-3days-monthly-v2
+  retention: P3D
+  price: '3.99'
+  billing_period: month
