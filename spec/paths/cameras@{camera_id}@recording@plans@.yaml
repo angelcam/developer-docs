@@ -15,5 +15,7 @@ get:
       description: A list of recording plans
       schema:
         $ref: '#/definitions/RecordingPlansResponse'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
     '403':
       $ref: '#/responses/Error403PermissionDenied'

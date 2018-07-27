@@ -16,6 +16,12 @@ properties:
     enum:
       - month
       - year
+    description: >
+      It specifies a time period for the price field. The purpose of this field
+      is just to fix the cost
+
+      in time. It does not necessarily mean that the price will be charged every
+      billing period.
 required:
   - code
   - retention
