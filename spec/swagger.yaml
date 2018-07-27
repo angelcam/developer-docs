@@ -110,6 +110,12 @@ info:
     implied by the protocol layer.
 
 
+    ### Rate limiting
+
+    Some endpoints have rate limiting in place to protect our service from excessive amounts of requests. If you reach
+    the limit, the server will respond with HTTP 429 and the `Retry-After` HTTP header will be set to the number of
+    seconds that your client needs to wait before retrying the request.
+
     ### Resource Embedding and Field Fetching
 
 
