@@ -112,9 +112,11 @@ info:
 
     ### Rate limiting
 
-    Some endpoints have rate limiting in place to protect our service from excessive amounts of requests. If you reach
-    the limit, the server will respond with HTTP 429 and the `Retry-After` HTTP header will be set to the number of
-    seconds that your client needs to wait before retrying the request.
+    Some endpoints have rate limiting in place to protect our service from
+    excessive amounts of requests. If you reach the limit, the server will
+    respond with HTTP 429 and the `Retry-After` HTTP header will be set to the
+    number of seconds that your client needs to wait before retrying the
+    request.
 
     ### Resource Embedding and Field Fetching
 
@@ -715,6 +717,7 @@ securityDefinitions:
       camera_guest_manage: Permission to manage camera guest
       event_access: Permission to access events
       recording_access: Permission to access camera recordings
+      recording_manage: Permission to manage camera recording (incl. plan changes)
       recording_clips_access: Permission to access recording clips
       recording_clips_create: Permission to create recording clips
     description: >
@@ -805,6 +808,7 @@ securityDefinitions:
       camera_guest_manage: Permission to manage camera guest
       event_access: Permission to access events
       recording_access: Permission to access camera recordings
+      recording_manage: Permission to manage camera recording (incl. plan changes)
       recording_clips_access: Permission to access recording clips
       recording_clips_create: Permission to create recording clips
     description: >
