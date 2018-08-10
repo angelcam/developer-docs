@@ -52,6 +52,8 @@ get:
       $ref: '#/responses/Error400InvalidParams'
     '401':
       $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
 post:
   operationId: connect-cameras
   summary: Connect new camera

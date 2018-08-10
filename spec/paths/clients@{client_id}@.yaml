@@ -1,0 +1,82 @@
+get:
+  operationId: my-client-detail
+  summary: Retrieve client
+  tags:
+    - client
+  parameters:
+    - $ref: '#/parameters/clientId'
+  security:
+    - OAuth2-accessCode:
+        - client_access
+    - OAuth2-passwordGrant:
+        - client_access
+  responses:
+    '200':
+      description: Client object
+      schema:
+        $ref: '#/definitions/ClientObject'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'
+put:
+  operationId: update-client
+  summary: Update client account
+  tags:
+    - client
+  parameters:
+    - $ref: '#/parameters/clientId'
+    - in: body
+      name: client
+      schema:
+        type: object
+        title: client
+        properties:
+          first_name:
+            type: string
+            description: Clients first name
+          last_name:
+            type: string
+            description: Clients last name
+          email:
+            type: string
+            format: email
+            description: Clients email
+          phone:
+            type: string
+            description: Clients phone number
+          invoice_to:
+            type: string
+            enum:
+              - me
+              - client
+            description: All services are invoice to reseller (me) or directly to client.
+          limited_account:
+            type: boolean
+            description: >
+              Limited clients cannot connect new cameras or purchase any services, by themselves.
+        example:
+          first_name: 'Joe'
+          last_name: 'Parker'
+          email: 'joe@angelcam.com'
+          phone: '+1 111 222 333'
+          invoice_to: 'client'
+          limited_account: false,
+  security:
+    - OAuth2-accessCode:
+        - client_manage
+    - OAuth2-passwordGrant:
+        - client_manage
+  responses:
+    '201':
+      description: Client object
+      schema:
+        $ref: '#/definitions/ClientObject'
+    '400':
+      $ref: '#/responses/Error400InvalidBody'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'

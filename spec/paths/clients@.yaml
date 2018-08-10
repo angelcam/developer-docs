@@ -1,0 +1,101 @@
+get:
+  operationId: my-clients-list
+  summary: Retrieve clients list
+  tags:
+    - client
+  parameters:
+    - name: limit
+      in: query
+      type: integer
+      minimum: 1
+      required: false
+      description: 'Limit result set. Example: `1`.'
+    - name: offset
+      in: query
+      type: integer
+      minimum: 1
+      required: false
+      description: 'Return results starting at `offset`. Example: `10`.'
+  security:
+    - OAuth2-accessCode:
+        - client_access
+    - OAuth2-passwordGrant:
+        - client_access
+  responses:
+    '200':
+      description: Returns client list.
+      schema:
+        $ref: '#/definitions/ClientListResponse'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+post:
+  operationId: create-client
+  summary: Create new client account
+  description: >
+    Client a new client account. After successful creation client receives an
+    email with link for account activation.
+  tags:
+    - client
+  parameters:
+    - in: body
+      name: client
+      schema:
+        type: object
+        title: clip
+        required:
+          - first_name
+          - last_name
+          - email
+          - invoice_to
+          - url
+          - connection_type
+        properties:
+          first_name:
+            type: string
+            description: Clients first name
+          last_name:
+            type: string
+            description: Clients last name
+          email:
+            type: string
+            format: email
+            description: Clients email
+          phone:
+            type: string
+            description: Clients phone number
+          invoice_to:
+            type: string
+            enum:
+              - me
+              - client
+            description: All services are invoice to reseller (me) or directly to client.
+          limited_account:
+            type: boolean
+            description: >
+              Limited clients cannot connect new cameras or purchase any
+              services, by themselves.
+        example:
+          first_name: Joe
+          last_name: Parker
+          email: joe@angelcam.com
+          phone: +1 111 222 333
+          invoice_to: client
+          limited_account: false
+  security:
+    - OAuth2-accessCode:
+        - client_create
+    - OAuth2-passwordGrant:
+        - client_create
+  responses:
+    '201':
+      description: Newly created client object
+      schema:
+        $ref: '#/definitions/ClientObject'
+    '400':
+      $ref: '#/responses/Error400InvalidBody'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'

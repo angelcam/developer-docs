@@ -686,6 +686,10 @@ tags:
   - name: event
     x-displayName: Events
     description: Events
+  - name: client
+    x-displayName: Clients
+    description: >
+      This part of API makes sense only for reseller users. It provides them a way to manage their clients.
 x-tagGroups:
   - name: General
     tags:
@@ -703,6 +707,10 @@ x-tagGroups:
   - name: Events
     tags:
       - event
+  - name: Clients management
+    tags:
+      - client
+
 securityDefinitions:
   OAuth2-accessCode:
     type: oauth2
@@ -720,6 +728,9 @@ securityDefinitions:
       recording_manage: Permission to manage camera recording (incl. plan changes)
       recording_clips_access: Permission to access recording clips
       recording_clips_create: Permission to create recording clips
+      client_access: Permission to list resellers clients and get details of a cpecific client
+      client_create: Permission to create client account
+      client_manage: Permission to update clients detail
     description: >
 
       ![Authorization code grant sequence diagram](./assets/code_grant.png)
@@ -811,6 +822,9 @@ securityDefinitions:
       recording_manage: Permission to manage camera recording (incl. plan changes)
       recording_clips_access: Permission to access recording clips
       recording_clips_create: Permission to create recording clips
+      client_access: Permission to list resellers clients and get details of a cpecific client
+      client_create: Permission to create client account
+      client_manage: Permission to update clients detail
     description: >
       ![Password grant type sequence diagram](./assets/password_grant_type.png)
 
@@ -864,6 +878,14 @@ parameters:
     x-example: 4
     required: true
     description: Guest ID
+  clientId:
+    name: client_id
+    in: path
+    type: integer
+    minimum: 1
+    x-example: 4
+    required: true
+    description: Client ID
 responses:
   Error404NotFound:
     description: The specified resource was not found

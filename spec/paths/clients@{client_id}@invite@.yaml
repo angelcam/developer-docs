@@ -1,0 +1,25 @@
+post:
+  operationId: my-client-invite
+  summary: Resend invitaition email
+  description: >
+    For resending an invitation email. This is useful in case when client does not receive the first invitation email,
+     so client get new chance to activate their account and set a password.
+  tags:
+    - client
+  parameters:
+    - $ref: '#/parameters/clientId'
+  security:
+    - OAuth2-accessCode:
+        - client_create
+    - OAuth2-passwordGrant:
+        - client_create
+  responses:
+    '204':
+      title: No Content
+      description: The email was send.
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'
