@@ -2,7 +2,8 @@ post:
   operationId: my-client-invite
   summary: Resend invitaition email
   description: >
-    For resending an invitation email. This is useful in case when client does not receive the first invitation email,
+    For resending an invitation email. This is useful in case when client does
+    not receive the first invitation email,
      so client get new chance to activate their account and set a password.
   tags:
     - client
@@ -15,8 +16,7 @@ post:
         - client_create
   responses:
     '204':
-      title: No Content
-      description: The email was send.
+      $ref: '#/responses/EmptyResponse'
     '401':
       $ref: '#/responses/Error401Unauthorized'
     '403':

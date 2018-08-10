@@ -49,8 +49,6 @@ post:
           - last_name
           - email
           - invoice_to
-          - url
-          - connection_type
         properties:
           first_name:
             type: string

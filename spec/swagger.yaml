@@ -887,6 +887,8 @@ parameters:
     required: true
     description: Client ID
 responses:
+  EmptyResponse:
+    description: empty
   Error404NotFound:
     description: The specified resource was not found
     schema:
