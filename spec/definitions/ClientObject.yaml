@@ -16,7 +16,7 @@ properties:
     format: email
     description: Clients email
   phone:
-    type: string
+    type: ['string', 'null']
     description: Clients phone number
   invoice_to:
     type: string
@@ -35,9 +35,7 @@ properties:
       This field indicates if reseller can access clients cameras. Defualt is
       true, but client can refuse access.
   activated_at:
-    type:
-      - 'null'
-      - string
+    type: ['string', 'null']
     format: datetime
     description: >-
       Datetime, when client activated their account, or null in a case when the
@@ -59,6 +57,6 @@ example:
   email: joe@angelcam.com
   phone: +1 111 222 333
   invoice_to: client
-  limited_account: 'false,'
-  allowed_access: 'true,'
+  limited_account: false
+  allowed_access: true
   confiremd_at: null

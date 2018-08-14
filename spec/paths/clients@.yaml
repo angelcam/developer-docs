@@ -43,12 +43,10 @@ post:
       name: client
       schema:
         type: object
-        title: clip
         required:
           - first_name
           - last_name
           - email
-          - invoice_to
         properties:
           first_name:
             type: string
@@ -68,9 +66,11 @@ post:
             enum:
               - me
               - client
+            default: me
             description: All services are invoice to reseller (me) or directly to client.
           limited_account:
             type: boolean
+            default: false
             description: >
               Limited clients cannot connect new cameras or purchase any
               services, by themselves.
@@ -79,7 +79,7 @@ post:
           last_name: Parker
           email: joe@angelcam.com
           phone: +1 111 222 333
-          invoice_to: client
+          invoice_to: me
           limited_account: false
   security:
     - OAuth2-accessCode:

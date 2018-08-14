@@ -1,6 +1,6 @@
 post:
   operationId: my-client-invite
-  summary: Resend invitaition email
+  summary: Resend invitation email
   description: >
     For resending an invitation email. This is useful in case when client does
     not receive the first invitation email,

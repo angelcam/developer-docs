@@ -64,7 +64,6 @@ post:
       name: camera
       schema:
         type: object
-        title: clip
         required:
           - name
           - type

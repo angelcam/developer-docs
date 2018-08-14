@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 2018.07.24
+  version: 2018.08.13
   title: Angelcam API
   contact:
     email: support@angelcam.com
@@ -883,12 +883,12 @@ parameters:
     in: path
     type: integer
     minimum: 1
-    x-example: 4
+    x-example: 6
     required: true
     description: Client ID
 responses:
   EmptyResponse:
-    description: empty
+    description: Empty response
   Error404NotFound:
     description: The specified resource was not found
     schema:

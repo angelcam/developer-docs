@@ -40,10 +40,6 @@ put:
           last_name:
             type: string
             description: Clients last name
-          email:
-            type: string
-            format: email
-            description: Clients email
           phone:
             type: string
             description: Clients phone number
@@ -58,19 +54,18 @@ put:
             description: >
               Limited clients cannot connect new cameras or purchase any services, by themselves.
         example:
-          first_name: 'Joe'
-          last_name: 'Parker'
-          email: 'joe@angelcam.com'
-          phone: '+1 111 222 333'
-          invoice_to: 'client'
-          limited_account: false,
+          first_name: Joe
+          last_name: Parker
+          phone: +1 111 222 333
+          invoice_to: client
+          limited_account: false
   security:
     - OAuth2-accessCode:
         - client_manage
     - OAuth2-passwordGrant:
         - client_manage
   responses:
-    '201':
+    '200':
       description: Client object
       schema:
         $ref: '#/definitions/ClientObject'
