@@ -689,7 +689,8 @@ tags:
   - name: client
     x-displayName: Clients
     description: >
-      This part of API makes sense only for reseller users. It provides them a way to manage their clients.
+      This part of API makes sense only for reseller users. It provides them a
+      way to manage their clients.
 x-tagGroups:
   - name: General
     tags:
@@ -710,7 +711,6 @@ x-tagGroups:
   - name: Clients management
     tags:
       - client
-
 securityDefinitions:
   OAuth2-accessCode:
     type: oauth2
@@ -728,7 +728,10 @@ securityDefinitions:
       recording_manage: Permission to manage camera recording (incl. plan changes)
       recording_clips_access: Permission to access recording clips
       recording_clips_create: Permission to create recording clips
-      client_access: Permission to list resellers clients and get details of a cpecific client
+      recording_clips_share: Permission to share recording clips
+      client_access: >-
+        Permission to list resellers clients and get details of a cpecific
+        client
       client_create: Permission to create client account
       client_manage: Permission to update clients detail
     description: >
@@ -822,7 +825,10 @@ securityDefinitions:
       recording_manage: Permission to manage camera recording (incl. plan changes)
       recording_clips_access: Permission to access recording clips
       recording_clips_create: Permission to create recording clips
-      client_access: Permission to list resellers clients and get details of a cpecific client
+      recording_clips_share: Permission to share recording clips
+      client_access: >-
+        Permission to list resellers clients and get details of a cpecific
+        client
       client_create: Permission to create client account
       client_manage: Permission to update clients detail
     description: >

@@ -1,0 +1,33 @@
+post:
+  operationId: my-cameras-clips-share
+  summary: Share a clip via email
+  tags:
+    - clip
+  description: Share clip recording via email
+  parameters:
+    - $ref: '#/parameters/cameraId'
+    - $ref: '#/parameters/clipId'
+    - in: body
+      name: clip-share
+      schema:
+        type: object
+        required:
+          - email
+        properties:
+          email:
+            type: string
+            format: email
+  security:
+    - OAuth2-accessCode:
+        - recording_clips_share
+    - OAuth2-passwordGrant:
+        - recording_clips_share
+  responses:
+    '204':
+      $ref: '#/responses/EmptyResponse'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'
