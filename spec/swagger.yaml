@@ -690,6 +690,9 @@ tags:
     x-displayName: Clients
     description: >
       This part of API makes sense only for reseller users. It provides them a way to manage their clients.
+  - name: camera-stream-detection
+    x-displayName: Camera stream detection
+    description: Using these endpoints you can verify if there is camera stream available on specified network address.
 x-tagGroups:
   - name: General
     tags:
@@ -699,6 +702,7 @@ x-tagGroups:
       - camera
       - shared-camera
       - camera-guest
+      - camera-stream-detection
   - name: Recording
     tags:
       - recording
@@ -731,6 +735,7 @@ securityDefinitions:
       client_access: Permission to list resellers clients and get details of a cpecific client
       client_create: Permission to create client account
       client_manage: Permission to update clients detail
+      streams_detect: Permission to detect camera streams
     description: >
 
       ![Authorization code grant sequence diagram](./assets/code_grant.png)
@@ -825,6 +830,8 @@ securityDefinitions:
       client_access: Permission to list resellers clients and get details of a cpecific client
       client_create: Permission to create client account
       client_manage: Permission to update clients detail
+      streams_detect: Permission to detect camera streams
+
     description: >
       ![Password grant type sequence diagram](./assets/password_grant_type.png)
 
