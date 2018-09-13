@@ -1,0 +1,25 @@
+get:
+  operationId: stream-detection-result
+  summary: Get stream detection result
+  description: Get stream detection result.
+  tags:
+    - camera-stream-detection
+  parameters:
+    - $ref: '#/parameters/sessionId'
+
+  security:
+    - OAuth2-accessCode:
+        - streams_detect
+    - OAuth2-passwordGrant:
+        - streams_detect
+  responses:
+    '200':
+      description: OK
+      schema:
+        $ref: '#/definitions/CameraResultStreamDetectionResponse'
+    '400':
+      $ref: '#/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
