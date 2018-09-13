@@ -903,6 +903,7 @@ parameters:
     in: path
     type: string
     required: true
+    x-example: 95227c4c-218c-4dee-899d-f3fa2ce9c39b
     description: session_id you receive from stream-detection-start
 
 responses:
