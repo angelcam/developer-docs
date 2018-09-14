@@ -17,8 +17,6 @@ get:
       description: OK
       schema:
         $ref: '#/definitions/CameraResultStreamDetectionResponse'
-    '400':
-      $ref: '#/responses/Error400InvalidParams'
     '401':
       $ref: '#/responses/Error401Unauthorized'
     '403':
