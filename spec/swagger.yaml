@@ -734,7 +734,7 @@ securityDefinitions:
       recording_clips_create: Permission to create recording clips
       recording_clips_share: Permission to share recording clips
       client_access: >-
-        Permission to list resellers clients and get details of a cpecific
+        Permission to list resellers clients and get details of a specific
         client
       client_create: Permission to create client account
       client_manage: Permission to update clients detail
@@ -832,12 +832,11 @@ securityDefinitions:
       recording_clips_create: Permission to create recording clips
       recording_clips_share: Permission to share recording clips
       client_access: >-
-        Permission to list resellers clients and get details of a cpecific
+        Permission to list resellers clients and get details of a specific
         client
       client_create: Permission to create client account
       client_manage: Permission to update clients detail
       streams_detect: Permission to detect camera streams
-
     description: >
       ![Password grant type sequence diagram](./assets/password_grant_type.png)
 
@@ -899,6 +898,15 @@ parameters:
     x-example: 6
     required: true
     description: Client ID
+  sessionId:
+    name: session_id
+    in: path
+    type: string
+    format: uuid
+    required: true
+    x-example: c95227c4-218c-4dee-899d-f3fa2ce9c39b
+    description: session_id you receive from stream-detection-start
+
 responses:
   EmptyResponse:
     description: Empty response

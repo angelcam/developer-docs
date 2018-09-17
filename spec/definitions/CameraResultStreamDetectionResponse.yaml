@@ -1,0 +1,27 @@
+type: object
+title: Camera Result Stream Detection Response
+properties:
+  status:
+    type: string
+    enum:
+      - ok
+      - in-progress
+      - error
+    description: Result status
+  rtsp_streams:
+    type: array
+    items:
+      type: string
+      format: url
+    description: Lists RTSP streams
+  mjpeg_streams:
+    type: array
+    items:
+      type: string
+      format: url
+    description: Lists MJPEG streams
+  error:
+    type: string
+    description: Error information
+required:
+  - status
