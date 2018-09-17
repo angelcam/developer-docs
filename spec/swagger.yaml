@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 2018.08.13
+  version: 2018.09.17
   title: Angelcam API
   contact:
     email: support@angelcam.com
