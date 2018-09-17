@@ -27,7 +27,7 @@ post:
           port:
             type: integer
             minimum: 1
-            maximum: 6535
+            maximum: 65535
             description: If port is not specified all reasonable ports will be tested.
           username:
             type: string
