@@ -691,6 +691,13 @@ tags:
     description: >
       This part of API makes sense only for reseller users. It provides them a
       way to manage their clients.
+  - name: camera-stream-detection
+    x-displayName: Camera streams detection
+    description: >-
+      Using these endpoints you can verify if there are camera streams available
+      on specified network address. Detection is asynchronous. For this reason
+      there is one endpoint for initializing stream detection and one for
+      retrieving result of detection.
 x-tagGroups:
   - name: General
     tags:
@@ -700,6 +707,7 @@ x-tagGroups:
       - camera
       - shared-camera
       - camera-guest
+      - camera-stream-detection
   - name: Recording
     tags:
       - recording
@@ -730,10 +738,11 @@ securityDefinitions:
       recording_clips_create: Permission to create recording clips
       recording_clips_share: Permission to share recording clips
       client_access: >-
-        Permission to list resellers clients and get details of a cpecific
+        Permission to list resellers clients and get details of a specific
         client
       client_create: Permission to create client account
       client_manage: Permission to update clients detail
+      streams_detect: Permission to detect camera streams
     description: >
 
       ![Authorization code grant sequence diagram](./assets/code_grant.png)
@@ -827,10 +836,11 @@ securityDefinitions:
       recording_clips_create: Permission to create recording clips
       recording_clips_share: Permission to share recording clips
       client_access: >-
-        Permission to list resellers clients and get details of a cpecific
+        Permission to list resellers clients and get details of a specific
         client
       client_create: Permission to create client account
       client_manage: Permission to update clients detail
+      streams_detect: Permission to detect camera streams
     description: >
       ![Password grant type sequence diagram](./assets/password_grant_type.png)
 
@@ -892,6 +902,16 @@ parameters:
     x-example: 6
     required: true
     description: Client ID
+  sessionId:
+    name: session_id
+    in: path
+    type: string
+    format: uuid
+    required: true
+    x-example: c95227c4-218c-4dee-899d-f3fa2ce9c39b
+    description: >
+      `session_id` that you received from [start stream detection
+      endpoint](/#operation/stream-detection-start)
 responses:
   EmptyResponse:
     description: Empty response

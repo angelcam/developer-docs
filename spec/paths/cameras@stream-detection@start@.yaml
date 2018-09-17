@@ -1,0 +1,53 @@
+post:
+  operationId: stream-detection-start
+  summary: Start stream detection
+  description: >
+    Retrieve `session_id` which can be used for [querying stream detection
+    result](/#operation/stream-detection-result).
+  tags:
+    - camera-stream-detection
+  parameters:
+    - in: body
+      name: streamdetectioninput
+      schema:
+        type: object
+        required:
+          - address
+        properties:
+          address:
+            type: string
+            description: >
+              Various address types can be used. Valid examples:
+              `my-camera.my-site.com/feed`,
+              `http://test:test@my-camera.my-site.com:80/feed?show=1`,
+              `rtsp://site.domain.com/camera1`, `132.45.32.21`. As you can see
+              from examples `address` can optionally contain information about
+              `port`, `username` and `password`. In such cases these fields can
+              be omitted from request body.
+          port:
+            type: integer
+            minimum: 1
+            maximum: 65535
+            description: If port is not specified all reasonable ports will be tested.
+          username:
+            type: string
+          password:
+            type: string
+        example:
+          address: 'http://test:test@my-camera.my-site.com:80/feed?show=1'
+  security:
+    - OAuth2-accessCode:
+        - streams_detect
+    - OAuth2-passwordGrant:
+        - streams_detect
+  responses:
+    '200':
+      description: OK
+      schema:
+        $ref: '#/definitions/CameraStartStreamDetectionResponse'
+    '400':
+      $ref: '#/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
