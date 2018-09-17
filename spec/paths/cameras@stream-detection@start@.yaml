@@ -1,9 +1,9 @@
 post:
   operationId: stream-detection-start
   summary: Start stream detection
-  description: >-
-    Retrieve `session_id` which can be used for querying stream detection
-    result.
+  description: >
+    Retrieve `session_id` which can be used for [querying stream detection
+    result](/#operation/stream-detection-result).
   tags:
     - camera-stream-detection
   parameters:

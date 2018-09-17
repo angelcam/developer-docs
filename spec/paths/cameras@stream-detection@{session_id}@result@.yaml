@@ -1,12 +1,10 @@
 get:
   operationId: stream-detection-result
-  summary: Get stream detection result
-  description: Get stream detection result.
+  summary: Retrieve stream detection result
   tags:
     - camera-stream-detection
   parameters:
     - $ref: '#/parameters/sessionId'
-
   security:
     - OAuth2-accessCode:
         - streams_detect

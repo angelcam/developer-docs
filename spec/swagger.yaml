@@ -692,8 +692,12 @@ tags:
       This part of API makes sense only for reseller users. It provides them a
       way to manage their clients.
   - name: camera-stream-detection
-    x-displayName: Camera stream detection
-    description: Using these endpoints you can verify if there is camera stream available on specified network address.
+    x-displayName: Camera streams detection
+    description: >-
+      Using these endpoints you can verify if there are camera streams available
+      on specified network address. Detection is asynchronous. For this reason
+      there is one endpoint for initializing stream detection and one for
+      retrieving result of detection.
 x-tagGroups:
   - name: General
     tags:
@@ -905,8 +909,9 @@ parameters:
     format: uuid
     required: true
     x-example: c95227c4-218c-4dee-899d-f3fa2ce9c39b
-    description: session_id you receive from stream-detection-start
-
+    description: >
+      `session_id` that you received from [start stream detection
+      endpoint](/#operation/stream-detection-start)
 responses:
   EmptyResponse:
     description: Empty response
