@@ -698,6 +698,15 @@ tags:
       on specified network address. Detection is asynchronous. For this reason
       there is one endpoint for initializing stream detection and one for
       retrieving result of detection.
+  - name: site
+    x-displayName: Sites
+    description: >-
+      Endpoints for accessing and managing sites. Sites are hiearchical
+      structure that can be used to organize cameras. Any camera can be in 0 - n
+      sites
+  - name: site-camera
+    x-displayName: Site Cameras
+    description: Endpoints for accessing and managing cameras on specified site.
 x-tagGroups:
   - name: General
     tags:
@@ -719,6 +728,10 @@ x-tagGroups:
   - name: Clients management
     tags:
       - client
+  - name: Sites management
+    tags:
+      - site
+      - site-camera
 securityDefinitions:
   OAuth2-accessCode:
     type: oauth2
@@ -743,6 +756,8 @@ securityDefinitions:
       client_create: Permission to create client account
       client_manage: Permission to update clients detail
       streams_detect: Permission to detect camera streams
+      sites_access: Permission to access sites
+      sites_manage: 'Permission to create, update and delete sites'
     description: >
 
       ![Authorization code grant sequence diagram](./assets/code_grant.png)
@@ -841,6 +856,8 @@ securityDefinitions:
       client_create: Permission to create client account
       client_manage: Permission to update clients detail
       streams_detect: Permission to detect camera streams
+      sites_access: Permission to access sites
+      sites_manage: 'Permission to create, update and delete sites'
     description: >
       ![Password grant type sequence diagram](./assets/password_grant_type.png)
 
@@ -912,6 +929,14 @@ parameters:
     description: >
       `session_id` that you received from [start stream detection
       endpoint](/#operation/stream-detection-start)
+  siteId:
+    name: site_id
+    in: path
+    type: integer
+    minimum: 1
+    x-example: 1
+    required: true
+    description: Site ID
 responses:
   EmptyResponse:
     description: Empty response

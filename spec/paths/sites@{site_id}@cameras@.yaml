@@ -1,0 +1,60 @@
+get:
+  operationId: site-cameras-retrieve
+  summary: Retrieve cameras on site
+  tags:
+    - site-camera
+  parameters:
+    - $ref: '#/parameters/siteId'
+  security:
+    - OAuth2-accessCode:
+        - sites_access
+    - OAuth2-passwordGrant:
+        - sites_access
+  responses:
+    '200':
+      description: OK
+      schema:
+        $ref: '#/definitions/CameraListResponse'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'
+post:
+  operationId: add-cameras-to-site
+  summary: Add cameras to site
+  tags:
+    - site-camera
+  parameters:
+    - $ref: '#/parameters/siteId'
+    - in: body
+      name: add_cameras
+      schema:
+        type: object
+        properties:
+          camera_ids:
+            type: array
+            items:
+              type: integer
+            description: Array of camera ids to add to this site
+        example:
+          camera_ids:
+            - 1
+            - 3
+  security:
+    - OAuth2-accessCode:
+        - sites_manage
+    - OAuth2-passwordGrant:
+        - sites_manage
+  responses:
+    '204':
+      description: No content
+    '400':
+      $ref: '#/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'

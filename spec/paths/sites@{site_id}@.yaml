@@ -1,0 +1,84 @@
+get:
+  operationId: site-detail-retrieve
+  summary: Retrieve site
+  tags:
+    - site
+  parameters:
+    - $ref: '#/parameters/siteId'
+  security:
+    - OAuth2-accessCode:
+        - sites_access
+    - OAuth2-passwordGrant:
+        - sites_access
+  responses:
+    '200':
+      description: OK
+      schema:
+        $ref: '#/definitions/SiteObject'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'
+put:
+  operationId: site-detail-update
+  summary: Update Site
+  tags:
+    - site
+  parameters:
+    - $ref: '#/parameters/siteId'
+    - in: body
+      name: site
+      schema:
+        type: object
+        properties:
+          name:
+            type: string
+            description: Site name
+          parent:
+            type: integer
+            minimum: 1
+            description: Parent Site ID
+  security:
+    - OAuth2-accessCode:
+        - sites_manage
+    - OAuth2-passwordGrant:
+        - sites_manage
+  responses:
+    '200':
+      description: OK
+      schema:
+        $ref: '#/definitions/SiteObject'
+    '400':
+      $ref: '#/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'
+delete:
+  operationId: site-detail-destroy
+  summary: Destroy Site
+  description: >-
+    In case that destroyed site contains descendants these descendants are also
+    deleted.
+  tags:
+    - site
+  parameters:
+    - $ref: '#/parameters/siteId'
+  security:
+    - OAuth2-accessCode:
+        - sites_manage
+    - OAuth2-passwordGrant:
+        - sites_manage
+  responses:
+    '204':
+      description: No content
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'

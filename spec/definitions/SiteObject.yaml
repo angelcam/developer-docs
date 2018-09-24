@@ -1,0 +1,31 @@
+type: object
+title: Site object
+properties:
+  id:
+    type: integer
+    minimum: 1
+    description: Site ID
+  name:
+    type: string
+    description: Site name
+    example: Bedroom
+  parent:
+    type:
+      - integer
+      - 'null'
+    minimum: 1
+    description: >-
+      Parent site ID. If value is `null` it means that current object is first
+      level site.
+  children:
+    type: array
+    description: Children sites IDs
+    items:
+      type: integer
+      minimum: 1
+    example:
+      - 2
+      - 3
+required:
+  - id
+  - name
