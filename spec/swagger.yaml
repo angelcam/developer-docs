@@ -742,6 +742,8 @@ securityDefinitions:
       user_access: Permission to access user information
       camera_access: Permission to list cameras and to get details of a specific camera
       camera_create: Permission to create cameras
+      camera_manage: Permission to update cameras
+      camera_delete: Permission to delete cameras
       camera_guest_access: Permission to access camera guest
       camera_guest_manage: Permission to manage camera guest
       event_access: Permission to access events
@@ -842,6 +844,8 @@ securityDefinitions:
       user_access: Permission to access user information
       camera_access: Permission to list cameras and to get details of a specific camera
       camera_create: Permission to create cameras
+      camera_manage: Permission to update cameras
+      camera_delete: Permission to delete cameras
       camera_guest_access: Permission to access camera guest
       camera_guest_manage: Permission to manage camera guest
       event_access: Permission to access events
