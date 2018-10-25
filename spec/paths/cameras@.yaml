@@ -38,6 +38,14 @@ get:
       minimum: 1
       required: false
       description: Maximum height of MJPEG stream and LIVE SNAPSHOT.
+    - name: has_guests
+      in: query
+      type: boolean
+      required: false
+      description: >-
+        1 for retrieving list of cameras that have been shared with someone, 0
+        for retrieving list of cameras that have not been shared wth anyone.
+        Leaving parameter empty will return list of all user cameras.
   security:
     - OAuth2-accessCode:
         - camera_access
@@ -78,21 +86,28 @@ post:
             enum:
               - h264
               - mjpeg
-            description: Camera type. We currently support H.264 over RTSP and MJPEG over HTTP cameras.
+            description: >-
+              Camera type. We currently support H.264 over RTSP and MJPEG over
+              HTTP cameras.
           url:
             type: string
             format: url
-            description: Complete URL of a camera stream. H.264 cameras need to have "rtsp" scheme, for MJPEG cameras it's allowed to use "http" and "https" schemes.
+            description: >-
+              Complete URL of a camera stream. H.264 cameras need to have "rtsp"
+              scheme, for MJPEG cameras it's allowed to use "http" and "https"
+              schemes.
           connection_type:
             type: string
             enum:
               - direct
-            description: How is the camera connected to Angelcam, currently we support only direct connection.
+            description: >-
+              How is the camera connected to Angelcam, currently we support only
+              direct connection.
         example:
           name: My brand new shiny camera
           type: h264
           connection_type: direct
-          url: rtsp://username:password@175.36.248.73:554/live.sdp
+          url: 'rtsp://username:password@175.36.248.73:554/live.sdp'
   security:
     - OAuth2-accessCode:
         - camera_create
