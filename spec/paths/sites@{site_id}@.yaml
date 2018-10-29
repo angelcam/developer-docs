@@ -40,6 +40,11 @@ put:
             type: integer
             minimum: 1
             description: Parent Site ID
+          is_armed:
+            type: boolean
+            description: >-
+              If site is not armed user will not get notifications when
+              something happens
   security:
     - OAuth2-accessCode:
         - sites_manage
@@ -63,7 +68,8 @@ delete:
   summary: Destroy Site
   description: >-
     In case that destroyed site contains descendants these descendants are also
-    deleted.
+    deleted. All cameras from deleted site and its descendants will move to
+    first not deleted ancestor.
   tags:
     - site
   parameters:

@@ -700,13 +700,17 @@ tags:
       retrieving result of detection.
   - name: site
     x-displayName: Sites
-    description: >-
+    description: >
       Endpoints for accessing and managing sites. Sites are hiearchical
-      structure that can be used to organize cameras. Any camera can be in 0 - n
-      sites
-  - name: site-camera
-    x-displayName: Site Cameras
-    description: Endpoints for accessing and managing cameras on specified site.
+      structure that can be used to organize cameras. Any camera is assigned
+      exactly to one site. Each user has a root site. ID of root site can be
+      obtained from [Current User Info Endpoint](#tag/user).
+
+        Site can be armed or disarmed. If site is in armed state user will be notified when some event occurs on given site. 
+        
+        If site is armed or disarmed all its descendants are also (dis)armed.
+        
+        Camera can be moved from site to site using [Camera Endpoints](#tag/camera)
   - name: client-device
     x-displayName: Client Devices
     description: >-

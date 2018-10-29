@@ -9,14 +9,21 @@ properties:
     type: string
     description: Site name
     example: Bedroom
+  is_armed:
+    type: boolean
+    description: >-
+      If site is not armed user will not get notifications when something
+      happens.
+  cameras:
+    $ref: '#/definitions/SiteCameraList'
   parent:
     type:
       - integer
       - 'null'
     minimum: 1
     description: >-
-      Parent site ID. If value is `null` it means that current object is first
-      level site.
+      Parent site ID. If value is `null` it means that current object is root
+      site.
   children:
     type: array
     description: Children sites IDs

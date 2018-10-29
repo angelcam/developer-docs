@@ -20,6 +20,10 @@ properties:
       - string
       - 'null'
     description: User's phone.
+  root_site:
+    type: integer
+    minimum: 1
+    description: Root site ID for current user
   my_cameras_count:
     type: integer
     description: Count of user cameras
@@ -38,6 +42,7 @@ example:
   last_name: Appleseed
   email: john@apple.com
   phone: +123 558 951 14
+  root_site: 1
   my_cameras_count: 3
   shared_cameras_count: 2
   total_cameras_count: 5

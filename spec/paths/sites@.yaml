@@ -1,22 +1,3 @@
-get:
-  operationId: sites-root-retrieve
-  summary: Retrieve first level sites
-  tags:
-    - site
-  security:
-    - OAuth2-accessCode:
-        - sites_access
-    - OAuth2-passwordGrant:
-        - sites_access
-  responses:
-    '200':
-      description: OK
-      schema:
-        $ref: '#/definitions/SiteListObject'
-    '401':
-      $ref: '#/responses/Error401Unauthorized'
-    '403':
-      $ref: '#/responses/Error403PermissionDenied'
 post:
   operationId: sites-create
   summary: Create site
@@ -43,6 +24,11 @@ post:
             type: integer
             minimum: 1
             description: Parent Site ID
+          is_armed:
+            type: boolean
+            description: >-
+              If site is not armed user will not get notifications when
+              something happens
   responses:
     '201':
       description: CREATED
