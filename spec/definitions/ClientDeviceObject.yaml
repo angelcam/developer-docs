@@ -1,0 +1,35 @@
+type: object
+title: Client Device object
+properties:
+  id:
+    type: integer
+    minimum: 1
+    description: Device ID
+  name:
+    type:
+      - string
+      - 'null'
+    description: Human readable device name
+    example: iPhone 5
+  platform:
+    type: string
+    enum:
+      - ios
+      - android
+      - web
+  fcm_token:
+    type:
+      - string
+      - 'null'
+    description: >-
+      Firebase Cloud Messaging registration token used for sending push
+      notifications
+    example: lm5s16hzr7
+required:
+  - id
+  - platform
+example:
+  id: 1
+  name: iPhone 5
+  platform: ios
+  fcm_token: lm5s16hzr7

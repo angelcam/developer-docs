@@ -707,10 +707,17 @@ tags:
   - name: site-camera
     x-displayName: Site Cameras
     description: Endpoints for accessing and managing cameras on specified site.
+  - name: client-device
+    x-displayName: Client Devices
+    description: >-
+      Endpoints for managing Client Devices. Client Device represents a device
+      that user uses to access Angelcam mobile application or website. At this
+      moment Client Device record is used mainly for sending push notifications.
 x-tagGroups:
   - name: General
     tags:
       - user
+      - client-device
   - name: Camera management
     tags:
       - camera
@@ -760,6 +767,8 @@ securityDefinitions:
       streams_detect: Permission to detect camera streams
       sites_access: Permission to access sites
       sites_manage: 'Permission to create, update and delete sites'
+      client_devices_access: Permission to access client devices
+      client_devices_manage: 'Permission to create, update and delete client devices'
     description: >
 
       ![Authorization code grant sequence diagram](./assets/code_grant.png)
@@ -862,6 +871,8 @@ securityDefinitions:
       streams_detect: Permission to detect camera streams
       sites_access: Permission to access sites
       sites_manage: 'Permission to create, update and delete sites'
+      client_devices_access: Permission to access client devices
+      client_devices_manage: 'Permission to create, update and delete client devices'
     description: >
       ![Password grant type sequence diagram](./assets/password_grant_type.png)
 
@@ -941,6 +952,14 @@ parameters:
     x-example: 1
     required: true
     description: Site ID
+  clientDeviceId:
+    name: device_id
+    in: path
+    type: integer
+    minimum: 1
+    x-example: 1
+    required: true
+    description: Device ID
 responses:
   EmptyResponse:
     description: Empty response

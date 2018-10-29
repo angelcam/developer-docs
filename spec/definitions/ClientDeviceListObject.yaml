@@ -1,0 +1,29 @@
+type: object
+title: Client Device List object
+properties:
+  count:
+    type: integer
+    minimum: 0
+    description: Count of first level sites
+  next:
+    type:
+      - string
+      - 'null'
+    format: uri
+    description: Next page from pagination
+  previous:
+    type:
+      - string
+      - 'null'
+    format: uri
+    description: Previous page from pagination
+  results:
+    type: array
+    description: List of sites owned by the user
+    items:
+      $ref: '#/definitions/ClientDeviceObject'
+required:
+  - count
+  - next
+  - previous
+  - results
