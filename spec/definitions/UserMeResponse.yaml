@@ -29,6 +29,9 @@ properties:
   total_cameras_count:
     type: integer
     description: Sum of count of user cameras + cameras shared with user
+  cameras_with_guests_count:
+    type: integer
+    description: Count of user cameras that have been shared with others
 required:
   - id
   - email
@@ -41,3 +44,4 @@ example:
   my_cameras_count: 3
   shared_cameras_count: 2
   total_cameras_count: 5
+  cameras_with_guests_count: 1
