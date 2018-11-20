@@ -1,11 +1,11 @@
 get:
-  operationId: camera-events
-  summary: Retrieve camera event list
+  operationId: site-events
+  summary: Retrieve event list for site
   tags:
     - event
-  description: Retrieves the list of events for the current user belonging to given camera
+  description: Retrieves list of events belongings to the specified site
   parameters:
-    - $ref: '#/parameters/cameraId'
+    - $ref: '#/parameters/siteId'
     - name: start
       in: query
       type: string
@@ -23,12 +23,6 @@ get:
       type: integer
       minimum: 1
       description: 'Limit result set. Example: `1`.'
-      required: false
-    - name: offset
-      in: query
-      type: integer
-      minimum: 1
-      description: 'Return results starting at offset. Example: `10`.'
       required: false
   security:
     - OAuth2-accessCode:

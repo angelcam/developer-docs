@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 2018.09.17
+  version: 2018.11.19
   title: Angelcam API
   contact:
     email: support@angelcam.com
@@ -685,7 +685,14 @@ tags:
     description: Recording Clips
   - name: event
     x-displayName: Events
-    description: Events
+    description: >
+      There is one difference in pagination for events list endpoints compared to other list endpoints:
+       There is no offset option available. This limitation has several consequences:
+        - Pagination can be done only using link in `next` attribute that is part of response
+        - Pagination is possible only in one direction (it is not possible to go to previous page)
+
+      However there are filters for `start` and `end` that may be used as an alternative or complement for pagination.
+      Retrieved events list is ordered by created datetime (newest first).
   - name: client
     x-displayName: Clients
     description: >
