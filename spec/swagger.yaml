@@ -686,13 +686,15 @@ tags:
   - name: event
     x-displayName: Events
     description: >
-      There is one difference in pagination for events list endpoints compared to other list endpoints:
+      There is one difference in pagination for events list endpoints compared
+      to other list endpoints:
        There is no offset option available. This limitation has several consequences:
         - Pagination can be done only using link in `next` attribute that is part of response
         - Pagination is possible only in one direction (it is not possible to go to previous page)
 
-      However there are filters for `start` and `end` that may be used as an alternative or complement for pagination.
-      Retrieved events list is ordered by created datetime (newest first).
+      However there are filters for `start` and `end` that may be used as an
+      alternative or complement for pagination. Retrieved events list is ordered
+      by created datetime (newest first).
   - name: client
     x-displayName: Clients
     description: >
@@ -767,6 +769,7 @@ securityDefinitions:
       event_access: Permission to access events
       recording_access: Permission to access camera recordings
       recording_manage: Permission to manage camera recording (incl. plan changes)
+      recording_start_stop: Permission to start and stop recording on camera
       recording_clips_access: Permission to access recording clips
       recording_clips_create: Permission to create recording clips
       recording_clips_share: Permission to share recording clips
@@ -871,6 +874,7 @@ securityDefinitions:
       event_access: Permission to access events
       recording_access: Permission to access camera recordings
       recording_manage: Permission to manage camera recording (incl. plan changes)
+      recording_start_stop: Permission to start and stop recording on camera
       recording_clips_access: Permission to access recording clips
       recording_clips_create: Permission to create recording clips
       recording_clips_share: Permission to share recording clips

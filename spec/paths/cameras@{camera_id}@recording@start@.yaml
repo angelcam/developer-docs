@@ -1,0 +1,21 @@
+post:
+  operationId: my-cameras-recording-start
+  summary: Start recording on given camera
+  tags:
+    - recording
+  parameters:
+    - $ref: '#/parameters/cameraId'
+  security:
+    - OAuth2-accessCode:
+        - recording_start_stop
+    - OAuth2-passwordGrant:
+        - recording_start_stop
+  responses:
+    '204':
+      $ref: '#/responses/EmptyResponse'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'
