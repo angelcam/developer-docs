@@ -1,0 +1,21 @@
+post:
+  operationId: my-cameras-broadcasting-start
+  summary: Start public broadcasting on given camera
+  tags:
+    - broadcasting
+  parameters:
+    - $ref: '#/parameters/cameraId'
+  security:
+    - OAuth2-accessCode:
+        - broadcasting_start_stop
+    - OAuth2-passwordGrant:
+        - broadcasting_start_stop
+  responses:
+    '204':
+      $ref: '#/responses/EmptyResponse'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'
