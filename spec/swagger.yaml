@@ -726,6 +726,12 @@ tags:
       Endpoints for managing Client Devices. Client Device represents a device
       that user uses to access Angelcam mobile application or website. At this
       moment Client Device record is used mainly for sending push notifications.
+  - name: broadcasting
+    x-displayName: My cameras broadcasting
+    description: >
+      Endpoints for managing broadcasting settings. If a camera doesn't have the
+      Broadcasting application, all camera broadcasting endpoints will return
+      404. 
 x-tagGroups:
   - name: General
     tags:
@@ -742,6 +748,9 @@ x-tagGroups:
       - recording
       - shared-camera-recording
       - clip
+  - name: Broadcasting
+    tags:
+      - broadcasting
   - name: Events
     tags:
       - event
@@ -773,6 +782,7 @@ securityDefinitions:
       recording_clips_access: Permission to access recording clips
       recording_clips_create: Permission to create recording clips
       recording_clips_share: Permission to share recording clips
+      broadcasting_start_stop: Permission to start and stop public broadcasting on camera
       client_access: >-
         Permission to list resellers clients and get details of a specific
         client
@@ -878,6 +888,7 @@ securityDefinitions:
       recording_clips_access: Permission to access recording clips
       recording_clips_create: Permission to create recording clips
       recording_clips_share: Permission to share recording clips
+      broadcasting_start_stop: Permission to start and stop public broadcasting on camera
       client_access: >-
         Permission to list resellers clients and get details of a specific
         client
