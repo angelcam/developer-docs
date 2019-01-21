@@ -10,6 +10,7 @@ get:
         - sites_access
     - OAuth2-passwordGrant:
         - sites_access
+    - PersonalAccessToken: []
   responses:
     '200':
       description: OK
@@ -50,6 +51,7 @@ put:
         - sites_manage
     - OAuth2-passwordGrant:
         - sites_manage
+    - PersonalAccessToken: []
   responses:
     '200':
       description: OK
@@ -79,6 +81,7 @@ delete:
         - sites_manage
     - OAuth2-passwordGrant:
         - sites_manage
+    - PersonalAccessToken: []
   responses:
     '204':
       description: No content

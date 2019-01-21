@@ -10,6 +10,7 @@ get:
         - client_access
     - OAuth2-passwordGrant:
         - client_access
+    - PersonalAccessToken: []
   responses:
     '200':
       description: Client object
@@ -52,7 +53,8 @@ put:
           limited_account:
             type: boolean
             description: >
-              Limited clients cannot connect new cameras or purchase any services, by themselves.
+              Limited clients cannot connect new cameras or purchase any
+              services, by themselves.
         example:
           first_name: Joe
           last_name: Parker
@@ -64,6 +66,7 @@ put:
         - client_manage
     - OAuth2-passwordGrant:
         - client_manage
+    - PersonalAccessToken: []
   responses:
     '200':
       description: Client object

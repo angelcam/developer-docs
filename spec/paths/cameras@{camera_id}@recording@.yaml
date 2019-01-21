@@ -10,6 +10,7 @@ get:
         - recording_access
     - OAuth2-passwordGrant:
         - recording_access
+    - PersonalAccessToken: []
   responses:
     '200':
       description: Returns general recording information.
@@ -57,6 +58,7 @@ post:
         - recording_manage
     - OAuth2-passwordGrant:
         - recording_manage
+    - PersonalAccessToken: []
   responses:
     '201':
       description: Returns general recording information.
@@ -100,6 +102,7 @@ put:
         - recording_manage
     - OAuth2-passwordGrant:
         - recording_manage
+    - PersonalAccessToken: []
   responses:
     '200':
       description: Returns general recording information.

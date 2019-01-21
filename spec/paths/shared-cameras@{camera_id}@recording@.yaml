@@ -10,6 +10,7 @@ get:
         - recording_access
     - OAuth2-passwordGrant:
         - recording_access
+    - PersonalAccessToken: []
   responses:
     '200':
       description: Returns general recording information.

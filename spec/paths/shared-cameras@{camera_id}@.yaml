@@ -32,6 +32,7 @@ get:
         - camera_access
     - OAuth2-passwordGrant:
         - camera_access
+    - PersonalAccessToken: []
   responses:
     '200':
       description: Camera object

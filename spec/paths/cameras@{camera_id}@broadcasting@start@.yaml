@@ -10,6 +10,7 @@ post:
         - broadcasting_start_stop
     - OAuth2-passwordGrant:
         - broadcasting_start_stop
+    - PersonalAccessToken: []
   responses:
     '204':
       $ref: '#/responses/EmptyResponse'

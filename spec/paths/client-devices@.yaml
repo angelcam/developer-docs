@@ -8,6 +8,7 @@ get:
         - client_devices_access
     - OAuth2-passwordGrant:
         - client_devices_access
+    - PersonalAccessToken: []
   responses:
     '200':
       description: OK
@@ -27,6 +28,7 @@ post:
         - client_devices_manage
     - OAuth2-passwordGrant:
         - client_devices_manage
+    - PersonalAccessToken: []
   parameters:
     - in: body
       name: device

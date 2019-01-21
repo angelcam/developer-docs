@@ -29,6 +29,7 @@ get:
         - event_access
     - OAuth2-passwordGrant:
         - event_access
+    - PersonalAccessToken: []
   responses:
     '200':
       description: OK

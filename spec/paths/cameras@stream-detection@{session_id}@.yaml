@@ -10,6 +10,7 @@ get:
         - streams_detect
     - OAuth2-passwordGrant:
         - streams_detect
+    - PersonalAccessToken: []
   responses:
     '200':
       description: OK

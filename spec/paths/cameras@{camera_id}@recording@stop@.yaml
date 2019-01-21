@@ -10,6 +10,7 @@ post:
         - recording_start_stop
     - OAuth2-passwordGrant:
         - recording_start_stop
+    - PersonalAccessToken: []
   responses:
     '204':
       $ref: '#/responses/EmptyResponse'

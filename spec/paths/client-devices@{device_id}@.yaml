@@ -8,6 +8,7 @@ get:
         - client_devices_access
     - OAuth2-passwordGrant:
         - client_devices_access
+    - PersonalAccessToken: []
   parameters:
     - $ref: '#/parameters/clientDeviceId'
   responses:
@@ -29,6 +30,7 @@ put:
         - client_devices_manage
     - OAuth2-passwordGrant:
         - client_devices_manage
+    - PersonalAccessToken: []
   parameters:
     - $ref: '#/parameters/clientDeviceId'
     - in: body

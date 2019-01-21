@@ -21,6 +21,7 @@ get:
         - client_access
     - OAuth2-passwordGrant:
         - client_access
+    - PersonalAccessToken: []
   responses:
     '200':
       description: Returns client list.
@@ -86,6 +87,7 @@ post:
         - client_create
     - OAuth2-passwordGrant:
         - client_create
+    - PersonalAccessToken: []
   responses:
     '201':
       description: Newly created client object

@@ -8,6 +8,7 @@ post:
         - sites_manage
     - OAuth2-passwordGrant:
         - sites_manage
+    - PersonalAccessToken: []
   parameters:
     - in: body
       name: site

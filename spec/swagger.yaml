@@ -244,11 +244,18 @@ info:
     All API requests must be made over HTTPS. Calls made over plain HTTP will
     fail. Additionally, all request must be
 
-    authenticated. Angelcam API authentication is based on OAuth2 Bearer tokens.
+    authenticated. Angelcam API uses two types of authentication first is based on
+    personal access tokens and second one is OAuth2.
 
 
-    We support two different authentication workflows (_grant types_ in terms of
-    OAuth):
+    Personal Access Token can be preferred authentication when you need to
+    access only to your own account, otherwise OAuth2 needs to be used when you
+    are creating an app for more angelcam users - so for example when you are
+    building your own application based on angelcam platform.
+
+
+    For OAuth2 we support two different authentication workflows (_grant types_
+    in terms of OAuth):
 
 
     * You ask your users for their Angelcam usernames and passwords (_resource
@@ -285,7 +292,7 @@ info:
     email, first name, last name, etc.
 
 
-    ## Refreshing access token with refresh token
+    ### Refreshing access token with refresh token
 
 
     The granted access_token is valid for expires_in seconds only. By default,
@@ -762,6 +769,22 @@ x-tagGroups:
       - site
       - site-camera
 securityDefinitions:
+  PersonalAccessToken:
+    type: apiKey
+    in: header
+    name: PersonalAccessToken
+    description: >
+      This authentication method should be used when your are accessing your
+      account. Only what you need is token which you send in all API request
+      headers for authentication. It's possible to restrict for what API call is
+      this token valid.
+
+      There is no expiration time, but it can be revoked manually.
+
+
+      Example of usage:
+
+          $ curl -H "Authorization: PersonalAccessToken <your_token>" -X GET "https://api.angelcam.com/v1/me/"
   OAuth2-accessCode:
     type: oauth2
     flow: accessCode
@@ -841,7 +864,7 @@ securityDefinitions:
 
       Here is an example of how the resulting request would look like:
 
-          GET https://api.angelcam.com/oauth/authorize/?response_type=code&client_id=XU0aXeP1299oS48KnZmxhqWUR928jsmFKosdrfMS&scope=read&state=my_csrf_secret&redirect_uri=http://a948dfc1.ngrok.io
+          GET https://api.angelcam.com/oauth/authorize/?response_type=code&client_id=XU0aXeP1299oS48KnZmxhqWUR928jsmFKosdrfMS&scope=user_access,camera_access&state=my_csrf_secret&redirect_uri=http://a948dfc1.ngrok.io
 
       All of these parameters will be validated by the authorization server. The
       users will then be asked to log in to

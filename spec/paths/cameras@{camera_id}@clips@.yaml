@@ -9,6 +9,7 @@ get:
         - recording_clips_access
     - OAuth2-passwordGrant:
         - recording_clips_access
+    - PersonalAccessToken: []
   parameters:
     - $ref: '#/parameters/cameraId'
   responses:
@@ -64,6 +65,7 @@ post:
     - OAuth2-passwordGrant:
         - recording_clips_access
         - recording_clips_create
+    - PersonalAccessToken: []
   responses:
     '201':
       description: Clip request was received and clip processing will start

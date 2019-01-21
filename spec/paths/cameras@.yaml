@@ -51,6 +51,7 @@ get:
         - camera_access
     - OAuth2-passwordGrant:
         - camera_access
+    - PersonalAccessToken: []
   responses:
     '200':
       description: Returns camera list.
@@ -113,6 +114,7 @@ post:
         - camera_create
     - OAuth2-passwordGrant:
         - camera_create
+    - PersonalAccessToken: []
   responses:
     '201':
       description: Newly created camera object

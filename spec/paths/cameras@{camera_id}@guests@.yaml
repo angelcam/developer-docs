@@ -22,6 +22,7 @@ get:
         - camera_guest_access
     - OAuth2-passwordGrant:
         - camera_guest_access
+    - PersonalAccessToken: []
   responses:
     '200':
       description: Returns camera guests list.
@@ -58,6 +59,7 @@ post:
         - camera_guest_manage
     - OAuth2-passwordGrant:
         - camera_guest_manage
+    - PersonalAccessToken: []
   responses:
     '201':
       description: Created
