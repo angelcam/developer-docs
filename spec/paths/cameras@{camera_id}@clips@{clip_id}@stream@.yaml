@@ -1,0 +1,33 @@
+get:
+  operationId: my-cameras-clips-stream
+  summary: Retrieve a clip stream
+  tags:
+    - clip
+  description: Retrieves stream of a recording clip
+  parameters:
+    - $ref: '#/parameters/cameraId'
+    - $ref: '#/parameters/clipId'
+    - name: start
+      in: query
+      type: string
+      format: date-time
+      required: true
+      description: 'Start time of a stream. Example: `2016-03-19T08:00:00Z`.'
+      x-example: '2017-01-01T00:00:00Z'
+  security:
+    - OAuth2-accessCode:
+        - recording_clips_access
+    - OAuth2-passwordGrant:
+        - recording_clips_access
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: OK
+      schema:
+        $ref: '#/definitions/StreamObject'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'

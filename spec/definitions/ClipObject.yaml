@@ -32,9 +32,6 @@ properties:
   sharing_token:
     type: string
     description: Security token for sharing the clip without authentication (UUID)
-  stream:
-    description: Stream for clip playback
-    x-$ref: '#/definitions/RecordingStreamResponse'
   download_url:
     type: string
     description: >-
@@ -49,7 +46,6 @@ required:
   - sharing_token
   - start
   - status
-  - stream
 example:
   id: b9aad334-07ba-4660-9f18-041875ec1ea4
   name: Frontdoor loitering
@@ -58,9 +54,5 @@ example:
   start: '2017-01-01T00:00:20'
   end: '2017-01-01T00:25:20'
   created_at: '2017-02-01T02:37:21'
-  stream:
-    format: hls
-    url: >-
-      https://rec-streamer-us-west-2.angelcam.com/streams/59a00adb74324ba891f26275739ea49c/playlist.m3u8
   download_url: >-
     https://s3.us-west-2.amazonaws.com/rec-prod.us-west-2.angelcam.com/c/944c8ee2-0230-4dbf-b03d-de09dc4a79da.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJ6CMNV7APGJB5JYQ%2F20180416%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20180416T093432Z&X-Amz-Expires=86400&X-Amz-Signature=40b3701f85114ed22f76a97e6b0c099b1dc7301645bd2db8380c5fa824c59455&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22Frontdoor%20loitering.mp4%22
