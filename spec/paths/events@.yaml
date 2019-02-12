@@ -46,3 +46,43 @@ post:
       description: The rate limit has been reached
       schema:
         $ref: '#/definitions/Error429TooManyRequests'
+get:
+  operationId: events-create-get
+  summary: Create event by get request
+  tags:
+    - event
+  description: >
+    In cases when it's not possible to send post request we allowed to create event by GET request.
+    In general you should avoid using this mehtod and rather prefer creating events via POST request.
+  parameters:
+    - name: hash
+      in: query
+      type: string
+      required: true
+      description: >
+        Event API hash (a unique token for each camera found in My
+        Angelcam dashboard or obtained
+
+        via Camera Resource) - used to authenticate the request and pair
+        the event with corresponding
+
+        camera.
+      x-example: 50yxnlu2o2
+    - name: title
+      in: query
+      type: string
+      required: false
+  security: []
+  responses:
+    '201':
+      description: Event was received
+      schema:
+        $ref: '#/definitions/EventObject'
+    '400':
+      description: The event hash is invalid or there's another error in the request
+      schema:
+        $ref: '#/definitions/Error400Invalid'
+    '429':
+      description: The rate limit has been reached
+      schema:
+        $ref: '#/definitions/Error429TooManyRequests'
