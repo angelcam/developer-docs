@@ -44,4 +44,5 @@ example:
   site: null
   source: smtp
   category: motion_detected
-  received_at: 2018-10-24T11:21:39Z
+  received_at: 2018-10-24T11:21:59Z
+  occurred_at: 2018-10-24T11:21:39Z

@@ -32,7 +32,7 @@ post:
             type: string
           occurred_at:
             type: string
-            fromat: datetime
+            format: datetime
         example:
           hash: 50yxnlu2o2
   security: []
