@@ -30,6 +30,9 @@ post:
               camera.
           title:
             type: string
+          occurred_at:
+            type: string
+            fromat: datetime
         example:
           hash: 50yxnlu2o2
   security: []
@@ -53,7 +56,7 @@ get:
     - event
   description: >
     In cases when it's not possible to send post request we allowed to create event by GET request.
-    In general you should avoid using this mehtod and rather prefer creating events via POST request.
+    In general you should avoid using this method and rather prefer creating events via POST request.
   parameters:
     - name: hash
       in: query

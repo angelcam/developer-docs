@@ -22,9 +22,14 @@ properties:
   source:
     type: string
     description: Name of event source
+  occurred_at:
+    type: string
+    format: datetime
+    description: Time when event occurred or was received by Angelcam
   received_at:
     type: string
-    description: Time when event occurred or was received by Angelcam
+    format: datetime
+    description: Time when event was received by Angelcam
 required:
   - camera
   - site
@@ -32,6 +37,7 @@ required:
   - category
   - source
   - received_at
+  - occurred_at
 example:
   title: Door open
   camera: 20

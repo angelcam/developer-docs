@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: 2018.02.19
+  version: 2018.04.04
   title: Angelcam API
   contact:
     email: support@angelcam.com
@@ -701,7 +701,7 @@ tags:
 
       However there are filters for `start` and `end` that may be used as an
       alternative or complement for pagination. Retrieved events list is ordered
-      by created datetime (newest first).
+      by occurred at datetime (newest first).
   - name: client
     x-displayName: Clients
     description: >
