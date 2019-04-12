@@ -1,0 +1,34 @@
+get:
+  operationId: acl-proposal-list
+  summary: Retrieve received ACL Proposal list for user
+  tags:
+    - acl-porposal
+  parameters:
+    - name: alive
+      in: query
+      type: integer
+      minimum: 0
+      maximum: 1
+      required: false
+      description: >-
+        Alive=1 lists proposals at alive_states only, alive=0 lists proposals at
+        abandoned_states only, undefined lists all proposals
+  security:
+    - OAuth2-accessCode:
+        - acl_proposal_access
+    - OAuth2-passwordGrant:
+        - acl_proposal_access
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: ACL Proposal List
+      schema:
+        $ref: '#/definitions/ACLProposalList'
+    '400':
+      $ref: '#/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'

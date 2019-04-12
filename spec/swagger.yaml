@@ -244,8 +244,8 @@ info:
     All API requests must be made over HTTPS. Calls made over plain HTTP will
     fail. Additionally, all request must be
 
-    authenticated. Angelcam API uses two types of authentication first is based on
-    personal access tokens and second one is OAuth2.
+    authenticated. Angelcam API uses two types of authentication first is based
+    on personal access tokens and second one is OAuth2.
 
 
     Personal Access Token can be preferred authentication when you need to
@@ -719,12 +719,27 @@ tags:
     description: >
       Endpoints for accessing and managing sites. Sites are hiearchical
       structure that can be used to organize cameras. Any camera is assigned
-      exactly to one site. Each user has a root site. ID of root site can be
-      obtained from [Current User Info Endpoint](#tag/user).
+      exactly to one site. Each user has a default site. ID of default site can
+      be obtained from [Current User Info Endpoint](#tag/user).
 
         Site can be armed or disarmed. If site is in armed state user will be notified when some event occurs on given site. 
         
-        If site is armed or disarmed all its descendants are also (dis)armed.
+        If site is armed or disarmed all its descendants are also (dis)armed. 
+        Sites have a tree hierarchy (2 levels).
+        Any site at either level can have cameras/sensors attached to them.
+
+        
+        There are two basic kinds of sites (and a special “default” site):
+        
+        - “Incident-gathering” sites (top level - does not have a parent):
+        These can be shared, armed etc. Example: home, cottage, shop etc.
+        These are always at the top of hierarchy (they are neither within any other sites, nor can be put inside each other).
+        - “Non-incident gathering” sites (bottom level - has parent site):
+        These can’t be individually shared or armed etc. and only present a subdivision of an “incident-gathering” site. Examples: kitchen, living room, bedroom, front door etc.
+        These are always at the bottom of the hierarchy (always within an incident-gathering site; and no site can be within these; and these can’t be within each other)
+        - “Default” site (a special singleton site):
+        There is exactly 1 default site for each user and all uncategorized devices (cameras or sensors that are not associated with any specific site) are here. This site cannot be shared, armed or have sub-sites.
+
         
         Camera can be moved from site to site using [Camera Endpoints](#tag/camera)
   - name: client-device
@@ -738,7 +753,90 @@ tags:
     description: >
       Endpoints for managing broadcasting settings. If a camera doesn't have the
       Broadcasting application, all camera broadcasting endpoints will return
-      404. 
+      404.
+  - name: acl-porposal
+    x-displayName: ACL Proposals
+    description: >
+      ACL=”access control list”, for granting rights (e.g. can arm/disarm, or
+      share sites etc.) to users per [incident-gathering sites](#tag/site).
+
+      An ACL granted to a user on a site is implicitly also granted to any sites
+      below it.
+
+
+      ACL Proposal implements 1) the flow of sharing 2) the changelog. 
+        
+      It can represent the complete history of change transitions because 1) the
+      state transitions can never return (each state can be entered only once),
+      2) their order is unambiguously defined.
+
+
+      “Alive” states are PROPOSED and ACCEPTED. 
+
+      There can be only one ACCEPTED proposal per (site, user) combination at
+      any time. If any of the admins creates a new proposal for a user who
+      already has a pre-existing proposal in ACCEPTED state, the previously
+      ACCEPTED proposal gets OBSOLETE and the new proposal is immediately /
+      automatically saved as ACCEPTED (skips the PROPOSED state).
+
+
+      States are -  PROPOSED, ACCEPTED, REJECTED, DROPPED, REVOKED, OBSOLETE
+
+
+
+      Allowed state transitions:
+
+
+      - Non-existent -> PROPOSED (a site is shared with a peer who previously
+      had no access to said site)
+
+
+      - Non-existent -> ACCEPTED (if a user already owns a proposal in ACCEPTED
+      state and an admin proposes a new one (then the new one is already created
+      in ACCEPTED state, replacing the old ACCEPTED one). Also, if an admin
+      updates metadata on themselves)
+
+
+      - PROPOSED -> ACCEPTED (peer accepts invitation)
+
+      - PROPOSED -> REJECTED (peer rejects invitation)
+
+      - ACCEPTED -> DROPPED (peer revokes his own right; they can’t undo this)
+
+      - PROPOSED, ACCEPTED -> REVOKED (owner revokes the right; again can’t be
+      revoked)
+
+      - PROPOSED, ACCEPTED -> OBSOLETE can not be changed to this state by user,
+      triggered by a) for PROPOSED when proposal in “PROPOSED” state already
+      exists and new one is sent old one becomes OBSOLETE; b) for ACCEPTED when
+      user already has ACCEPTED a proposal before and a new one is proposed to
+      him (and thus automatically accepted), the old one becomes OBSOLETE.
+
+
+      Lists have filter by query parameter alive[yes,no,any: 1, 0, undefined].
+      Alive=1 lists proposals at alive_states only, alive=0 lists proposals at
+      abandoned_states only, undefined lists all proposals
+
+
+      List received proposals for user:
+
+
+      - User can view all proposals for any site issued to him (user=me)
+
+
+      List issued proposals per site:
+
+
+      - User with current “admin” (implies having “view_acls” as well )rights in
+      ACLs views all proposals issued for site; exactly same behaviour for site
+      owner (he has ADMIN rights)
+
+      - User with current “view_acls” (but not admin) rights in ACLs views all
+      proposals issued for site issued to him (any state) + “accepted” (not
+      “alive”) state by other users
+
+      - User with no current rights in ACLs (implies no proposals at “accepted”
+      state) views all proposals issued to him for the site -> history
 x-tagGroups:
   - name: General
     tags:
@@ -768,6 +866,9 @@ x-tagGroups:
     tags:
       - site
       - site-camera
+  - name: ACLs management
+    tags:
+      - acl-porposal
 securityDefinitions:
   PersonalAccessToken:
     type: apiKey
@@ -816,6 +917,9 @@ securityDefinitions:
       sites_manage: 'Permission to create, update and delete sites'
       client_devices_access: Permission to access client devices
       client_devices_manage: 'Permission to create, update and delete client devices'
+      acl_proposal_create: Permission to create ACL proposal
+      acl_proposal_manage: Permission to manage ACL proposal
+      acl_proposal_access: Permission to access ACL proposal
     description: >
 
       ![Authorization code grant sequence diagram](./assets/code_grant.png)
@@ -922,6 +1026,9 @@ securityDefinitions:
       sites_manage: 'Permission to create, update and delete sites'
       client_devices_access: Permission to access client devices
       client_devices_manage: 'Permission to create, update and delete client devices'
+      acl_proposal_create: Permission to create ACL proposal
+      acl_proposal_manage: Permission to manage ACL proposal
+      acl_proposal_access: Permission to access ACL proposal
     description: >
       ![Password grant type sequence diagram](./assets/password_grant_type.png)
 
@@ -1009,6 +1116,14 @@ parameters:
     x-example: 1
     required: true
     description: Device ID
+  aclProposalId:
+    name: acl_proposal_id
+    in: path
+    type: integer
+    minimum: 1
+    x-example: 22
+    required: true
+    description: ACL Proposal ID
 responses:
   EmptyResponse:
     description: Empty response

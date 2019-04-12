@@ -1,0 +1,70 @@
+post:
+  operationId: acl-proposal-create
+  summary: Create ACL proposal
+  tags:
+    - acl-porposal
+  security:
+    - OAuth2-accessCode:
+        - acl_proposal_create
+    - OAuth2-passwordGrant:
+        - acl_proposal_create
+    - PersonalAccessToken: []
+  parameters:
+    - in: body
+      name: acl-proposal
+      schema:
+        type: object
+        required:
+          - site_id
+          - user_email
+          - payload
+        properties:
+          site_id:
+            type: integer
+            example: 22
+            description: Site id
+          user_email:
+            type: string
+            example: example@test.com
+            description: Email address to which site is shared with
+          payload:
+            type: object
+            required:
+              - rights
+            properties:
+              caption:
+                type: string
+                example: Site Admin
+                description: >-
+                  “Label/caption” for clarity for the presentation layer
+                  (“owner”, “trusted peer” etc.)
+              rights:
+                type: array
+                items:
+                  type: string
+                  enum:
+                    - admin
+                    - arm
+                    - view_acls
+                    - respond
+                    - view
+                    - create_clips
+                description: >-
+                  view_acls have to be present with any other rights except
+                  admin and can not be sent as only right. Not all rights
+                  implemented in use for MVP (e.g. respond or create_clips)
+              metadata:
+                type: object
+                description: E.g. response delay or scope of view - not yet defined
+            description: JSON with ACL details to populate the ACL model
+  responses:
+    '201':
+      description: CREATED
+      schema:
+        $ref: '#/definitions/ACLProposalObject'
+    '400':
+      $ref: '#/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'

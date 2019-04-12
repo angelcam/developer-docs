@@ -14,6 +14,9 @@ properties:
     description: >-
       If site is not armed user will not get notifications when something
       happens.
+  default_site:
+    type: boolean
+    description: Indicates if site is default site
   cameras:
     $ref: '#/definitions/SiteCameraList'
   parent:
@@ -22,8 +25,8 @@ properties:
       - 'null'
     minimum: 1
     description: >-
-      Parent site ID. If value is `null` it means that current object is root
-      site.
+      Parent site ID. If value is `null` and site is not default site it means
+      that current object is incident-gathering site
   children:
     type: array
     description: Children sites IDs
