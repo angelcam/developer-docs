@@ -1,0 +1,32 @@
+type: object
+required:
+  - rights
+properties:
+  caption:
+    type: string
+    description: >-
+      “Label/caption” for clarity for the presentation layer (“owner”, “trusted
+      peer” etc.)
+  rights:
+    type: array
+    items:
+      type: string
+      enum:
+        - admin
+        - arm
+        - view_acls
+        - respond
+        - view
+        - create_clips
+      description: >-
+        view_acls have to be present with any other rights except admin and can
+        not be sent as only right. Not all rights implemented in use for MVP
+        (e.g. respond or create_clips)
+  metadata:
+    type: object
+    description: E.g. response delay or scope of view - not yet defined
+description: JSON with ACL details to populate the ACL model
+example:
+  caption: Site Admin
+  rights: admin
+  metadata: null

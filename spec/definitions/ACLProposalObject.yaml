@@ -1,0 +1,58 @@
+type: object
+title: ACL Proposal object
+properties:
+  id:
+    type: integer
+    minimum: 1
+    description: ACL Proposal ID
+  user:
+    type: integer
+    description: >-
+      User's to whom site has been shared with ID (created new or found by
+      email)
+  proposed_by:
+    type: integer
+    description: User's who sent the proposal ID
+  state:
+    type: string
+    enum:
+      - proposed
+      - accepted
+      - rejected
+      - dropped
+      - revoked
+      - obsolete
+    description: ACL Proposal's current state
+  site:
+    type: integer
+    description: Site ID
+  payload:
+    $ref: '#/definitions/PayloadObject'
+  proposed_at:
+    type: string
+    format: date-time
+    example: 2019-04-07T13:31:19.965Z
+    description: Timestamp of proposal creation
+  accepted_at:
+    type: string
+    format: date-time
+    example: 2019-04-07T13:31:19.965Z
+    description: Timestamp of proposal accepting
+  abandoned_at:
+    type: string
+    format: date-time
+    example: 2019-04-07T13:31:19.965Z
+    description: Timestamp of change to any of abandoned states
+example:
+  id: 1
+  user: 13
+  proposed_by: 4
+  state: revoked
+  site: 2
+  payload:
+    caption: Site Admin
+    rights: admin
+    metadata: null
+  proposed_at: 2019-04-07T13:31:19.965Z
+  accepted_at: 2019-04-08T13:31:19.965Z
+  abandoned_at: 2019-04-09T13:31:19.965Z

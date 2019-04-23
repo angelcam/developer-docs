@@ -1,0 +1,28 @@
+type: object
+title: ACL Proposal list
+properties:
+  count:
+    type: integer
+    description: Count of all ACL proposals
+  next:
+    type:
+      - string
+      - 'null'
+    format: uri
+    description: Next page from pagination
+  previous:
+    type:
+      - string
+      - 'null'
+    format: uri
+    description: Previous page from pagination
+  results:
+    type: array
+    description: List of ACL Proposals
+    items:
+      $ref: '#/definitions/ACLProposalObject'
+required:
+  - count
+  - next
+  - previous
+  - results
