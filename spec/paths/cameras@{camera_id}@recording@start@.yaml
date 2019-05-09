@@ -5,6 +5,18 @@ post:
     - recording
   parameters:
     - $ref: '#/parameters/cameraId'
+    - name: duration
+      in: query
+      type: integer
+      minimum: 1
+      maximum: 1800
+      description: >-
+        Time in seconds after which recording will be stopped. In case multiple
+        auto stop recording requests are received on same camera the one which
+        ends later will be applied. If this endpoint is called without this
+        parameter recording will not be stopped automatically and if there's
+        scheduled auto stop it will be canceled.
+      x-example: 30
   security:
     - OAuth2-accessCode:
         - recording_start_stop
