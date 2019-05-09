@@ -55,6 +55,18 @@ put:
             description: >
               Limited clients cannot connect new cameras or purchase any
               services, by themselves.
+          allowed_access:
+            type: boolean
+            description: >
+              This option can be used to give away access to the client user
+              account. A client action is required in order to get the access
+              again. (It is only possible to change this value from true to
+              false using this endpoint.)
+          password:
+            type: string
+            description: >
+              Set password for the client account. A special permission is
+              required for the reseller account in order to use this option.
         example:
           first_name: Joe
           last_name: Parker

@@ -75,6 +75,26 @@ post:
             description: >
               Limited clients cannot connect new cameras or purchase any
               services, by themselves.
+          allowed_access:
+            type: boolean
+            default: true
+            description: >
+              This option can be used to give away access to the client user
+              account. A client action is required in order to get the access
+              again.
+          activated:
+            type: boolean
+            default: false
+            description: >
+              Create the client account as already activated (i.e. do not send
+              the activation email). A special permission is required for the
+              reseller account in order to use this option.
+          password:
+            type: string
+            description: >
+              Create the client account with a given default password. A special
+              permission is required for the reseller account in order to use
+              this option.
         example:
           first_name: Joe
           last_name: Parker

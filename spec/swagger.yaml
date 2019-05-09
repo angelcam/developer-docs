@@ -244,8 +244,8 @@ info:
     All API requests must be made over HTTPS. Calls made over plain HTTP will
     fail. Additionally, all request must be
 
-    authenticated. Angelcam API uses two types of authentication first is based on
-    personal access tokens and second one is OAuth2.
+    authenticated. Angelcam API uses two types of authentication first is based
+    on personal access tokens and second one is OAuth2.
 
 
     Personal Access Token can be preferred authentication when you need to
@@ -792,6 +792,7 @@ securityDefinitions:
     tokenUrl: 'https://api.angelcam.com/oauth/token/'
     scopes:
       user_access: Permission to access user information
+      user_delete: Permission to delete the current user account
       camera_access: Permission to list cameras and to get details of a specific camera
       camera_create: Permission to create cameras
       camera_manage: Permission to update cameras
@@ -898,6 +899,7 @@ securityDefinitions:
     tokenUrl: 'https://api.angelcam.com/oauth/token/'
     scopes:
       user_access: Permission to access user information
+      user_delete: Permission to delete the current user account
       camera_access: Permission to list cameras and to get details of a specific camera
       camera_create: Permission to create cameras
       camera_manage: Permission to update cameras
