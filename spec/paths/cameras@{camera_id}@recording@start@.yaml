@@ -8,7 +8,7 @@ post:
     - name: duration
       in: query
       type: integer
-      minimum: 1
+      minimum: 30
       maximum: 1800
       description: >-
         Time in seconds after which recording will be stopped. In case multiple
