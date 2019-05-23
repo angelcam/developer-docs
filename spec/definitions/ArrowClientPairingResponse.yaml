@@ -1,0 +1,11 @@
+type: object
+title: Arrow client pairing response
+properties:
+  uuid:
+    type: string
+    format: uuid
+    description: UUID of the paired Arrow client
+required:
+  - uuid
+example:
+  uuid: 75b62326-eca3-4424-ab68-48e7da47e847

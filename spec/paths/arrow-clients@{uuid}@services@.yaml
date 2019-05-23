@@ -1,0 +1,25 @@
+get:
+  operationId: arrow-client-services
+  summary: List Arrow services
+  description: Get a list of services visible and available to a given Arrow client.
+  tags:
+    - arrow-clients
+  security:
+    - OAuth2-accessCode:
+        - arrow_client_access
+    - OAuth2-passwordGrant:
+        - arrow_client_access
+    - PersonalAccessToken: []
+  parameters:
+    - $ref: '#/parameters/arrowClientId'
+  responses:
+    '200':
+      description: OK
+      schema:
+        $ref: '#/definitions/ArrowClientServicesResponse'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'

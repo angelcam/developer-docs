@@ -1,0 +1,22 @@
+type: object
+title: Paired Arrow client
+properties:
+  uuid:
+    type: string
+    format: uuid
+    description: UUID of the Arrow client
+  mac:
+    type: string
+    format: mac
+    description: MAC address of the device running the Arrow client
+  ip:
+    type: string
+    description: Public IP address of the device running the Arrow client
+required:
+  - uuid
+  - mac
+  - ip
+example:
+  uuid: 75b62326-eca3-4424-ab68-48e7da47e847
+  mac: '12:34:56:78:9a:bc'
+  ip: 1.1.1.1

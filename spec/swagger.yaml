@@ -714,6 +714,36 @@ tags:
       on specified network address. Detection is asynchronous. For this reason
       there is one endpoint for initializing stream detection and one for
       retrieving result of detection.
+  - name: arrow-clients
+    x-displayName: Arrow clients
+    description: >
+      Endpoints for managing Arrow clients. Arrow client is an application that
+      powers all Angelcam ready devices such as AngelBoxes, Angelcam ready
+      cameras, etc. You can use these endpoints to pair Arrow clients with a
+      specific user account, to get some useful information about the clients
+      and the services they provide, and to give commands to the clients. Before
+      you are allowed to access an Arrow client, you need to pair it with your
+      user account.
+
+
+      ## Pairing an Arrow client
+
+      In order to pair an Arrow client with the current user account, you need
+      to:
+
+      1. Make sure that the Arrow client is in pairing mode. An Arrow client is
+      in pairing mode only the first 20 minutes after it's started, so you
+      probably need to restart the device with the Arrow client before you
+      initiate the pairing process.
+
+      2. Initiate the pairing process by sending a POST request to the
+      [`arrow-clients/`](#operation/arrow-client-pairing-request) endpoint. The
+      API will respond with Arrow client UUID.
+
+      3. Wait until the Arrow client connects to the Angelcam cloud. You can use
+      the returned UUID to poll the
+      [`arrow-clients/{uuid}/`](#operation/arrow-client-detail) endpoint until
+      the API responds with `online` status.
   - name: site
     x-displayName: Sites
     description: >
@@ -750,6 +780,7 @@ x-tagGroups:
       - shared-camera
       - camera-guest
       - camera-stream-detection
+      - arrow-clients
   - name: Recording
     tags:
       - recording
@@ -799,6 +830,8 @@ securityDefinitions:
       camera_delete: Permission to delete cameras
       camera_guest_access: Permission to access camera guest
       camera_guest_manage: Permission to manage camera guest
+      arrow_client_access: Permission to access Arrow clients
+      arrow_client_manage: Permission to manage Arrow clients
       event_access: Permission to access events
       recording_access: Permission to access camera recordings
       recording_manage: Permission to manage camera recording (incl. plan changes)
@@ -906,6 +939,8 @@ securityDefinitions:
       camera_delete: Permission to delete cameras
       camera_guest_access: Permission to access camera guest
       camera_guest_manage: Permission to manage camera guest
+      arrow_client_access: Permission to access Arrow clients
+      arrow_client_manage: Permission to manage Arrow clients
       event_access: Permission to access events
       recording_access: Permission to access camera recordings
       recording_manage: Permission to manage camera recording (incl. plan changes)
@@ -945,6 +980,14 @@ securityDefinitions:
 
       using the `oauth/token/` endpoint.
 parameters:
+  arrowClientId:
+    name: uuid
+    in: path
+    type: string
+    format: uuid
+    required: true
+    x-example: c95227c4-218c-4dee-899d-f3fa2ce9c39b
+    description: Arrow client UUID
   cameraId:
     name: camera_id
     in: path
@@ -1034,3 +1077,7 @@ responses:
     description: Body payload is invalid.
     schema:
       $ref: '#/definitions/Error400InvalidParams'
+  Error502BadGateway:
+    description: Unable to contact the target gateway.
+    schema:
+      $ref: '#/definitions/Error502BadGateway'

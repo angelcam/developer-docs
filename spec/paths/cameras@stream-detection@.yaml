@@ -11,8 +11,6 @@ post:
       name: streamdetectioninput
       schema:
         type: object
-        required:
-          - address
         properties:
           address:
             type: string
@@ -23,7 +21,27 @@ post:
               `rtsp://site.domain.com/camera1`, `132.45.32.21`. As you can see
               from examples `address` can optionally contain information about
               `port`, `username` and `password`. In such cases these fields can
-              be omitted from request body.
+              be omitted from request body. The `arrow_service` field must not
+              be present if the `address` field is being used.
+          arrow_service:
+            type: object
+            properties:
+              arrow_client:
+                type: string
+                format: uuid
+                description: Arrow client UUID
+              service_id:
+                type: string
+                description: Arrow service ID
+            description: >
+              Use this field for stream detection via an Arrow client. The
+              `path` field can be used to request detection on a specific
+              endpoint in addition to all endpoints tested by the stream
+              detector service. The `address` field must not be present if the
+              `arrow_service` field is being used.
+          path:
+            type: string
+            description: Stream path (if not given in the address field).
           port:
             type: integer
             minimum: 1

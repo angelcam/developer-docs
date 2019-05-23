@@ -1,0 +1,48 @@
+type: object
+title: Arrow service
+properties:
+  id:
+    type: string
+    description: Arrow service ID
+  type:
+    type: string
+    enum:
+      - http
+      - rtsp
+    description: Type of the service.
+  mac:
+    type: string
+    format: mac
+    description: >
+      MAC address of the device providing this service. The MAC address will be
+      valid only for services discovered via the network scan. In all other
+      cases, it will be a fake MAC address starting with `FF:FF` prefix.
+  ip:
+    type: string
+    description: >
+      IP address used by the corresponding Arrow client to connect to the
+      service (i.e. local IP address of the service).
+  port:
+    type: integer
+    description: >
+      Port number used by the corresponding Arrow client to connect to the
+      service (i.e. the port which the service is listening on).
+  camera_ids:
+    type: array
+    items:
+      type: integer
+    description: A list of cameras (their IDs) which use this service.
+required:
+  - id
+  - type
+  - mac
+  - ip
+  - port
+  - camera_ids
+example:
+  id: 21af
+  type: rtsp
+  mac: 'ff:ff:7f:00:00:01'
+  ip: 127.0.0.1
+  port: 554
+  camera_ids: []

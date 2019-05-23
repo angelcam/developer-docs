@@ -1,0 +1,7 @@
+allOf:
+  - $ref: '#/definitions/ErrorGeneric'
+title: Error 502 Bad Gateway
+example:
+  title: bad_gateway
+  detail: Bad Gateway
+  status: 502

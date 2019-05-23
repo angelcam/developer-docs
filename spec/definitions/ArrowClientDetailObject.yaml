@@ -1,0 +1,38 @@
+type: object
+title: Arrow client
+properties:
+  uuid:
+    type: string
+    format: uuid
+    description: UUID of the Arrow client
+  mac:
+    type: string
+    format: mac
+    description: MAC address of the device running the Arrow client
+  ip:
+    type: string
+    description: Public IP address of the device running the Arrow client
+  status:
+    type: string
+    enum:
+      - online
+      - offline
+      - not_paired
+    description: >
+      Current availability of the Arrow client. The `not_paired` value means
+      that there is an active pairing request for this client, however, the
+      client has not reached Angelcam servers yet.
+  scanning:
+    type: boolean
+    description: >
+      True if the client is currently scanning the target network, false
+      otherwise
+required:
+  - uuid
+  - status
+example:
+  uuid: 75b62326-eca3-4424-ab68-48e7da47e847
+  mac: '12:34:56:78:9a:bc'
+  ip: 1.1.1.1
+  status: online
+  scanning: true

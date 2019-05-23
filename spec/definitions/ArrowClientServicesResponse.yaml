@@ -1,0 +1,28 @@
+type: object
+title: A list of Arrow services
+properties:
+  count:
+    type: integer
+    description: Number of all services
+  next:
+    type:
+      - string
+      - 'null'
+    format: uri
+    description: Next page from pagination
+  previous:
+    type:
+      - string
+      - 'null'
+    format: uri
+    description: Previous page from pagination
+  results:
+    type: array
+    description: A list of Arrow services
+    items:
+      $ref: '#/definitions/ArrowServiceObject'
+required:
+  - count
+  - next
+  - previous
+  - results

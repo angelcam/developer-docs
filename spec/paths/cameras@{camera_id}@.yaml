@@ -70,13 +70,27 @@ put:
             description: >-
               Camera type. We currently support H.264 over RTSP and MJPEG over
               HTTP cameras.
+          connection_type:
+            type: string
+            enum:
+              - direct
+              - arrow
+            description: >
+              How is the camera connected to Angelcam. The `direct` connection
+              means that the camera stream is available on a public IP address.
+              The `arrow` option can be used for connecting cameras that can be
+              accessed via an Arrow client. Please note that cameras connected
+              via an Arrow client use URL in a specific format. You will need to
+              use the [stream detection](#tag/camera-stream-detection) endpoints
+              to obtain the URL first.
           url:
             type: string
             format: url
-            description: >-
-              Complete URL of a camera stream. H.264 cameras need to have "rtsp"
+            description: >
+              Complete URL of a camera stream. H.264 cameras must use "rtsp"
               scheme, for MJPEG cameras it's allowed to use "http" and "https"
-              schemes.
+              schemes. The "https" scheme is valid only for cameras using the
+              `direct` connection type.
         example:
           name: My updated shiny camera
           type: h264

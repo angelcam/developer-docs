@@ -1,0 +1,67 @@
+get:
+  operationId: arrow-clients-list
+  summary: List paired Arrow clients
+  description: Get a list of Arrow clients paired with the current user account.
+  tags:
+    - arrow-clients
+  security:
+    - OAuth2-accessCode:
+        - arrow_client_access
+    - OAuth2-passwordGrant:
+        - arrow_client_access
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: OK
+      schema:
+        $ref: '#/definitions/ArrowClientsResponse'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+post:
+  operationId: arrow-client-pairing-request
+  summary: Request pairing of an Arrow client
+  description: >
+    Request pairing of a given Arrow client with the current user account.
+    Either the `uuid` parameter or the `angelbox_id` parameter is required. In
+    case the Arrow client has been paired already, the API will check if the
+    current user can access the client. If the user can access the client, the
+    API will respond with UUID of the client (i.e. the standard response).
+    Otherwise, the API will respond with "Permission Denied".
+  tags:
+    - arrow-clients
+  security:
+    - OAuth2-accessCode:
+        - arrow_client_manage
+    - OAuth2-passwordGrant:
+        - arrow_client_manage
+    - PersonalAccessToken: []
+  parameters:
+    - in: body
+      name: request
+      schema:
+        type: object
+        properties:
+          uuid:
+            type: string
+            format: uuid
+            description: UUID of the paired Arrow client
+          angelbox_id:
+            type: string
+            description: AngelBox ID
+        example:
+          uuid: 75b62326-eca3-4424-ab68-48e7da47e847
+  responses:
+    '200':
+      description: OK
+      schema:
+        $ref: '#/definitions/ArrowClientPairingResponse'
+    '400':
+      $ref: '#/responses/Error400InvalidBody'
+    '401':
+      $ref: '#/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/responses/Error404NotFound'
