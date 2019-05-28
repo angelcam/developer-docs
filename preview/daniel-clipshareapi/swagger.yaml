@@ -1,0 +1,2900 @@
+swagger: '2.0'
+info:
+  version: 2018.08.13
+  title: Angelcam API
+  contact:
+    email: support@angelcam.com
+  x-logo:
+    url: ./assets/logo-angelcam.svg
+  description: |
+
+    # Angelcam API
+
+    > If you have any questions please feel free to contact our API team via email at
+    > support@angelcam.com.
+
+    Welcome! This document will help guide you through how to use Angelcam’s RESTful API. You’ll find that the
+    RESTful API is not difficult to use, but does require some understanding of certain concepts behind
+    Angelcam service.
+
+    To begin, you MUST contact Angelcam support before using the API to request both a client ID and secret, for
+    authorization, and an authorization grant type.
+
+    ## Quick-start Guide
+
+    > This example assumes you will use the API to access cameras under your Angelcam account. If your service
+    > needs to access someone else's camera you will need to use more complicated
+    > [Authorization code grant type](authentication).
+
+    ### Obtain the access token
+
+    You will need the client ID as well as the username and password of your Angelcam account. E.g. if your
+    client ID is `DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo` and your Angelcam account is ` user@example.com` with
+    password `mypassword` (this is the password you use to login to My Angelcam site; if you were given
+    client secret by Angelcam support, you don't need it at the moment) the request would be
+
+        $ curl -X POST https://my.angelcam.com/oauth/token/ -d "client_id=DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo&grant_type=password&username=user%40example.com&password=mypassword"
+
+    The API response should look like
+
+        {"refresh_token": "aFBNWhoLnq7hSTEVII5ELd9g20NjxC", "scope": "read write", "access_token": "1CP9xR6tqpRHzaZxWcFAp3GtkFcXEQ", "expires_in": 36000, "token_type": "Bearer"}
+
+    ### Verify the authorization worked
+
+        $ curl -H "Authorization: Bearer 1CP9xR6tqpRHzaZxWcFAp3GtkFcXEQ" -X GET "https://api.angelcam.com/v1/me/"
+
+    You should see information about your account
+
+        {"id":1234,"email":"user@example.com","first_name":"Keyshawn","last_name":"Jacobs","phone":"+1608494652"}
+
+    ### Use the access token to access the API endpoints
+
+        $ curl -H "Authorization: Bearer 1CP9xR6tqpRHzaZxWcFAp3GtkFcXEQ" -X GET "https://api.angelcam.com/v1/cameras/?limit=5"
+
+    See the reference section for available resources and corresponding endpoints.
+
+    ## Nuts and bolts
+
+    ### Plain JSON
+
+    The RESTful API runs over HTTP/1.1 and communicates using plain `application/json`.
+
+    ### Trailing /
+
+    Lastly, please keep in mind that all endpoint URLs require a trailing slash (`/`). For example,
+    `cameras/282929/recording`, will result in a "404 Not Found". The correct URL in this case, with a trailing slash, is
+    `cameras/282929/recording/`.
+
+    ### Caching
+
+    The API doesn't include any additional caching features, besides what is implied by the protocol layer.
+
+    ### Rate limiting
+    Some endpoints have rate limiting in place to protect our service from excessive amounts of requests. If you reach the limit, the server will respond with HTTP 429 and the `Retry-After` HTTP header will be set to the number of seconds that your client needs to wait before retrying the request.
+    ### Resource Embedding and Field Fetching
+
+    This API doesn't support the embedding of related resources, nor client-driven field fetching.
+
+    ## Pagination
+
+    Some endpoints, like `cameras/`, employ pagination with the use of the `limit` and `offset` parameters. Each paginated
+    endpoint response has these fields:
+
+    - `count` - total number of items
+    - `next` - is link to next page of paginated result, can be null if reached end of set
+    - `previous` - is link to previous set of paginated result, can be null if `offset` is 0
+    - `results` - current paginated set
+
+    We recommend you always explicitly set the `limit` parameter to ensure you know how many results, per page, you'll get.
+    If you omit `limit`, the page will contain 100 items, at most.
+
+    ### Setting the limit parameter
+
+    Let’s say you need to request all the cameras of the user, but only want 5 results at a time. Your `GET` would look
+    something like this:
+
+        $ curl -H "Authorization: Bearer <your_token>" -X GET "https://api.angelcam.com/v1/cameras/?limit=5"
+
+    Note the `limit` parameter in this call is set to 5, so the response shows items 0 through 4.
+
+    ### GET the next page of results
+
+    Next, let’s say you want to make a call to return the next page from the previous example. As you’ll see below, the
+    `offset` parameter in the following sample link is 5, so the next page of results will show items 5 through 9:
+
+        $ curl -H "Authorization: Bearer <your_token>" -X GET "https://api.angelcam.com/v1/cameras/?limit=5&offset=5"
+
+    ### How do I know if there are more pages?
+
+    When the response contain null value of `next`, you know that you've reached the end.
+
+    ## Time and duration formats
+
+    ### Time and date formats
+
+    Whenever you need to specify or have the API send you a date and time, it will be in the ISO 8601
+    _YYYY-MM-DDTHH:MM:SSZ_ format (i.e. 2016-03-19T13:15:32Z) where:
+
+    * YYYY is the year (i.e. 2016), MM is the month (i.e. 03), and DD is the day of the month (i.e. 19)
+    * T is the delimiter between the date and time
+    * HH is the hour, in 24-hour format (i.e. 1PM is 13), MM is the minute (i.e. 15), and SS is the seconds (i.e. 32)
+    * Z indicates the UTC (GMT 0) timezone
+
+    All times from the API have both a date and time. You must pass a time part in all inputs, even if it's 00:00:00.
+
+    All times from the API are in UTC. Similarly, all time inputs are expected in a UTC timezone.
+
+    ### Duration format
+
+    Some parts of the API, like the retention field in `cameras/{camera_id}/` and `cameras/`, use duration to denote a
+    span of time (i.e. "30 days" or "2 months"). We use the standard ISO 8601 duration format which uses the
+    _P[n]Y[n]M[n]DT[n]H[n]M[n]S_ format. Here are a few examples of various durations:
+
+    * P30D - 30 days
+    * P2M - 2 months
+    * P2M10D - 2 months and 10 days
+    * P3Y6M4DT12H30M5S - 3 years, 6 months, 4 days, 12 hours, 30 minutes, and 5 seconds
+
+
+    # Authentication
+
+    All API requests must be made over HTTPS. Calls made over plain HTTP will fail. Additionally, all request must be
+    authenticated. Angelcam API authentication is based on OAuth2 Bearer tokens.
+
+    We support two different authentication workflows (_grant types_ in terms of OAuth):
+
+    * You ask your users for their Angelcam usernames and passwords (_resource owner password-based_ in terms of OAuth)
+    * You ask Angelcam and we authenticate your users, similar to how Google or Facebook works if you choose "Sign-in using
+      Google/Facebook" (_authorization code_ in terms of OAuth)
+
+    Both authentication types result in the same - you exchange username/password or authorization code by calling
+    `/oauth/token/` endpoint for access token. All API calls must supply this access token with
+    `Authorization: Bearer <your_access_token>` as header. For example, with cURL commandline tool, your request would
+    contain something like this:
+
+        $ curl -H "Authorization: Bearer <your_token>" -X GET  "https://api.angelcam.com/v1/cameras/?limit=5"
+
+    These access tokens also have a limited-time validity (usually 10 hours) and you’ll have to [ask for new access token
+    using refresh token](#introduction/authentication/refreshing-access-token-with-refresh-token) when current access token
+    expires.
+
+    An authenticated user can use `me/` to ask for account details including email, first name, last name, etc.
+
+    ## Refreshing access token with refresh token
+
+    The granted access_token is valid for expires_in seconds only. By default, it's set at 36000 seconds (10 hours) but you
+    must always keep this value in mind and refresh the access token before it expires. A common practice of how to manage
+    expiration is to refresh a token when you get a `401 Unauthorized` from any endpoint since all API endpoints must be
+    authenticated.
+
+    Example of unauthorized response:
+
+        HTTP/1.1 401 Unauthorized
+        Date: Thu, 27 Apr 2017 10:41:58 GMT
+        Content-Type: application/json
+        WWW-Authenticate: Bearer realm="api"
+
+        {"status":401,"title":"not_authenticated","detail":"Authentication credentials were not provided."}
+
+    A new `access_token` can be obtained using a `refresh_token` when the current one expires. A `refresh_token` has no
+    expiration date but it can only be used once. A new `refresh_token` is issued when the client refreshes the
+    `access_token`, which causes all previous tokens to become invalid.
+
+    To refresh the `access_token`, send another `POST` request to `oauth/token/` endpoint with:
+
+    * `refresh_token`,
+    * `client_id`,
+    * `grant_type` with `refresh_token` value
+    * `username` and `password` aren't required this time
+
+    The server will then generate a fresh `access_token` and a new `refresh_token`.
+
+    A refresh token can be invalidated by the `oauth/token-revoke/` endpoint. This usually occurs when a user logs out of
+    your app or is performed by the Angelcam support team, upon request by the user or due to security concerns. In any
+    case, you will need to then ask the user to grant authorization to your app again.
+host: api.angelcam.com
+basePath: /v1
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+tags:
+  - name: user
+    x-displayName: User
+  - name: camera
+    x-displayName: My cameras
+    description: |
+
+      With the cameras/ endpoint, you can obtain a paginated list of the current user's cameras. Alternatively, if you know a
+      camera's ID you can get the same information using the cameras/{camera_id}/ endpoint. In both cases you get important
+      camera information:
+
+      * camera ID, name and type
+      * snapshot (thumbnail of recent camera content)
+      * status (online, offline, unknown, ...)
+      * list of live stream URLs in various formats to watch
+
+      ## Camera and stream types
+
+      Angelcam platform supports cameras with video in one of two formats: H.264 or MJPEG. While many cameras support
+      both formats, you need to choose which one to use to connect you camera to Angelcam. This is indicated by property
+      "type" of the camera resource.
+
+      The video stream from the camera can be retrieved from Angelcam CDN. For MJPEG type cameras you obtain only
+      a MJPEG live stream. For H.264 type cameras, you can choose from multiple stream:
+
+       * MJPEG
+       * HLS
+       * fMP4
+
+      Each format has different characteristics making it suitable for certain usecases.
+
+      ### MJPEG
+
+      [MJPEG](https://en.wikipedia.org/wiki/Motion_JPEG) (or Motion JPEG) is a stream of images in JPEG format.
+      It does not contain audio track and uses more bandwidth than H.264 format. On the other, you can easily
+      embed it into HTML page using <img> tag and most modern browsers will just play it out of the box
+      (please note that Internet Explorer does not support MJPEG). Playing MJPEG is resource eficient so it's
+      the prefered format if you need to have display streams from more cameras on a single page. Another advantage
+      is that you can specify the refresh rate of the stream (e.g. only one frame per 10 seconds) to save
+      the bandwidth.
+
+      ### HLS
+
+      [HLS](https://en.wikipedia.org/wiki/HTTP_Live_Streaming) (or HTTP Live Streaming) is HTTP-based protocol
+      designed by Apple and supported by majority of the video players and web browsers. It is the prefered format
+      of video stream for most usecases. Angelcam CDN provides the video as it is generated by the camera so
+      the properties such as bitrate or image quality can vary depending on the camera settings and the encoder
+      implementation. Please note that playback of H.264 video is resource intensive and playing multiple
+      streams at once can cause signicant load on the viewers system.
+
+      ### fMP4 (experimental)
+
+      [fMP4](https://tools.ietf.org/html/draft-pantos-http-live-streaming-23#section-3.3) (or Fragmented MP4)
+      is video format provided by Angelcam CDN as an experimental feature for usecases requiring low latency
+      between the live stream and real time. It does not contain audio track and can cause playback issues
+      in some browser and camera combinations. Therefore we do not recommend using fMP4 in your application.
+
+      ## Snapshot
+
+      A snapshot is an affordable and quick way to give your users a sample of their on-going live stream, by periodically
+      saving a picture of it. It's intended to give a preview of the camera's content without actually creating a connection
+      to the live stream, which can be a resource-expensive operation.
+
+      Please note, a snapshot may be up to 24 hours old but we'll auto initiate refreshing when you access camera endoints in
+      API. If age is important to you, check the created_at field in the snapshots array returned by the
+      `cameras/{camera_id}/` and `cameras/` endpoints.
+
+      In cases where a more recent image is required, you can use a live snapshot or a MJPEG stream with a low frame rate
+      instead.
+
+      ## Live snapshot
+      The live snapshot is a static picture of what the camera is currently shooting at the moment. This actually creates
+      a connection to the camera and extracts the last keyframe from the camera stream.
+
+      ## Live stream from camera
+
+      The live stream is what the camera is currently shooting at the moment. For H.264 type cameras, you can choose from
+      URLs in multiple live stream formats:
+
+       * HLS
+       * fMP4
+       * MJPEG
+
+      For MJPEG type cameras you can output only a MJPEG live stream.
+
+      ## Camera applications
+
+      Connecting a camera and being able to get a snapshot or watch a live stream is offered to every Angelcam user, but to
+      get the most out of a camera, users usually add some apps. Among other information, the cameras/{camera_id}/ and
+      cameras/ endpoints will tell you apps added to a user's camera as a list of app codes.
+
+      We currently support these applications in this API with the following codes (uppercase):
+
+      * LSA - Broadcasting
+      * CRA - Cloud Recording
+      * VVA - Video Verification
+      * VPA - Video Guard
+
+      The applications added to a camera depend on the user's country as some of them are not available in every country.
+  - name: shared-camera
+    x-displayName: Shared cameras
+    description: |
+      For access to cameras which somebody shared with you. In general everything is same as in my cameras section, see above, there is only one difference. Together with cameras information you get also a basic information about camera owner, like name and email.
+  - name: camera-guest
+    x-displayName: Manage camera guests
+    description: |
+      You can share your camera with a guest, this means, you allow guests to view stream from your camera. There is also an option to share also recordings together with live stream.
+
+      When you adding new guest, you just need their email. Then we send them an email informing them that you share camera with them. In case when there was no account with given email we precreate an account for these guest.
+  - name: recording
+    x-displayName: My cameras recording
+    description: |
+
+      ![Recording sequence diagram](./assets/recording_sequence.png)
+
+      The Cloud Recording application (CRA) safely stores any content captured by your camera to the cloud. If a camera
+      doesn't have the CRA application, all camera recording endpoints will return 404. Otherwise, you can start by asking general
+      recording information using the `cameras/{camera_id}/recording/` endpoint.
+
+      Most notably, this endpoint tells you whether the camera is currently recording or not (i.e. recording might not have
+      been started by the user yet, there’s an error, etc.). As with all "active" operations, the user must use our web
+      application to start a recording.
+
+      Another piece of information reported by this endpoint is the retention period, which dictates how long a video will be
+      stored. This is particularly useful for obtaining a `cameras/{camera_id}/recording/timeline/`.
+
+      ## Timeline and segments
+
+      It's important to note that in the Angelcam API there are some terms that sound similar but have different meanings:
+
+      * _record_ (noun) - a continuous block of video content, as stored by the recording. To clearly distinguish it from a
+        “recording” we called it a _record segment_ or simply, _segment_.
+      * _recording_ (verb) - the process of capturing a record, or records, which are then stored.
+
+      Timeline listening at the `cameras/{camera_id}/recording/timeline/` endpoint is a collection of record segments for a
+      given camera and time interval. In  order to save bandwidth and resources, the maximum length of timeline you can
+      request, per single call, is 24 hours.
+
+      If a recording was running uninterrupted, within a specified start and end time, the result will contain one segment.
+      Often "missing" slots will appear on the timeline, usually because the user may have manually stopped the recording or
+      there were some camera errors.
+
+      ## Recording stream
+
+      If you know which video segment(s) from the timeline you want to play, calling `cameras/{camera_id}/recording/stream/`
+      will create a stream from that specified segment(s) and tells you its URL and format.
+
+      Using `start` and `end` query parameters, you can specify a beginning and ending time of the stream. You can even omit
+      the `end` parameter and the stream will play until the very end of the recorded footage or, if the camera is currently
+      recording, the stream will continue uninterrupted.
+
+      Among other things, the endpoint tells you the URL of `recording/stream/{streamer_name}/{stream_id}/` with the stream's
+      additional details.
+
+      ## Syncing stream and timeline
+
+      Due to various reasons, the time a user spends watching a stream doesn't necessarily have to match the time actually
+      elapsed in the recorded video (i.e. a 5-minute long stream takes 6 minutes to watch on a user's slow mobile network
+      connection due to lag).
+
+      Periodically calling endpoint, `recording/stream/{streamer_name}/{stream_id}/`, comes in handy in this case, because it
+      synchronizes the time shown to the user in your UI, with the current time of the stream. This endpoint tells you the
+      exact time where the stream is positioned at the current moment. You normally don't have to know the `streamer_name`
+      and `streamer_id` path parameters, but use the generated endpoint URL as reported by `stream_info` field from
+      `cameras/{camera_id}/recording/stream/`.
+  - name: shared-camera-recording
+    x-displayName: Shared cameras recording
+    description: |
+      Everything is same as in recording for my own cameras. Just replace `cameras` by `shared-cameras` in every endpoints url.
+  - name: clip
+    x-displayName: Recording Clips
+    description: Recording Clips
+  - name: event
+    x-displayName: Events
+    description: Events
+  - name: client
+    x-displayName: Clients
+    description: |
+      This part of API makes sense only for reseller users. It provides them a way to manage their clients.
+x-tagGroups:
+  - name: General
+    tags:
+      - user
+  - name: Camera management
+    tags:
+      - camera
+      - shared-camera
+      - camera-guest
+  - name: Recording
+    tags:
+      - recording
+      - shared-camera-recording
+      - clip
+  - name: Events
+    tags:
+      - event
+  - name: Clients management
+    tags:
+      - client
+securityDefinitions:
+  OAuth2-accessCode:
+    type: oauth2
+    flow: accessCode
+    authorizationUrl: 'https://api.angelcam.com/oauth/authorize/'
+    tokenUrl: 'https://api.angelcam.com/oauth/token/'
+    scopes:
+      user_access: Permission to access user information
+      camera_access: Permission to list cameras and to get details of a specific camera
+      camera_create: Permission to create cameras
+      camera_guest_access: Permission to access camera guest
+      camera_guest_manage: Permission to manage camera guest
+      event_access: Permission to access events
+      recording_access: Permission to access camera recordings
+      recording_manage: Permission to manage camera recording (incl. plan changes)
+      recording_clips_access: Permission to access recording clips
+      recording_clips_create: Permission to create recording clips
+      recording_clips_share: Permission to share recording clips
+      client_access: Permission to list resellers clients and get details of a cpecific client
+      client_create: Permission to create client account
+      client_manage: Permission to update clients detail
+    description: |
+
+      ![Authorization code grant sequence diagram](./assets/code_grant.png)
+
+      The authorization code grant should be very familiar if you've ever signed into a web app using your Facebook or Google
+      account.
+
+      Authorization code grant type is safer but more difficult to implement and requires the presence of a web browser on
+      the user's machine to display an Angelcam account sign-in web page. When users submit the form and confirm that your
+      app will have access to their data, we check their credentials and redirect them back to a URL of your app
+      (`redirect_uri`), which you have specified. This process works in the very same way as when you click a "Sign-in using
+      Google/Facebook" button.
+
+      Your app sends GET to `https://api.angelcam.com/oauth/authorize/` with the following query parameters:
+
+      * `response_type` (required)- authorization grant type with fixed value `code`
+      * `client_id` (required)- your client ID, obtained from Angelcam
+      * `redirect_uri` (required)- URI within your app where users will be redirected after a successful authentication. You
+        must ask Angelcam to whitelist chosen `redirect_uri` for your client ID otherwise you will get a 400 response with
+        "Mismatching redirect URI" error.
+      * `scope` (required) - space delimited list of scopes
+      * `state` (optional) - value that serves as [CSRF](https://en.wikipedia.org/wiki/Cross-site_request_forgery) token.
+        This parameter is optional but highly recommended. You should store the value of the CSRF token and compare the
+        `state` returned by Angelcam with the value you sent in the original request.
+
+      Here is an example of how the resulting request would look like:
+
+          GET https://api.angelcam.com/oauth/authorize/?response_type=code&client_id=XU0aXeP1299oS48KnZmxhqWUR928jsmFKosdrfMS&scope=read&state=my_csrf_secret&redirect_uri=http://a948dfc1.ngrok.io
+
+      All of these parameters will be validated by the authorization server. The users will then be asked to log in to
+      approve your app.
+
+      ![Click to see picture of *OAuth screen asking for user approval](./assets/api_oauth_code_authorize_app.png)
+
+      If your `redirect_uri` is for example `https://api.mysuperapp.com/oauth/authorized/`, the resulting URL we redirect
+      your users to will be:
+
+          https://api.mysuperapp.com/oauth/authorized/?state=my_csrf_secret&code=hTmV8rbgz2TR2DFr1jha2aOTdMKFHY.
+
+      Note these query parameters were appended to redirect URI:
+
+      * `state` - the state parameter sent in the original request. You should compare this with the value you previously
+        saved to ensure that the authorization code obtained through requests were made by the same client
+      * `code` - the authorization code that you will exchange at `oauth/token/` for a bearer token
+  OAuth2-passwordGrant:
+    type: oauth2
+    flow: password
+    tokenUrl: 'https://api.angelcam.com/oauth/token/'
+    scopes:
+      user_access: Permission to access user information
+      camera_access: Permission to list cameras and to get details of a specific camera
+      camera_create: Permission to create cameras
+      camera_guest_access: Permission to access camera guest
+      camera_guest_manage: Permission to manage camera guest
+      event_access: Permission to access events
+      recording_access: Permission to access camera recordings
+      recording_manage: Permission to manage camera recording (incl. plan changes)
+      recording_clips_access: Permission to access recording clips
+      recording_clips_create: Permission to create recording clips
+      recording_clips_share: Permission to share recording clips
+      client_access: Permission to list resellers clients and get details of a cpecific client
+      client_create: Permission to create client account
+      client_manage: Permission to update clients detail
+    description: |
+      ![Password grant type sequence diagram](./assets/password_grant_type.png)
+
+      Password grant type is a more basic and easier way for authorization, but is less safe for Angelcam users. With this
+      grant type, it's you who asks for the credentials in the UI and it's your app that calls `oauth/token/` to exchange user
+      credentials for the bearer token.
+
+      Be aware! DO NOT save the password or username of any user under any circumstances. To implement a "Remember me"
+      checkbox in your app, save the refresh token instead and ask for a new access token during the application startup
+      using the `oauth/token/` endpoint.
+parameters:
+  cameraId:
+    name: camera_id
+    in: path
+    type: integer
+    minimum: 1
+    x-example: 3
+    required: true
+    description: Camera ID
+  sharedCameraId:
+    name: camera_id
+    in: path
+    type: integer
+    minimum: 1
+    x-example: 21
+    required: true
+    description: Camera ID
+  clipId:
+    name: clip_id
+    in: path
+    type: string
+    format: uuid
+    x-example: cd13975b-0b08-48f5-bd39-3f7d2a0c935a
+    required: true
+    description: Clip UUID
+  guestId:
+    name: guest_id
+    in: path
+    type: integer
+    minimum: 1
+    x-example: 4
+    required: true
+    description: Guest ID
+  clientId:
+    name: client_id
+    in: path
+    type: integer
+    minimum: 1
+    x-example: 6
+    required: true
+    description: Client ID
+responses:
+  EmptyResponse:
+    description: Empty response
+  Error404NotFound:
+    description: The specified resource was not found
+    schema:
+      $ref: '#/definitions/Error404NotFound'
+  Error401Unauthorized:
+    description: Missing or invalid authorization.
+    schema:
+      $ref: '#/definitions/Error401Unauthorized'
+  Error403PermissionDenied:
+    description: Missing permission.
+    schema:
+      $ref: '#/definitions/Error403PermissionDenied'
+  Error400InvalidParams:
+    description: Query params are invalid.
+    schema:
+      $ref: '#/definitions/Error400InvalidParams'
+  Error400InvalidBody:
+    description: Body payload is invalid.
+    schema:
+      $ref: '#/definitions/Error400InvalidParams'
+paths:
+  /cameras/:
+    get:
+      operationId: my-cameras-list
+      summary: Retrieve camera list
+      tags:
+        - camera
+      parameters:
+        - name: limit
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Limit result set. Example: `1`.'
+        - name: offset
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Return results starting at `offset`. Example: `10`.'
+        - name: refresh_rate
+          in: query
+          type: number
+          format: float
+          minimum: 0
+          required: false
+          description: 'Set a maximum number of keyframes sent in MJPEG stream per second. For example if you want to have MJPEG stream with keyframe sent every 10 seconds, post value 0.1.'
+        - name: max_width
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: Maximum width of MJPEG stream and LIVE SNAPSHOT.
+        - name: max_height
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: Maximum height of MJPEG stream and LIVE SNAPSHOT.
+      security:
+        - OAuth2-accessCode:
+            - camera_access
+        - OAuth2-passwordGrant:
+            - camera_access
+      responses:
+        '200':
+          description: Returns camera list.
+          schema:
+            $ref: '#/definitions/CameraListResponse'
+        '400':
+          $ref: '#/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/cameras/"'
+    post:
+      operationId: connect-cameras
+      summary: Connect new camera
+      tags:
+        - camera
+      parameters:
+        - in: body
+          name: camera
+          schema:
+            type: object
+            required:
+              - name
+              - type
+              - url
+              - connection_type
+            properties:
+              name:
+                type: string
+                description: Camera name
+              type:
+                type: string
+                enum:
+                  - h264
+                  - mjpeg
+                description: Camera type. We currently support H.264 over RTSP and MJPEG over HTTP cameras.
+              url:
+                type: string
+                format: url
+                description: 'Complete URL of a camera stream. H.264 cameras need to have "rtsp" scheme, for MJPEG cameras it''s allowed to use "http" and "https" schemes.'
+              connection_type:
+                type: string
+                enum:
+                  - direct
+                description: 'How is the camera connected to Angelcam, currently we support only direct connection.'
+            example:
+              name: My brand new shiny camera
+              type: h264
+              connection_type: direct
+              url: 'rtsp://username:password@175.36.248.73:554/live.sdp'
+      security:
+        - OAuth2-accessCode:
+            - camera_create
+        - OAuth2-passwordGrant:
+            - camera_create
+      responses:
+        '201':
+          description: Newly created camera object
+          schema:
+            $ref: '#/definitions/CameraObject'
+        '400':
+          $ref: '#/responses/Error400InvalidBody'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+  '/cameras/{camera_id}/':
+    get:
+      operationId: my-cameras-detail
+      summary: Retrieve camera
+      tags:
+        - camera
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - name: refresh_rate
+          in: query
+          type: number
+          format: float
+          minimum: 0
+          required: false
+          description: 'Set a maximum number of keyframes sent in MJPEG stream per second. For example if you want to have MJPEG stream with keyframe sent every 10 seconds, post value 0.1.'
+        - name: max_width
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: Maximum width of MJPEG stream and LIVE SNAPSHOT.
+        - name: max_height
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: Maximum height of MJPEG stream and LIVE SNAPSHOT.
+      security:
+        - OAuth2-accessCode:
+            - camera_access
+        - OAuth2-passwordGrant:
+            - camera_access
+      responses:
+        '200':
+          description: Camera object
+          schema:
+            $ref: '#/definitions/CameraObject'
+        '400':
+          $ref: '#/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/cameras/{camera_id}/"'
+  '/cameras/{camera_id}/clips/':
+    get:
+      operationId: my-cameras-clips-list
+      summary: Retrieve camera clips list
+      tags:
+        - clip
+      description: Retrieves the list of recording clips of given camera
+      security:
+        - OAuth2-accessCode:
+            - recording_clips_access
+        - OAuth2-passwordGrant:
+            - recording_clips_access
+      parameters:
+        - $ref: '#/parameters/cameraId'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ClipListResponse'
+        '400':
+          $ref: '#/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/cameras/{camera_id}/clips/"'
+    post:
+      operationId: my-cameras-clips-create
+      summary: Create clip
+      tags:
+        - clip
+      description: Retrieves the list of recording clips of given camera
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - in: body
+          name: clip
+          schema:
+            type: object
+            title: clip
+            required:
+              - name
+              - start
+              - end
+            properties:
+              name:
+                type: string
+                description: Clip name
+              start:
+                type: string
+                format: date-time
+                description: Start time of clip (ISO 8601)
+              end:
+                type: string
+                format: date-time
+                description: End time of clip (ISO 8601)
+            example:
+              name: Frontdoor loitering
+              start: 2017-01-01T00:00:00.000Z
+              end: 2017-01-01T00:25:00.000Z
+      security:
+        - OAuth2-accessCode:
+            - recording_clips_access
+            - recording_clips_create
+        - OAuth2-passwordGrant:
+            - recording_clips_access
+            - recording_clips_create
+      responses:
+        '201':
+          description: Clip request was received and clip processing will start
+          schema:
+            $ref: '#/definitions/ClipObject'
+        '400':
+          description: 'No recording data exists for given timeframe, requested clip lenght exceeds 3 hours or there''s another error in the request'
+          schema:
+            $ref: '#/definitions/Error400Invalid'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -d ''{"name": "Frontdoor loitering", "start": "2017-01-01T00:00:00.000Z", "end": "2017-01-01T00:25:00.000Z"}'' -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer {access_token}" -X POST "https://api.angelcam.com/v1/cameras/{camera_id}/clips/"'
+  '/cameras/{camera_id}/clips/{clip_id}/':
+    get:
+      operationId: my-cameras-clips-detail
+      summary: Retrieve a single clip
+      tags:
+        - clip
+      description: Retrieves the details of a recording clip
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - $ref: '#/parameters/clipId'
+      security:
+        - OAuth2-accessCode:
+            - recording_clips_access
+        - OAuth2-passwordGrant:
+            - recording_clips_access
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ClipObject'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/cameras/{camera_id}/clips/{clip_id}/"'
+  '/cameras/{camera_id}/clips/{clip_id}/share/':
+    post:
+      operationId: my-cameras-clips-share
+      summary: Share a clip via email
+      tags:
+        - clip
+      description: Share clip recording via email
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - $ref: '#/parameters/clipId'
+        - in: body
+          name: clip-share
+          schema:
+            type: object
+            required:
+              - email
+            properties:
+              email:
+                type: string
+                format: email
+      security:
+        - OAuth2-accessCode:
+            - recording_clips_share
+        - OAuth2-passwordGrant:
+            - recording_clips_share
+      responses:
+        '204':
+          $ref: '#/responses/EmptyResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+  '/cameras/{camera_id}/guests/':
+    get:
+      operationId: my-cameras-guests
+      summary: Retrieve camera guests list
+      tags:
+        - camera-guest
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - name: limit
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Limit result set. Example: `1`.'
+        - name: offset
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Return results starting at `offset`. Example: `10`.'
+      security:
+        - OAuth2-accessCode:
+            - camera_guest_access
+        - OAuth2-passwordGrant:
+            - camera_guest_access
+      responses:
+        '200':
+          description: Returns camera guests list.
+          schema:
+            $ref: '#/definitions/CameraGuestListResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/cameras/{camera_id}/guests/"'
+    post:
+      operationId: my-cameras-guest-create
+      summary: Create camera guest
+      tags:
+        - camera-guest
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - in: body
+          name: guest
+          schema:
+            type: object
+            title: guest
+            required:
+              - email
+            properties:
+              email:
+                type: string
+                format: email
+              permissions:
+                $ref: '#/definitions/CameraGuestPermissionObject'
+      security:
+        - OAuth2-accessCode:
+            - camera_guest_manage
+        - OAuth2-passwordGrant:
+            - camera_guest_manage
+      responses:
+        '201':
+          description: Created
+          schema:
+            $ref: '#/definitions/CameraGuestObject'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -d ''{"email": "user@example.com", "permissions": {"can_view_rec": true}}'' -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer {access_token}" -X POST "https://api.angelcam.com/v1/cameras/{camera_id}/guests/"'
+  '/cameras/{camera_id}/guests/{guest_id}/':
+    get:
+      operationId: my-cameras-guest
+      summary: Retrieve camera guest
+      tags:
+        - camera-guest
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - $ref: '#/parameters/guestId'
+      security:
+        - OAuth2-accessCode:
+            - camera_guest_access
+        - OAuth2-passwordGrant:
+            - camera_guest_access
+      responses:
+        '200':
+          description: Camera guest object
+          schema:
+            $ref: '#/definitions/CameraGuestObject'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/cameras/{camera_id}/guests/{guest_id}"'
+    put:
+      operationId: my-cameras-guest-update
+      summary: Update camera guest
+      tags:
+        - camera-guest
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - $ref: '#/parameters/guestId'
+        - in: body
+          name: guest
+          schema:
+            type: object
+            title: guest
+            properties:
+              permissions:
+                $ref: '#/definitions/CameraGuestPermissionObject'
+      security:
+        - OAuth2-accessCode:
+            - camera_guest_manage
+        - OAuth2-passwordGrant:
+            - camera_guest_manage
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CameraGuestObject'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -d ''{"permissions": {"can_view_rec": true}'' -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer {access_token}" -X PUT "https://api.angelcam.com/v1/cameras/{camera_id}/guests/{guest_id}"'
+    delete:
+      operationId: my-cameras-guest-remove
+      summary: Remove camera guest
+      tags:
+        - camera-guest
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - $ref: '#/parameters/guestId'
+      security:
+        - OAuth2-accessCode:
+            - camera_guest_manage
+        - OAuth2-passwordGrant:
+            - camera_guest_manage
+      responses:
+        '204':
+          description: No content
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X DELETE "https://api.angelcam.com/v1/cameras/{camera_id}/guests/{guest_id}"'
+  '/cameras/{camera_id}/recording/':
+    get:
+      operationId: my-cameras-recording-info
+      summary: General recording information
+      tags:
+        - recording
+      parameters:
+        - $ref: '#/parameters/cameraId'
+      security:
+        - OAuth2-accessCode:
+            - recording_access
+        - OAuth2-passwordGrant:
+            - recording_access
+      responses:
+        '200':
+          description: Returns general recording information.
+          schema:
+            $ref: '#/definitions/RecordingResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/cameras/{camera_id}/recording/"'
+    post:
+      operationId: my-cameras-recording-create
+      summary: Activate recording for a given camera
+      tags:
+        - recording
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - in: body
+          name: recording settings
+          schema:
+            type: object
+            properties:
+              subscription:
+                type: object
+                description: Subscription settings
+                properties:
+                  plan:
+                    type: string
+                    description: Plan identifier
+                  auto_renew:
+                    type: boolean
+                    description: True to enable automatic subscription renew at the end of each billing period (default is true)
+                required:
+                  - plan
+            required:
+              - subscription
+            example:
+              subscription:
+                plan: cra-7days-monthly-v2
+      security:
+        - OAuth2-accessCode:
+            - recording_manage
+        - OAuth2-passwordGrant:
+            - recording_manage
+      responses:
+        '201':
+          description: Returns general recording information.
+          schema:
+            $ref: '#/definitions/RecordingResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+    put:
+      operationId: my-cameras-recording-update
+      summary: Update recording settings of a camera
+      tags:
+        - recording
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - in: body
+          name: recording settings
+          schema:
+            type: object
+            properties:
+              subscription:
+                type: object
+                description: Subscription settings
+                properties:
+                  plan:
+                    type: string
+                    description: Plan identifier
+                  auto_renew:
+                    type: boolean
+                    description: True to enable automatic subscription renew at the end of each billing period
+            example:
+              subscription:
+                auto_renew: false
+      security:
+        - OAuth2-accessCode:
+            - recording_manage
+        - OAuth2-passwordGrant:
+            - recording_manage
+      responses:
+        '200':
+          description: Returns general recording information.
+          schema:
+            $ref: '#/definitions/RecordingResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+  '/cameras/{camera_id}/recording/plans/':
+    get:
+      operationId: my-cameras-recording-plans
+      summary: Get a list of available recording plans
+      tags:
+        - recording
+      parameters:
+        - $ref: '#/parameters/cameraId'
+      security:
+        - OAuth2-accessCode:
+            - recording_access
+        - OAuth2-passwordGrant:
+            - recording_access
+      responses:
+        '200':
+          description: A list of recording plans
+          schema:
+            $ref: '#/definitions/RecordingPlansResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+  '/cameras/{camera_id}/recording/stream/':
+    get:
+      operationId: my-cameras-recording-stream
+      summary: Create and return recorded stream for a specified time
+      tags:
+        - recording
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - name: start
+          in: query
+          type: string
+          format: date-time
+          required: true
+          description: 'Start time of a stream. Example: `2016-03-19T08:00:00Z`.'
+          x-example: '2017-01-01T00:00:00Z'
+        - name: end
+          in: query
+          type: string
+          format: date-time
+          required: false
+          description: |
+            End time of a stream. If missing, stream will play till the very end of recorded footage. Example: `2016-03-19T14:00:00Z.`
+          x-example: '2017-01-01T00:10:00Z'
+      security:
+        - OAuth2-accessCode:
+            - recording_access
+        - OAuth2-passwordGrant:
+            - recording_access
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/RecordingStreamResponse'
+        '400':
+          $ref: '#/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/cameras/{camera_id}/recording/stream/"'
+  '/cameras/{camera_id}/recording/timeline/':
+    get:
+      operationId: my-cameras-recording-timeline
+      summary: Retrieve timeline of records for given camera
+      tags:
+        - recording
+      description: |
+        Please keep in mind that maximum length of timeline is 1 day.
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - name: start
+          in: query
+          type: string
+          format: date-time
+          required: true
+          description: 'Start time of a timeline. Example: `2016-03-19T08:00:00Z`.'
+          x-example: '2017-01-01T00:00:00Z'
+        - name: end
+          in: query
+          type: string
+          format: date-time
+          required: true
+          description: 'End time of a timeline. Example: `2016-03-19T14:00:00Z.`'
+          x-example: '2017-01-01T00:10:00Z'
+      security:
+        - OAuth2-accessCode:
+            - recording_access
+        - OAuth2-passwordGrant:
+            - recording_access
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/RecordingTimelineResponse'
+        '400':
+          $ref: '#/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/cameras/{camera_id}/recording/timeline/"'
+  /clients/:
+    get:
+      operationId: my-clients-list
+      summary: Retrieve clients list
+      tags:
+        - client
+      parameters:
+        - name: limit
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Limit result set. Example: `1`.'
+        - name: offset
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Return results starting at `offset`. Example: `10`.'
+      security:
+        - OAuth2-accessCode:
+            - client_access
+        - OAuth2-passwordGrant:
+            - client_access
+      responses:
+        '200':
+          description: Returns client list.
+          schema:
+            $ref: '#/definitions/ClientListResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+    post:
+      operationId: create-client
+      summary: Create new client account
+      description: |
+        Client a new client account. After successful creation client receives an email with link for account activation.
+      tags:
+        - client
+      parameters:
+        - in: body
+          name: client
+          schema:
+            type: object
+            required:
+              - first_name
+              - last_name
+              - email
+            properties:
+              first_name:
+                type: string
+                description: Clients first name
+              last_name:
+                type: string
+                description: Clients last name
+              email:
+                type: string
+                format: email
+                description: Clients email
+              phone:
+                type: string
+                description: Clients phone number
+              invoice_to:
+                type: string
+                enum:
+                  - me
+                  - client
+                default: me
+                description: All services are invoice to reseller (me) or directly to client.
+              limited_account:
+                type: boolean
+                default: false
+                description: |
+                  Limited clients cannot connect new cameras or purchase any services, by themselves.
+            example:
+              first_name: Joe
+              last_name: Parker
+              email: joe@angelcam.com
+              phone: +1 111 222 333
+              invoice_to: me
+              limited_account: false
+      security:
+        - OAuth2-accessCode:
+            - client_create
+        - OAuth2-passwordGrant:
+            - client_create
+      responses:
+        '201':
+          description: Newly created client object
+          schema:
+            $ref: '#/definitions/ClientObject'
+        '400':
+          $ref: '#/responses/Error400InvalidBody'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+  '/clients/{client_id}/':
+    get:
+      operationId: my-client-detail
+      summary: Retrieve client
+      tags:
+        - client
+      parameters:
+        - $ref: '#/parameters/clientId'
+      security:
+        - OAuth2-accessCode:
+            - client_access
+        - OAuth2-passwordGrant:
+            - client_access
+      responses:
+        '200':
+          description: Client object
+          schema:
+            $ref: '#/definitions/ClientObject'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+    put:
+      operationId: update-client
+      summary: Update client account
+      tags:
+        - client
+      parameters:
+        - $ref: '#/parameters/clientId'
+        - in: body
+          name: client
+          schema:
+            type: object
+            title: client
+            properties:
+              first_name:
+                type: string
+                description: Clients first name
+              last_name:
+                type: string
+                description: Clients last name
+              phone:
+                type: string
+                description: Clients phone number
+              invoice_to:
+                type: string
+                enum:
+                  - me
+                  - client
+                description: All services are invoice to reseller (me) or directly to client.
+              limited_account:
+                type: boolean
+                description: |
+                  Limited clients cannot connect new cameras or purchase any services, by themselves.
+            example:
+              first_name: Joe
+              last_name: Parker
+              phone: +1 111 222 333
+              invoice_to: client
+              limited_account: false
+      security:
+        - OAuth2-accessCode:
+            - client_manage
+        - OAuth2-passwordGrant:
+            - client_manage
+      responses:
+        '200':
+          description: Client object
+          schema:
+            $ref: '#/definitions/ClientObject'
+        '400':
+          $ref: '#/responses/Error400InvalidBody'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+  '/clients/{client_id}/invite/':
+    post:
+      operationId: my-client-invite
+      summary: Resend invitation email
+      description: |
+        For resending an invitation email. This is useful in case when client does not receive the first invitation email,
+         so client get new chance to activate their account and set a password.
+      tags:
+        - client
+      parameters:
+        - $ref: '#/parameters/clientId'
+      security:
+        - OAuth2-accessCode:
+            - client_create
+        - OAuth2-passwordGrant:
+            - client_create
+      responses:
+        '204':
+          $ref: '#/responses/EmptyResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+  /events/:
+    get:
+      operationId: events
+      summary: Retrieve event list
+      tags:
+        - event
+      description: Retrieves the list of events for the current user
+      parameters:
+        - name: start
+          in: query
+          type: string
+          format: date-time
+          required: false
+          description: 'Example: `2017-03-07T14:00:00Z`.'
+        - name: end
+          in: query
+          type: string
+          format: date-time
+          required: false
+          description: 'Example: `2017-03-08T14:00:00Z`.'
+        - name: limit
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Limit result set. Example: `1`.'
+        - name: offset
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Return results starting at `offset`. Example: `10`.'
+      security:
+        - OAuth2-accessCode:
+            - event_access
+        - OAuth2-passwordGrant:
+            - event_access
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/EventListResponse'
+        '400':
+          $ref: '#/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/events/"'
+    post:
+      operationId: events-create
+      summary: Create event
+      tags:
+        - event
+      description: |
+        This endpoint has rate limiting in place. The endpoint will accept at most 10 requests per minute
+        for a given hash (see [Nuts and bolts](#section/Angelcam-API/Nuts-and-bolts) for more details).
+      parameters:
+        - in: body
+          name: event
+          schema:
+            type: object
+            title: event
+            required:
+              - hash
+            properties:
+              hash:
+                type: string
+                description: |
+                  Event API hash (a unique token for each camera found in My Angelcam dashboard or obtained
+                  via Camera Resource) - used to authenticate the request and pair the event with corresponding
+                  camera.
+              title:
+                type: string
+            example:
+              hash: 50yxnlu2o2
+      security: []
+      responses:
+        '201':
+          description: Event was received
+          schema:
+            $ref: '#/definitions/EventObject'
+        '400':
+          description: The event hash is invalid or there's another error in the request
+          schema:
+            $ref: '#/definitions/Error400Invalid'
+        '429':
+          description: The rate limit has been reached
+          schema:
+            $ref: '#/definitions/Error429TooManyRequests'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -d ''{"hash": "50yxnlu2o2"}'' -H "Accept: application/json" -H "Content-Type: application/json" -X POST "https://api.angelcam.com/v1/events/"'
+        - lang: python
+          source: |-
+            import requests
+            url = 'https://api.angelcam.com/v1/events/'
+            payload = {'hash': '50yxnlu2o2'}
+            requests.post(url, json=payload)
+  '/events/{camera_id}/':
+    get:
+      operationId: camera-events
+      summary: Retrieve camera event list
+      tags:
+        - event
+      description: Retrieves the list of events for the current user belonging to given camera
+      parameters:
+        - $ref: '#/parameters/cameraId'
+        - name: start
+          in: query
+          type: string
+          format: date-time
+          description: 'Example: `2017-03-07T14:00:00Z`.'
+          required: false
+        - name: end
+          in: query
+          type: string
+          format: date-time
+          description: 'Example: `2017-03-07T16:00:00Z`.'
+          required: false
+        - name: limit
+          in: query
+          type: integer
+          minimum: 1
+          description: 'Limit result set. Example: `1`.'
+          required: false
+        - name: offset
+          in: query
+          type: integer
+          minimum: 1
+          description: 'Return results starting at offset. Example: `10`.'
+          required: false
+      security:
+        - OAuth2-accessCode:
+            - event_access
+        - OAuth2-passwordGrant:
+            - event_access
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/EventListResponse'
+        '400':
+          $ref: '#/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/events/{camera_id}/"'
+  /me/:
+    get:
+      operationId: me
+      summary: Current user info
+      tags:
+        - user
+      security:
+        - OAuth2-accessCode:
+            - user_access
+        - OAuth2-passwordGrant:
+            - user_access
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserMeResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/me/"'
+  '/recording/stream/{streamer_name}/{streamer_id}/':
+    get:
+      operationId: my-cameras-recordings-stream-info
+      summary: Retrieve recording stream info
+      tags:
+        - recording
+      security:
+        - OAuth2-accessCode:
+            - recording_access
+        - OAuth2-passwordGrant:
+            - recording_access
+      parameters:
+        - name: streamer_name
+          in: path
+          type: string
+          required: true
+          description: Streamer server name.
+          x-example: rec-streamer-eu-central-1
+        - name: streamer_id
+          in: path
+          type: string
+          required: true
+          description: Stream ID.
+          x-example: 61c59a859e9244a19713fdfec6e50184
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/RecordingStreamInfoResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/recording/stream/{streamer_name}/{streamer_id}/"'
+  /shared-cameras/:
+    get:
+      operationId: shared-cameras-list
+      summary: Retrieve shared camera list
+      tags:
+        - shared-camera
+      parameters:
+        - name: limit
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Limit result set. Example: `1`.'
+        - name: offset
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: 'Return results starting at `offset`. Example: `10`.'
+        - name: refresh_rate
+          in: query
+          type: number
+          format: float
+          minimum: 0
+          required: false
+          description: 'Set a maximum number of keyframes sent in MJPEG stream per second. For example if you want to have MJPEG stream with keyframe sent every 10 seconds, post value 0.1.'
+        - name: max_width
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: Maximum width of MJPEG stream and LIVE SNAPSHOT.
+        - name: max_height
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: Maximum height of MJPEG stream and LIVE SNAPSHOT.
+      security:
+        - OAuth2-accessCode:
+            - camera_access
+        - OAuth2-passwordGrant:
+            - camera_access
+      responses:
+        '200':
+          description: Returns shared camera list.
+          schema:
+            $ref: '#/definitions/SharedCameraListResponse'
+        '400':
+          $ref: '#/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/shared-cameras/"'
+  '/shared-cameras/{camera_id}/':
+    get:
+      operationId: shared-cameras-detail
+      summary: Retrieve shared camera
+      tags:
+        - shared-camera
+      parameters:
+        - $ref: '#/parameters/sharedCameraId'
+        - name: refresh_rate
+          in: query
+          type: number
+          format: float
+          minimum: 0
+          required: false
+          description: 'Set a maximum number of keyframes sent in MJPEG stream per second. For example if you want to have MJPEG stream with keyframe sent every 10 seconds, post value 0.1.'
+        - name: max_width
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: Maximum width of MJPEG stream and LIVE SNAPSHOT.
+        - name: max_height
+          in: query
+          type: integer
+          minimum: 1
+          required: false
+          description: Maximum height of MJPEG stream and LIVE SNAPSHOT.
+      security:
+        - OAuth2-accessCode:
+            - camera_access
+        - OAuth2-passwordGrant:
+            - camera_access
+      responses:
+        '200':
+          description: Camera object
+          schema:
+            $ref: '#/definitions/SharedCameraObject'
+        '400':
+          $ref: '#/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/shared-cameras/{camera_id}/"'
+  '/shared-cameras/{camera_id}/recording/':
+    get:
+      operationId: shared-cameras-recordings-info
+      summary: General shared recording information
+      tags:
+        - shared-camera-recording
+      parameters:
+        - $ref: '#/parameters/sharedCameraId'
+      security:
+        - OAuth2-accessCode:
+            - recording_access
+        - OAuth2-passwordGrant:
+            - recording_access
+      responses:
+        '200':
+          description: Returns general recording information.
+          schema:
+            $ref: '#/definitions/RecordingResponse'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/shared-cameras/{camera_id}/recording/"'
+  '/shared-cameras/{camera_id}/recording/stream/':
+    get:
+      operationId: shared-cameras-recordings-stream
+      summary: Retrieve recording stream for shared camera
+      description: Create and return recorded stream of shared camera for a specified time
+      tags:
+        - shared-camera-recording
+      parameters:
+        - $ref: '#/parameters/sharedCameraId'
+        - name: start
+          in: query
+          type: string
+          format: date-time
+          required: true
+          description: 'Start time of a stream. Example: `2016-03-19T08:00:00Z`.'
+          x-example: '2017-01-01T00:00:00Z'
+        - name: end
+          in: query
+          type: string
+          format: date-time
+          required: false
+          description: |
+            End time of a stream. If missing, stream will play till the very end of recorded footage. Example: `2016-03-19T14:00:00Z.`
+          x-example: '2017-01-01T00:10:00Z'
+      security:
+        - OAuth2-accessCode:
+            - recording_access
+        - OAuth2-passwordGrant:
+            - recording_access
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/RecordingStreamResponse'
+        '400':
+          $ref: '#/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/shared-cameras/{camera_id}/recording/stream/"'
+  '/shared-cameras/{camera_id}/recording/timeline/':
+    get:
+      operationId: shared-cameras-recordings-timeline
+      summary: Retrieve timeline of records for given shared camera
+      tags:
+        - shared-camera-recording
+      description: |
+        Please keep in mind that maximum length of timeline is 1 day.
+      parameters:
+        - $ref: '#/parameters/sharedCameraId'
+        - name: start
+          in: query
+          type: string
+          format: date-time
+          required: true
+          description: 'Start time of a timeline. Example: `2016-03-19T08:00:00Z`.'
+          x-example: '2017-01-01T00:00:00Z'
+        - name: end
+          in: query
+          type: string
+          format: date-time
+          required: true
+          description: 'End time of a timeline. Example: `2016-03-19T14:00:00Z.`'
+          x-example: '2017-01-01T00:10:00Z'
+      security:
+        - OAuth2-accessCode:
+            - recording_access
+        - OAuth2-passwordGrant:
+            - recording_access
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/RecordingTimelineResponse'
+        '400':
+          $ref: '#/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/responses/Error404NotFound'
+      x-code-samples:
+        - lang: cURL
+          source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/shared-cameras/{camera_id}/recording/timeline/"'
+definitions:
+  ApplicationObject:
+    type: object
+    properties:
+      code:
+        type: string
+        enum:
+          - LSA
+          - CRA
+          - VVA
+          - VPA
+          - TLA
+    required:
+      - code
+    example:
+      code: LSA
+  CameraGuestListResponse:
+    type: object
+    title: Camera guests list
+    properties:
+      count:
+        type: integer
+        description: Count of all camera guests
+      next:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: Next page from pagination
+      previous:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: Previous page from pagination
+      results:
+        type: array
+        description: List of camera guests
+        items:
+          $ref: '#/definitions/CameraGuestObject'
+    required:
+      - count
+      - next
+      - previous
+      - results
+  CameraGuestObject:
+    type: object
+    title: Guest object
+    properties:
+      id:
+        type: integer
+        description: Guest id
+      first_name:
+        type:
+          - string
+          - 'null'
+        description: Guest's first or given name.
+      last_name:
+        type:
+          - string
+          - 'null'
+        description: Guest's last or family name.
+      email:
+        type: string
+        format: email
+        description: Guest's email.
+      permissions:
+        $ref: '#/definitions/CameraGuestPermissionObject'
+    required:
+      - email
+      - permissions
+    example:
+      id: 35
+      first_name: Saint
+      last_name: Michael
+      email: michael@angelcam.com
+      permisions:
+        can_view_rec: true
+  CameraGuestPermissionObject:
+    type: object
+    title: Guest permission
+    properties:
+      can_view_rec:
+        type: boolean
+        description: Can view camera recordings
+        x-example: false
+  CameraListResponse:
+    type: object
+    title: Camera list
+    properties:
+      count:
+        type: integer
+        description: Count of all cameras
+      next:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: Next page from pagination
+      previous:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: Previous page from pagination
+      results:
+        type: array
+        description: List of cameras owned by the user
+        items:
+          $ref: '#/definitions/CameraObject'
+    required:
+      - count
+      - next
+      - previous
+      - results
+  CameraObject:
+    type: object
+    title: Camera object
+    properties:
+      id:
+        type: integer
+        minimum: 1
+        description: Camera ID
+      name:
+        type: string
+        description: Camera name
+      type:
+        type: string
+        enum:
+          - h264
+          - mjpeg
+        description: Camera type
+      snapshot:
+        $ref: '#/definitions/SnapshotObject'
+      status:
+        type: string
+        enum:
+          - offline
+          - online
+          - unknown
+      event_api_hash:
+        type: string
+        description: Event API hash - unique token for posting events to camera timeline from embedded devices without authentication (do not disclose)
+      live_snapshot:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: Live snapshot URL
+      streams:
+        type: array
+        items:
+          $ref: '#/definitions/StreamObject'
+        description: Available camera streams
+      applications:
+        type: array
+        items:
+          $ref: '#/definitions/ApplicationObject'
+    required:
+      - id
+      - name
+      - type
+      - snapshot
+      - status
+      - live_snapshot
+      - streams
+      - applications
+    example:
+      id: 157
+      name: Parkside Office
+      type: h264
+      snapshot:
+        url: 'https://dsw4ncxjbie85.cloudfront.net/snapshot/81/y8jol6kbn0ol1gh2.jpg'
+        created_at: '2017-03-29T15:41:39Z'
+      status: online
+      live_snapshot: 'http://m1.angelcam.com/stream/81/snapshot.jpg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c'
+      streams:
+        - format: mjpeg
+          url: 'http://m1.angelcam.com/stream/81/stream.mjpeg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c'
+          refresh_rate: 0.1
+        - format: mp4
+          url: 'http://m1.angelcam.com/stream/81/stream.mp4?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjMxNiwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.b5b4cf405cf054701a75b359f4069d2af8a102c5ffd8f33cbb560a4638c7cb71'
+        - format: hls
+          url: 'http://m1.angelcam.com/stream/81/playlist.m3u8?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjQwMSwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.8ac35b434e768e8f10161b2d74da492f5fd8a8c115c18cbb421017665acd908a'
+      applications:
+        - LSA
+        - CRA
+  ClientListResponse:
+    type: object
+    title: Client list
+    properties:
+      count:
+        type: integer
+        description: Count of client
+      next:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: Next page from pagination
+      previous:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: Previous page from pagination
+      results:
+        type: array
+        description: List of clients of reseller
+        items:
+          $ref: '#/definitions/ClientObject'
+    required:
+      - count
+      - next
+      - previous
+      - results
+  ClientObject:
+    type: object
+    title: Client object
+    properties:
+      id:
+        type: integer
+        minimum: 1
+        description: Client ID
+      first_name:
+        type: string
+        description: Clients first name
+      last_name:
+        type: string
+        description: Clients last name
+      email:
+        type: string
+        format: email
+        description: Clients email
+      phone:
+        type:
+          - string
+          - 'null'
+        description: Clients phone number
+      invoice_to:
+        type: string
+        enum:
+          - me
+          - client
+        description: All services are invoice to reseller (me) or directly to client.
+      limited_account:
+        type: boolean
+        description: |
+          Limited clients cannot connect new cameras or purchase any services, by themselves.
+      allowed_access:
+        type: boolean
+        description: |
+          This field indicates if reseller can access clients cameras. Defualt is true, but client can refuse access.
+      activated_at:
+        type:
+          - string
+          - 'null'
+        format: datetime
+        description: 'Datetime, when client activated their account, or null in a case when the account is not activated yet at all.'
+    required:
+      - id
+      - first_name
+      - last_name
+      - email
+      - phone
+      - invoice_to
+      - limited_account
+      - allowed_access
+      - activated_at
+    example:
+      id: 42
+      first_name: Joe
+      last_name: Parker
+      email: joe@angelcam.com
+      phone: +1 111 222 333
+      invoice_to: client
+      limited_account: false
+      allowed_access: true
+      confiremd_at: null
+  ClipListResponse:
+    type: object
+    title: Clip list
+    properties:
+      count:
+        type: integer
+        minimum: 0
+        description: Count of all clips
+      next:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: Next page from pagination
+      previous:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: Previous page from pagination
+      results:
+        type: array
+        description: List of clips for the camera
+        items:
+          $ref: '#/definitions/ClipObject'
+    required:
+      - count
+      - next
+      - previous
+      - results
+    example:
+      count: 10
+      next: null
+      previous: null
+      results:
+        - id: b9aad334-07ba-4660-9f18-041875ec1ea4
+          name: Frontdoor loitering
+          status: READY
+          sharing_token: cd13975b-0b08-48f5-bd39-3f7d2a0c935a
+          start: '2017-01-01T00:00:20'
+          end: '2017-01-01T00:25:20'
+          created_at: '2017-02-01T02:37:21'
+          stream:
+            format: hls
+            url: 'https://rec-streamer-us-west-2.angelcam.com/streams/59a00adb74324ba891f26275739ea49c/playlist.m3u8'
+          download_url: 'https://s3.us-west-2.amazonaws.com/rec-prod.us-west-2.angelcam.com/c/944c8ee2-0230-4dbf-b03d-de09dc4a79da.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJ6CMNV7APGJB5JYQ%2F20180416%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20180416T093432Z&X-Amz-Expires=86400&X-Amz-Signature=40b3701f85114ed22f76a97e6b0c099b1dc7301645bd2db8380c5fa824c59455&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22Frontdoor%20loitering.mp4%22'
+  ClipObject:
+    type: object
+    title: Clip object
+    properties:
+      id:
+        type: string
+        minimum: 1
+        description: Clip UUID
+      created_at:
+        type: string
+        minimum: 1
+        description: Time when the clip was created
+      name:
+        type: string
+        minimum: 1
+        description: Clip name
+      status:
+        type: string
+        description: Status of clip processing
+        enum:
+          - PENDING
+          - BUILDING
+          - READY
+          - ERROR
+      start:
+        type: string
+        minimum: 1
+        description: Start time of the clip
+      end:
+        type: string
+        minimum: 1
+        description: End time of the clip
+      sharing_token:
+        type: string
+        description: Security token for sharing the clip without authentication (UUID)
+      stream:
+        description: Stream for clip playback
+        x-$ref: '#/definitions/RecordingStreamResponse'
+      download_url:
+        type: string
+        description: URL for download of the clip as MP4/AVI file (the URL contains security token valid for a limited time)
+    required:
+      - id
+      - created_at
+      - download_url
+      - end
+      - name
+      - sharing_token
+      - start
+      - status
+      - stream
+    example:
+      id: b9aad334-07ba-4660-9f18-041875ec1ea4
+      name: Frontdoor loitering
+      status: READY
+      sharing_token: cd13975b-0b08-48f5-bd39-3f7d2a0c935a
+      start: '2017-01-01T00:00:20'
+      end: '2017-01-01T00:25:20'
+      created_at: '2017-02-01T02:37:21'
+      stream:
+        format: hls
+        url: 'https://rec-streamer-us-west-2.angelcam.com/streams/59a00adb74324ba891f26275739ea49c/playlist.m3u8'
+      download_url: 'https://s3.us-west-2.amazonaws.com/rec-prod.us-west-2.angelcam.com/c/944c8ee2-0230-4dbf-b03d-de09dc4a79da.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJ6CMNV7APGJB5JYQ%2F20180416%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20180416T093432Z&X-Amz-Expires=86400&X-Amz-Signature=40b3701f85114ed22f76a97e6b0c099b1dc7301645bd2db8380c5fa824c59455&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22Frontdoor%20loitering.mp4%22'
+  Error400Invalid:
+    allOf:
+      - $ref: '#/definitions/ErrorGeneric'
+    title: Error 400 Bad Request
+    example:
+      title: invalid
+      detail: Invalid hash
+      status: 400
+  Error400InvalidParams:
+    type: object
+    title: Error 400 Invalid Parameters
+    properties:
+      title:
+        type: string
+      detail:
+        type: object
+      status:
+        type: integer
+    required:
+      - title
+      - detail
+      - status
+    example:
+      title: invalid
+      detail:
+        - refresh_rate:
+            - valid number is required.
+            - Ensure this value is greater than 0.
+        - max_width:
+            - valid number is required.
+            - Ensure this value is greater than or equal to 1.
+      status: 400
+  Error401Unauthorized:
+    allOf:
+      - $ref: '#/definitions/ErrorGeneric'
+    title: Error 401 Unauthorized
+    example:
+      title: not_authenticated
+      detail: Authentication credentials were not provided
+      status: 401
+  Error403PermissionDenied:
+    allOf:
+      - $ref: '#/definitions/ErrorGeneric'
+    title: Error 403 Permission Denied
+    example:
+      title: permission_denied
+      detail: You do not have permission to perform this action.
+      status: 403
+  Error404NotFound:
+    allOf:
+      - $ref: '#/definitions/ErrorGeneric'
+    title: Error 404 Not Found
+    example:
+      title: not_found
+      detail: Not Found
+      status: 404
+  Error429TooManyRequests:
+    allOf:
+      - $ref: '#/definitions/ErrorGeneric'
+    title: Error 429 Too Many Requests
+    example:
+      title: rate_limited
+      detail: The rate limit has been reached
+      status: 429
+  ErrorGeneric:
+    type: object
+    title: Error object
+    properties:
+      title:
+        type: string
+      detail:
+        type: string
+      status:
+        type: integer
+    required:
+      - title
+      - detail
+      - status
+  EventListResponse:
+    type: object
+    title: Event list
+    properties:
+      count:
+        type: integer
+        minimum: 0
+        description: Count of all events
+      next:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: Next page from pagination
+      previous:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: Previous page from pagination
+      results:
+        type: array
+        description: List of events owned by the user
+        items:
+          $ref: '#/definitions/EventObject'
+    required:
+      - count
+      - next
+      - previous
+      - results
+    example:
+      count: 10
+      next: 'https://api.angelcam.com/v1/events/?limit=10&offset=10'
+      previous: 'https://api.angelcam.com/v1/events/?limit=10&offset=0'
+      results:
+        - camera: 20
+          title: Door open
+          source: IFTTT
+          received: '2017-01-01T00:00:16Z'
+          snapshot:
+            - url: 'https://dsw4ncxjbie85.cloudfront.net/snapshot/81/y8jol6kbn0ol1gh2.jpg'
+              created_at: '2017-01-01T00:00:20'
+  EventObject:
+    type: object
+    title: Event object
+    properties:
+      camera:
+        type: integer
+        minimum: 1
+        description: Camera ID
+      title:
+        type: string
+        description: Event title
+      source:
+        type: string
+        description: Name of event source
+      received_at:
+        type: string
+        description: Time when event occurred or was received by Angelcam
+      snapshot:
+        $ref: '#/definitions/SnapshotObject'
+    required:
+      - camera
+      - source
+      - received_at
+    example:
+      camera: 20
+      title: Door open
+      source: IFTTT
+      received: '2017-01-01T00:00:16Z'
+      snapshot:
+        - url: 'https://dsw4ncxjbie85.cloudfront.net/snapshot/81/y8jol6kbn0ol1gh2.jpg'
+          created_at: '2017-01-01T00:00:20'
+  OwnerObject:
+    type: object
+    title: Owner object
+    properties:
+      first_name:
+        type: string
+        description: User's first or given name.
+      last_name:
+        type: string
+        description: User's last or family name.
+      email:
+        type: string
+        format: email
+        description: User's email.
+    required:
+      - email
+    example:
+      first_name: John
+      last_name: Appleseed
+      email: john@apple.com
+  RecordingPlanObject:
+    type: object
+    title: Recording plan description
+    properties:
+      code:
+        type: string
+        description: Plan identifier
+      retention:
+        type: string
+        description: Recording retention
+      price:
+        type: string
+        format: decimal
+        description: Price of the plan
+      billing_period:
+        type: string
+        enum:
+          - month
+          - year
+        description: |
+          It specifies a time period for the price field. The purpose of this field is just to fix the cost
+          in time. It does not necessarily mean that the price will be charged every billing period.
+    required:
+      - code
+      - retention
+      - price
+      - billing_period
+    example:
+      code: cra-3days-monthly-v2
+      retention: P3D
+      price: '3.99'
+      billing_period: month
+  RecordingPlansResponse:
+    type: object
+    title: Recording plans
+    properties:
+      count:
+        type: integer
+        minimum: 0
+        description: Number of all plans
+      next:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: Next page from pagination
+      previous:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: Previous page from pagination
+      results:
+        type: array
+        description: A list of recording plans
+        items:
+          $ref: '#/definitions/RecordingPlanObject'
+    required:
+      - count
+      - next
+      - previous
+      - results
+    example:
+      count: 16
+      next: null
+      previous: null
+      results:
+        - code: cra-3days-monthly-v2
+          retention: P3D
+          price: '3.99'
+          billing_period: month
+        - code: cra-7days-monthly-v2
+          retention: P7D
+          price: '5.99'
+          billing_period: month
+        - code: cra-30days-monthly-v2
+          retention: P30D
+          price: '13.99'
+          billing_period: month
+        - code: cra-60days-monthly-v2
+          retention: P60D
+          price: '18.99'
+          billing_period: month
+        - code: cra-3months-monthly-v2
+          retention: P90D
+          price: '24.99'
+          billing_period: month
+        - code: cra-6months-monthly-v2
+          retention: P180D
+          price: '39.99'
+          billing_period: month
+        - code: cra-3days-yearly-v2
+          retention: P3D
+          price: '47.88'
+          billing_period: year
+        - code: cra-1year-monthly-v2
+          retention: P365D
+          price: '69.99'
+          billing_period: month
+        - code: cra-7days-yearly-v2
+          retention: P7D
+          price: '71.88'
+          billing_period: year
+        - code: cra-2years-monthly-v2
+          retention: P730D
+          price: '129.99'
+          billing_period: month
+        - code: cra-30days-yearly-v2
+          retention: P30D
+          price: '167.88'
+          billing_period: year
+        - code: cra-60days-yearly-v2
+          retention: P60D
+          price: '227.88'
+          billing_period: year
+        - code: cra-3months-yearly-v2
+          retention: P90D
+          price: '299.88'
+          billing_period: year
+        - code: cra-6months-yearly-v2
+          retention: P180D
+          price: '479.88'
+          billing_period: year
+        - code: cra-1year-yearly-v2
+          retention: P365D
+          price: '839.88'
+          billing_period: year
+        - code: cra-2years-yearly-v2
+          retention: P730D
+          price: '1559.88'
+          billing_period: year
+  RecordingResponse:
+    type: object
+    title: Recording information
+    required:
+      - status
+      - retention
+    properties:
+      status:
+        type: string
+        enum:
+          - READY
+          - CONNECTING
+          - RECORDING
+          - STOPPING
+          - ERROR
+        description: |
+          Recording status values have the following meaning:
+
+          * `READY` - Not recording (recording is ready to be started)
+          * `CONNECTING` - Recorder is trying to connect to the stream (this usually indicates camera connectivity problems; the recorder keeps trying to connect).
+          * `RECORDING` - Recorder is connected to the stream and records are being created
+          * `STOPPING` - Recording is stopping
+          * `ERROR` - Error occurred when recording (this indicates a possible issue with Angelcam infrastructure)
+      retention:
+        type:
+          - string
+          - 'null'
+        description: |
+          Retention period in ISO 8601 duration format tells how long in past we store the footage. Example: P7D means 7 days.
+      subscription:
+        type: object
+        description: Information about recording subscription
+        properties:
+          plan:
+            type: string
+            description: Plan identifier
+          expires_at:
+            type:
+              - string
+              - 'null'
+            description: Expiration time for the recording subscription (not-null only if the auto renew was disabled)
+    example:
+      status: RECORDING
+      retention: P7D
+      subscription:
+        plan: cra-7days-monthly-v2
+        expires_at: null
+  RecordingStreamInfoResponse:
+    type: object
+    title: Recording stream information
+    properties:
+      current_time:
+        type: string
+        format: date-time
+        description: Current time in a stream.
+    example:
+      current_time: '2017-01-01T00:00:00Z'
+  RecordingStreamResponse:
+    type: object
+    title: Recording stream object
+    properties:
+      url:
+        type: string
+        description: URL of a stream.
+        example: |
+          https://rec-streamer-eu-central-1.angelcam.com/streams/cefa6471a38f469585b46675fc992614/playlist.m3u8
+      format:
+        type: string
+        enum:
+          - hls
+          - fmp4
+          - mjpeg
+        description: Stream format.
+        example: hls
+      stream_info:
+        type: string
+        description: URL of a recorded stream info endpoint.
+        example: 'https://api.angelcam.com/v1/recording/stream/rec-streamer-eu-central-1/cefa6471a38f469585b46675fc992614/'
+    example:
+      url: 'https://rec-streamer-eu-central-1.angelcam.com/streams/df0600b7487a44d480217db7713720d3/playlist.m3u8'
+      format: hls
+      stream_info: 'https://api.angelcam.com/v1/recording/stream/rec-streamer-eu-central-1/df0600b7487a44d480217db7713720d3/'
+  RecordingTimelineResponse:
+    type: object
+    title: Recording timeline object
+    properties:
+      start:
+        type: string
+        format: date-time
+        description: |
+          Start time of timeline (the value you entered in the query parameter). Example: `2017-01-01T00:00:00Z`.
+      end:
+        type: string
+        format: date-time
+        description: |
+          End time of timeline (the value you entered in the query parameter). Example: `2017-01-01T00:00:00Z`.
+      segments:
+        type: array
+        description: Array of recording segments.
+        items:
+          $ref: '#/definitions/SegmentObject'
+    example:
+      start: '2017-01-01T00:00:00Z'
+      end: '2017-01-01T03:32:19Z'
+      segments:
+        - start: '2017-06-09T00:00:18Z'
+          end: '2017-06-09T03:25:28Z'
+        - start: '2017-06-09T04:19:42Z'
+          end: '2017-06-09T010:39:31Z'
+  SegmentObject:
+    type: object
+    title: Segment object
+    properties:
+      start:
+        type: string
+        format: date-time
+        description: 'Start of record segment. Example: `2017-01-01T00:00:00Z`.'
+      end:
+        type: string
+        format: date-time
+        description: 'End of record segment. Example: `2017-01-01T00:00:00Z`.'
+  SharedApplicationObject:
+    type: object
+    properties:
+      code:
+        type: string
+        enum:
+          - CRA
+    required:
+      - code
+    example:
+      code: CRA
+  SharedCameraListResponse:
+    type: object
+    title: Shared Camera list
+    properties:
+      count:
+        type: integer
+        description: Count of all shared cameras
+      next:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: Next page from pagination
+      previous:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: Previous page from pagination
+      results:
+        type: array
+        description: List of cameras shared with the user
+        items:
+          $ref: '#/definitions/SharedCameraObject'
+    required:
+      - count
+      - next
+      - previous
+      - results
+  SharedCameraObject:
+    type: object
+    title: Shared camera object
+    properties:
+      id:
+        type: integer
+        minimum: 1
+        description: Camera ID
+      name:
+        type: string
+        description: Camera name
+      type:
+        type: string
+        enum:
+          - h264
+          - mjpeg
+        description: Camera type
+      snapshot:
+        $ref: '#/definitions/SnapshotObject'
+      status:
+        type: string
+        enum:
+          - offline
+          - online
+          - unknown
+      live_snapshot:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: Live snapshot URL
+      streams:
+        type: array
+        items:
+          $ref: '#/definitions/StreamObject'
+        description: Available camera streams
+      applications:
+        type: array
+        items:
+          $ref: '#/definitions/SharedApplicationObject'
+      owner:
+        $ref: '#/definitions/OwnerObject'
+    required:
+      - id
+      - name
+      - type
+      - snapshot
+      - status
+      - live_snapshot
+      - streams
+      - applications
+      - owner
+    example:
+      id: 157
+      name: Parkside Office
+      type: h264
+      snapshot:
+        url: 'https://dsw4ncxjbie85.cloudfront.net/snapshot/81/y8jol6kbn0ol1gh2.jpg'
+        created_at: '2017-03-29T15:41:39Z'
+      status: online
+      live_snapshot: 'http://m1.angelcam.com/stream/81/snapshot.jpg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c'
+      streams:
+        - format: mjpeg
+          url: 'http://m1.angelcam.com/stream/81/stream.mjpeg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c'
+          refresh_rate: 0.1
+        - format: mp4
+          url: 'http://m1.angelcam.com/stream/81/stream.mp4?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjMxNiwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.b5b4cf405cf054701a75b359f4069d2af8a102c5ffd8f33cbb560a4638c7cb71'
+        - format: hls
+          url: 'http://m1.angelcam.com/stream/81/playlist.m3u8?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjQwMSwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.8ac35b434e768e8f10161b2d74da492f5fd8a8c115c18cbb421017665acd908a'
+      applications:
+        - CRA
+      owner:
+        email: john@apple.com
+        first_name: John
+        last_name: Appleseed
+  SnapshotObject:
+    type:
+      - object
+      - 'null'
+    title: Snapshot object
+    properties:
+      url:
+        type:
+          - string
+          - 'null'
+        format: uri
+        description: URL of the snapshot image
+      created_at:
+        type: string
+        format: date-time
+        description: The date and time when the snapshot was created for the first time
+    required:
+      - url
+      - created_at
+    example:
+      url: 'https://dsw4ncxjbie85.cloudfront.net/snapshot/157/h8yeodu1mrjtiiok.jpg'
+      created_at: '2017-03-31T12:29:10Z'
+    description: Snapshot is created by Angelcam when certain types of events are received
+  StreamObject:
+    type: object
+    properties:
+      url:
+        type: string
+        format: uri
+        description: Stream URL
+      format:
+        type: string
+        enum:
+          - hls
+          - fmp4
+          - mjpeg
+      refresh_rate:
+        type: number
+        format: float
+        description: Stream refresh rate
+    required:
+      - url
+      - format
+    example:
+      url: 'http://m2-eu1.angelcam.com/stream/157/stream.mjpeg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE4Mjc3OCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiMTU3In0%3D.d365e2a6fbdfae0bfa5b27175a6ea57de1ae31844fdcd22ff5f56da10a970d65'
+      format: mjpeg
+  UserMeResponse:
+    type: object
+    title: User object
+    properties:
+      id:
+        type: integer
+        minimum: 0
+        description: User ID.
+      first_name:
+        type: string
+        description: User's first or given name.
+      last_name:
+        type: string
+        description: User's last or family name.
+      email:
+        type: string
+        format: email
+        description: User's email.
+      phone:
+        type:
+          - string
+          - 'null'
+        description: User's phone.
+    required:
+      - id
+      - email
+    example:
+      id: 2929
+      first_name: John
+      last_name: Appleseed
+      email: john@apple.com
+      phone: +123 558 951 14
