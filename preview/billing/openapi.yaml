@@ -449,7 +449,6 @@ x-tagGroups:
   - name: Sites management
     tags:
       - site
-      - site-camera
 servers:
   - url: 'https://api.angelcam.com/v1'
 paths:
