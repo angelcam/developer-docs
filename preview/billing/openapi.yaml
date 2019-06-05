@@ -1655,23 +1655,14 @@ paths:
             schema:
               type: object
               properties:
-                subscription:
-                  type: object
-                  description: Subscription settings
-                  properties:
-                    plan:
-                      type: string
-                      description: Plan identifier
-                    auto_renew:
-                      type: boolean
-                      description: True to enable automatic subscription renew at the end of each billing period (default is true)
-                  required:
-                    - plan
+                active_service_id:
+                  type: integer
+                  minimum: 1
+                  description: Active Service ID. Active service must not be in use for another camera.
               required:
-                - subscription
+                - active_service_id
               example:
-                subscription:
-                  plan: cra-7days-monthly-v2
+                active_service_id: 2
       security:
         - OAuth2:
             - recording_manage
@@ -1702,19 +1693,14 @@ paths:
             schema:
               type: object
               properties:
-                subscription:
-                  type: object
-                  description: Subscription settings
-                  properties:
-                    plan:
-                      type: string
-                      description: Plan identifier
-                    auto_renew:
-                      type: boolean
-                      description: True to enable automatic subscription renew at the end of each billing period
+                active_service_id:
+                  type: integer
+                  minimum: 1
+                  description: Active Service ID. Active service must not be in use for another camera. Currenly used active service will be swapped for new one (old one will be marked as not in use).
+              required:
+                - active_service_id
               example:
-                subscription:
-                  auto_renew: false
+                active_service_id: 2
       security:
         - OAuth2:
             - recording_manage
@@ -1732,29 +1718,26 @@ paths:
           $ref: '#/components/responses/Error403PermissionDenied'
         '404':
           $ref: '#/components/responses/Error404NotFound'
-  '/cameras/{camera_id}/recording/plans/':
-    get:
-      operationId: my-cameras-recording-plans
-      summary: Get a list of available recording plans
+    delete:
+      operationId: my-cameras-recording-delete
+      summary: Delete recording settings of a camera
       tags:
         - recording
       parameters:
         - $ref: '#/components/parameters/cameraId'
       security:
         - OAuth2:
-            - recording_access
+            - recording_manage
         - PersonalAccessToken: []
       responses:
-        '200':
-          description: A list of recording plans
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RecordingPlansResponse'
+        '204':
+          $ref: '#/components/responses/EmptyResponse'
         '401':
           $ref: '#/components/responses/Error401Unauthorized'
         '403':
           $ref: '#/components/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/components/responses/Error404NotFound'
   '/cameras/{camera_id}/recording/start/':
     post:
       operationId: my-cameras-recording-start
@@ -4088,6 +4071,7 @@ components:
         status:
           type: string
           enum:
+            - DISABLED
             - READY
             - CONNECTING
             - RECORDING
@@ -4095,7 +4079,7 @@ components:
             - ERROR
           description: |
             Recording status values have the following meaning:
-
+            * `DISABLED` - Recorder was recording but is disabled now (records still accessible)
             * `READY` - Not recording (recording is ready to be started)
             * `CONNECTING` - Recorder is trying to connect to the stream (this usually indicates camera connectivity problems; the recorder keeps trying to connect).
             * `RECORDING` - Recorder is connected to the stream and records are being created
@@ -4106,23 +4090,13 @@ components:
             Retention period in ISO 8601 duration format tells how long in past we store the footage. Example: P7D means 7 days.
           nullable: true
           type: string
-        subscription:
-          type: object
-          description: Information about recording subscription
-          properties:
-            plan:
-              type: string
-              description: Plan identifier
-            expires_at:
-              description: Expiration time for the recording subscription (not-null only if the auto renew was disabled)
-              nullable: true
-              type: string
+        active_service_id:
+          type: integer
+          description: Active service ID
       example:
         status: RECORDING
         retention: P7D
-        subscription:
-          plan: cra-7days-monthly-v2
-          expires_at: null
+        active_service_id: 2
     RecordingStreamInfoResponse:
       type: object
       title: Recording stream information
