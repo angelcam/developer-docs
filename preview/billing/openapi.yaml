@@ -4071,7 +4071,6 @@ components:
         status:
           type: string
           enum:
-            - DISABLED
             - READY
             - CONNECTING
             - RECORDING
@@ -4079,7 +4078,6 @@ components:
             - ERROR
           description: |
             Recording status values have the following meaning:
-            * `DISABLED` - Recorder was recording but is disabled now (records still accessible)
             * `READY` - Not recording (recording is ready to be started)
             * `CONNECTING` - Recorder is trying to connect to the stream (this usually indicates camera connectivity problems; the recorder keeps trying to connect).
             * `RECORDING` - Recorder is connected to the stream and records are being created
@@ -4093,10 +4091,16 @@ components:
         active_service_id:
           type: integer
           description: Active service ID
+        deactivated_at:
+          type: string
+          format: datetime
+          nullable: true
+          description: 'Datetime when recording service has been deactivated, if null then recording is active.'
       example:
         status: RECORDING
         retention: P7D
         active_service_id: 2
+        deactivated_at: null
     RecordingStreamInfoResponse:
       type: object
       title: Recording stream information

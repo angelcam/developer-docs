@@ -5726,14 +5726,13 @@
           "status": {
             "type": "string",
             "enum": [
-              "DISABLED",
               "READY",
               "CONNECTING",
               "RECORDING",
               "STOPPING",
               "ERROR"
             ],
-            "description": "Recording status values have the following meaning:\n* `DISABLED` - Recorder was recording but is disabled now (records still accessible)\n* `READY` - Not recording (recording is ready to be started)\n* `CONNECTING` - Recorder is trying to connect to the stream (this usually indicates camera connectivity problems; the recorder keeps trying to connect).\n* `RECORDING` - Recorder is connected to the stream and records are being created\n* `STOPPING` - Recording is stopping\n* `ERROR` - Error occurred when recording (this indicates a possible issue with Angelcam infrastructure)\n"
+            "description": "Recording status values have the following meaning:\n* `READY` - Not recording (recording is ready to be started)\n* `CONNECTING` - Recorder is trying to connect to the stream (this usually indicates camera connectivity problems; the recorder keeps trying to connect).\n* `RECORDING` - Recorder is connected to the stream and records are being created\n* `STOPPING` - Recording is stopping\n* `ERROR` - Error occurred when recording (this indicates a possible issue with Angelcam infrastructure)\n"
           },
           "retention": {
             "description": "Retention period in ISO 8601 duration format tells how long in past we store the footage. Example: P7D means 7 days.\n",
@@ -5743,12 +5742,19 @@
           "active_service_id": {
             "type": "integer",
             "description": "Active service ID"
+          },
+          "deactivated_at": {
+            "type": "string",
+            "format": "datetime",
+            "nullable": true,
+            "description": "Datetime when recording service has been deactivated, if null then recording is active."
           }
         },
         "example": {
           "status": "RECORDING",
           "retention": "P7D",
-          "active_service_id": 2
+          "active_service_id": 2,
+          "deactivated_at": null
         }
       },
       "RecordingStreamInfoResponse": {
