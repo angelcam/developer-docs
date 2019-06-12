@@ -4,32 +4,35 @@ get:
   tags:
     - recording
   security:
-    - OAuth2-accessCode:
-        - recording_access
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - recording_access
     - PersonalAccessToken: []
   parameters:
     - name: streamer_name
       in: path
-      type: string
       required: true
       description: Streamer server name.
-      x-example: rec-streamer-eu-central-1
+      example: rec-streamer-eu-central-1
+      schema:
+        type: string
     - name: streamer_id
       in: path
-      type: string
       required: true
       description: Stream ID.
-      x-example: 61c59a859e9244a19713fdfec6e50184
+      example: 61c59a859e9244a19713fdfec6e50184
+      schema:
+        type: string
   responses:
     '200':
       description: OK
-      schema:
-        $ref: '#/definitions/RecordingStreamInfoResponse'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RecordingStreamInfoResponse'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
     '404':
-      $ref: '#/responses/Error404NotFound'
+      $ref: '#/components/responses/Error404NotFound'
+

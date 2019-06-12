@@ -1,0 +1,30 @@
+type: object
+title: Guest object
+properties:
+  id:
+    type: integer
+    description: Guest id
+  first_name:
+    description: Guest's first or given name.
+    nullable: true
+    type: string
+  last_name:
+    description: Guest's last or family name.
+    nullable: true
+    type: string
+  email:
+    type: string
+    format: email
+    description: Guest's email.
+  permissions:
+    $ref: '#/components/schemas/CameraGuestPermissionObject'
+required:
+  - email
+  - permissions
+example:
+  id: 35
+  first_name: Saint
+  last_name: Michael
+  email: michael@angelcam.com
+  permisions:
+    can_view_rec: true

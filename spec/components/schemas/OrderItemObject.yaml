@@ -1,0 +1,30 @@
+type: object
+title: Order item object
+properties:
+  service:
+    $ref: '#/components/schemas/ServiceObject'
+  period_from:
+    type: string
+    format: datetime
+    example: 2017-01-01T00:00:20.000Z
+  period_until:
+    type: string
+    nullable: true
+    format: datetime
+    example: 2017-02-01T00:00:20.000Z
+  full_price:
+    type: string
+    format: number
+    description: Decimal price in USD
+    example: 3.99
+  price:
+    type: string
+    format: number
+    description: Decimal price in USD
+    example: 3.99
+  type:
+    type: string
+    description: Type of item
+    enum:
+      - receivable
+      - refund

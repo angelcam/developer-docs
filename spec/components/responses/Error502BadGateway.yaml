@@ -1,0 +1,5 @@
+description: Unable to contact the target gateway.
+content:
+  application/json:
+    schema:
+      $ref: '#/components/schemas/Error502BadGateway'

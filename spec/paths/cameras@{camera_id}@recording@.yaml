@@ -4,113 +4,122 @@ get:
   tags:
     - recording
   parameters:
-    - $ref: '#/parameters/cameraId'
+    - $ref: '#/components/parameters/cameraId'
   security:
-    - OAuth2-accessCode:
-        - recording_access
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - recording_access
     - PersonalAccessToken: []
   responses:
     '200':
       description: Returns general recording information.
-      schema:
-        $ref: '#/definitions/RecordingResponse'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RecordingResponse'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
     '404':
-      $ref: '#/responses/Error404NotFound'
+      $ref: '#/components/responses/Error404NotFound'
 post:
   operationId: my-cameras-recording-create
   summary: Activate recording for a given camera
   tags:
     - recording
   parameters:
-    - $ref: '#/parameters/cameraId'
-    - in: body
-      name: recording settings
-      schema:
-        type: object
-        properties:
-          subscription:
-            type: object
-            description: Subscription settings
-            properties:
-              plan:
-                type: string
-                description: Plan identifier
-              auto_renew:
-                type: boolean
-                description: >-
-                  True to enable automatic subscription renew at the end of each
-                  billing period (default is true)
-            required:
-              - plan
-        required:
-          - subscription
-        example:
-          subscription:
-            plan: cra-7days-monthly-v2
+    - $ref: '#/components/parameters/cameraId'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            active_service_id:
+              type: integer
+              minimum: 1
+              description: >-
+                Active Service ID. Active service must not be in use for another
+                camera.
+          required:
+            - active_service_id
+          example:
+            active_service_id: 2
   security:
-    - OAuth2-accessCode:
-        - recording_manage
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - recording_manage
     - PersonalAccessToken: []
   responses:
     '201':
       description: Returns general recording information.
-      schema:
-        $ref: '#/definitions/RecordingResponse'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RecordingResponse'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
     '404':
-      $ref: '#/responses/Error404NotFound'
+      $ref: '#/components/responses/Error404NotFound'
 put:
   operationId: my-cameras-recording-update
   summary: Update recording settings of a camera
   tags:
     - recording
   parameters:
-    - $ref: '#/parameters/cameraId'
-    - in: body
-      name: recording settings
-      schema:
-        type: object
-        properties:
-          subscription:
-            type: object
-            description: Subscription settings
-            properties:
-              plan:
-                type: string
-                description: Plan identifier
-              auto_renew:
-                type: boolean
-                description: >-
-                  True to enable automatic subscription renew at the end of each
-                  billing period
-        example:
-          subscription:
-            auto_renew: false
+    - $ref: '#/components/parameters/cameraId'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            active_service_id:
+              type: integer
+              minimum: 1
+              description: >-
+                Active Service ID. Active service must not be in use for another
+                camera. Currenly used active service will be swapped for new one
+                (old one will be marked as not in use).
+          required:
+            - active_service_id
+          example:
+            active_service_id: 2
   security:
-    - OAuth2-accessCode:
-        - recording_manage
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - recording_manage
     - PersonalAccessToken: []
   responses:
     '200':
       description: Returns general recording information.
-      schema:
-        $ref: '#/definitions/RecordingResponse'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RecordingResponse'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
     '404':
-      $ref: '#/responses/Error404NotFound'
+      $ref: '#/components/responses/Error404NotFound'
+delete:
+  operationId: my-cameras-recording-delete
+  summary: Delete recording settings of a camera
+  tags:
+    - recording
+  parameters:
+    - $ref: '#/components/parameters/cameraId'
+  security:
+    - OAuth2:
+        - recording_manage
+    - PersonalAccessToken: []
+  responses:
+    '204':
+      $ref: '#/components/responses/EmptyResponse'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'

@@ -1,0 +1,7 @@
+allOf:
+  - $ref: '#/components/schemas/ErrorGeneric'
+title: Error 400 Bad Request
+example:
+  title: invalid
+  detail: Invalid hash
+  status: 400

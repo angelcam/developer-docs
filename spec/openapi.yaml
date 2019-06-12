@@ -1,0 +1,805 @@
+openapi: 3.0.0
+info:
+  version: 2019.05.28
+  title: Angelcam API
+  contact:
+    email: support@angelcam.com
+  x-logo:
+    url: ./assets/logo-angelcam.svg
+  description: >
+
+    # Angelcam API
+
+
+    > If you have any questions please feel free to contact our API team via
+    email at
+
+    > support@angelcam.com.
+
+
+    Welcome! This document will help guide you through how to use Angelcam’s
+    RESTful API. You’ll find that the
+
+    RESTful API is not difficult to use, but does require some understanding of
+    certain concepts behind
+
+    Angelcam service.
+
+
+    To begin, you MUST contact Angelcam support before using the API to request
+    both a client ID and secret, for
+
+    authorization, and an authorization grant type.
+
+
+    ## Quick-start Guide
+
+
+    > This example assumes you will use the API to access cameras under your
+    Angelcam account. If your service
+
+    > needs to access someone else's camera you will need to use more
+    complicated
+
+    > [Authorization code grant type](authentication).
+
+
+    ### Obtain the access token
+
+
+    You will need the client ID as well as the username and password of your
+    Angelcam account. E.g. if your
+
+    client ID is `DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo` and your Angelcam
+    account is ` user@example.com` with
+
+    password `mypassword` (this is the password you use to login to My Angelcam
+    site; if you were given
+
+    client secret by Angelcam support, you don't need it at the moment) the
+    request would be
+
+        $ curl -X POST https://my.angelcam.com/oauth/token/ -d "client_id=DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo&grant_type=password&username=user%40example.com&password=mypassword"
+
+    The API response should look like
+
+        {"refresh_token": "aFBNWhoLnq7hSTEVII5ELd9g20NjxC", "scope": "read write", "access_token": "1CP9xR6tqpRHzaZxWcFAp3GtkFcXEQ", "expires_in": 36000, "token_type": "Bearer"}
+
+    ### Verify the authorization worked
+
+        $ curl -H "Authorization: Bearer 1CP9xR6tqpRHzaZxWcFAp3GtkFcXEQ" -X GET "https://api.angelcam.com/v1/me/"
+
+    You should see information about your account
+
+        {"id":1234,"email":"user@example.com","first_name":"Keyshawn","last_name":"Jacobs","phone":"+1608494652"}
+
+    ### Use the access token to access the API endpoints
+
+        $ curl -H "Authorization: Bearer 1CP9xR6tqpRHzaZxWcFAp3GtkFcXEQ" -X GET "https://api.angelcam.com/v1/cameras/?limit=5"
+
+    See the reference section for available resources and corresponding
+    endpoints.
+
+
+    ## Nuts and bolts
+
+
+    ### Plain JSON
+
+
+    The RESTful API runs over HTTP/1.1 and communicates using plain
+    `application/json`.
+
+
+    ### Trailing /
+
+
+    Lastly, please keep in mind that all endpoint URLs require a trailing slash
+    (`/`). For example,
+
+    `cameras/282929/recording`, will result in a "404 Not Found". The correct
+    URL in this case, with a trailing slash, is
+
+    `cameras/282929/recording/`.
+
+
+    ### Caching
+
+
+    The API doesn't include any additional caching features, besides what is
+    implied by the protocol layer.
+
+
+    ### Rate limiting
+
+    Some endpoints have rate limiting in place to protect our service from
+    excessive amounts of requests. If you reach the limit, the server will
+    respond with HTTP 429 and the `Retry-After` HTTP header will be set to the
+    number of seconds that your client needs to wait before retrying the
+    request.
+
+    ### Resource Embedding and Field Fetching
+
+
+    This API doesn't support the embedding of related resources, nor
+    client-driven field fetching.
+
+
+    ## Pagination
+
+
+    Some endpoints, like `cameras/`, employ pagination with the use of the
+    `limit` and `offset` parameters. Each paginated
+
+    endpoint response has these fields:
+
+
+    - `count` - total number of items
+
+    - `next` - is link to next page of paginated result, can be null if reached
+    end of set
+
+    - `previous` - is link to previous set of paginated result, can be null if
+    `offset` is 0
+
+    - `results` - current paginated set
+
+
+    We recommend you always explicitly set the `limit` parameter to ensure you
+    know how many results, per page, you'll get.
+
+    If you omit `limit`, the page will contain 100 items, at most.
+
+
+    ### Setting the limit parameter
+
+
+    Let’s say you need to request all the cameras of the user, but only want 5
+    results at a time. Your `GET` would look
+
+    something like this:
+
+        $ curl -H "Authorization: Bearer " -X GET "https://api.angelcam.com/v1/cameras/?limit=5"
+
+    Note the `limit` parameter in this call is set to 5, so the response shows
+    items 0 through 4.
+
+
+    ### GET the next page of results
+
+
+    Next, let’s say you want to make a call to return the next page from the
+    previous example. As you’ll see below, the
+
+    `offset` parameter in the following sample link is 5, so the next page of
+    results will show items 5 through 9:
+
+        $ curl -H "Authorization: Bearer " -X GET "https://api.angelcam.com/v1/cameras/?limit=5&offset=5"
+
+    ### How do I know if there are more pages?
+
+
+    When the response contain null value of `next`, you know that you've reached
+    the end.
+
+
+    ## Time and duration formats
+
+
+    ### Time and date formats
+
+
+    Whenever you need to specify or have the API send you a date and time, it
+    will be in the ISO 8601
+
+    _YYYY-MM-DDTHH:MM:SSZ_ format (i.e. 2016-03-19T13:15:32Z) where:
+
+
+    * YYYY is the year (i.e. 2016), MM is the month (i.e. 03), and DD is the day
+    of the month (i.e. 19)
+
+    * T is the delimiter between the date and time
+
+    * HH is the hour, in 24-hour format (i.e. 1PM is 13), MM is the minute (i.e.
+    15), and SS is the seconds (i.e. 32)
+
+    * Z indicates the UTC (GMT 0) timezone
+
+
+    All times from the API have both a date and time. You must pass a time part
+    in all inputs, even if it's 00:00:00.
+
+
+    All times from the API are in UTC. Similarly, all time inputs are expected
+    in a UTC timezone.
+
+
+    ### Duration format
+
+
+    Some parts of the API, like the retention field in `cameras/{camera_id}/`
+    and `cameras/`, use duration to denote a
+
+    span of time (i.e. "30 days" or "2 months"). We use the standard ISO 8601
+    duration format which uses the
+
+    _P[n]Y[n]M[n]DT[n]H[n]M[n]S_ format. Here are a few examples of various
+    durations:
+
+
+    * P30D - 30 days
+
+    * P2M - 2 months
+
+    * P2M10D - 2 months and 10 days
+
+    * P3Y6M4DT12H30M5S - 3 years, 6 months, 4 days, 12 hours, 30 minutes, and 5
+    seconds
+
+
+
+    # Authentication
+
+
+    All API requests must be made over HTTPS. Calls made over plain HTTP will
+    fail. Additionally, all request must be
+
+    authenticated. Angelcam API uses two types of authentication first is based
+    on personal access tokens and second one is OAuth2.
+
+
+    Personal Access Token can be preferred authentication when you need to
+    access only to your own account, otherwise OAuth2 needs to be used when you
+    are creating an app for more angelcam users - so for example when you are
+    building your own application based on angelcam platform.
+
+
+    For OAuth2 we support two different authentication workflows (_grant types_
+    in terms of OAuth):
+
+
+    * You ask your users for their Angelcam usernames and passwords (_resource
+    owner password-based_ in terms of OAuth)
+
+    * You ask Angelcam and we authenticate your users, similar to how Google or
+    Facebook works if you choose "Sign-in using
+      Google/Facebook" (_authorization code_ in terms of OAuth)
+
+    Both authentication types result in the same - you exchange
+    username/password or authorization code by calling
+
+    `/oauth/token/` endpoint for access token. All API calls must supply this
+    access token with
+
+    `Authorization: Bearer ` as header. For example, with cURL commandline tool,
+    your request would
+
+    contain something like this:
+
+        $ curl -H "Authorization: Bearer " -X GET  "https://api.angelcam.com/v1/cameras/?limit=5"
+
+    These access tokens also have a limited-time validity (usually 10 hours) and
+    you’ll have to [ask for new access token
+
+    using refresh
+    token](#introduction/authentication/refreshing-access-token-with-refresh-token)
+    when current access token
+
+    expires.
+
+
+    An authenticated user can use `me/` to ask for account details including
+    email, first name, last name, etc.
+
+
+    ### Refreshing access token with refresh token
+
+
+    The granted access_token is valid for expires_in seconds only. By default,
+    it's set at 36000 seconds (10 hours) but you
+
+    must always keep this value in mind and refresh the access token before it
+    expires. A common practice of how to manage
+
+    expiration is to refresh a token when you get a `401 Unauthorized` from any
+    endpoint since all API endpoints must be
+
+    authenticated.
+
+
+    Example of unauthorized response:
+
+        HTTP/1.1 401 Unauthorized
+        Date: Thu, 27 Apr 2017 10:41:58 GMT
+        Content-Type: application/json
+        WWW-Authenticate: Bearer realm="api"
+
+        {"status":401,"title":"not_authenticated","detail":"Authentication credentials were not provided."}
+
+    A new `access_token` can be obtained using a `refresh_token` when the
+    current one expires. A `refresh_token` has no
+
+    expiration date but it can only be used once. A new `refresh_token` is
+    issued when the client refreshes the
+
+    `access_token`, which causes all previous tokens to become invalid.
+
+
+    To refresh the `access_token`, send another `POST` request to `oauth/token/`
+    endpoint with:
+
+
+    * `refresh_token`,
+
+    * `client_id`,
+
+    * `grant_type` with `refresh_token` value
+
+    * `username` and `password` aren't required this time
+
+
+    The server will then generate a fresh `access_token` and a new
+    `refresh_token`.
+
+
+    A refresh token can be invalidated by the `oauth/token-revoke/` endpoint.
+    This usually occurs when a user logs out of
+
+    your app or is performed by the Angelcam support team, upon request by the
+    user or due to security concerns. In any
+
+    case, you will need to then ask the user to grant authorization to your app
+    again.
+tags:
+  - name: user
+    x-displayName: User
+  - name: camera
+    x-displayName: My cameras
+    description: >
+
+      With the cameras/ endpoint, you can obtain a paginated list of the current
+      user's cameras. Alternatively, if you know a
+
+      camera's ID you can get the same information using the
+      cameras/{camera_id}/ endpoint. In both cases you get important
+
+      camera information:
+
+
+      * camera ID, name and type
+
+      * snapshot (thumbnail of recent camera content)
+
+      * status (online, offline, unknown, ...)
+
+      * list of live stream URLs in various formats to watch
+
+
+      ## Camera and stream types
+
+
+      Angelcam platform supports cameras with video in one of two formats: H.264
+      or MJPEG. While many cameras support
+
+      both formats, you need to choose which one to use to connect you camera to
+      Angelcam. This is indicated by property
+
+      "type" of the camera resource.
+
+
+      The video stream from the camera can be retrieved from Angelcam CDN. For
+      MJPEG type cameras you obtain only
+
+      a MJPEG live stream. For H.264 type cameras, you can choose from multiple
+      stream:
+
+       * MJPEG
+       * HLS
+       * fMP4
+
+      Each format has different characteristics making it suitable for certain
+      usecases.
+
+
+      ### MJPEG
+
+
+      [MJPEG](https://en.wikipedia.org/wiki/Motion_JPEG) (or Motion JPEG) is a
+      stream of images in JPEG format.
+
+      It does not contain audio track and uses more bandwidth than H.264 format.
+      On the other, you can easily
+
+      embed it into HTML page using  tag and most modern browsers will just play
+      it out of the box
+
+      (please note that Internet Explorer does not support MJPEG). Playing MJPEG
+      is resource eficient so it's
+
+      the prefered format if you need to have display streams from more cameras
+      on a single page. Another advantage
+
+      is that you can specify the refresh rate of the stream (e.g. only one
+      frame per 10 seconds) to save
+
+      the bandwidth.
+
+
+      ### HLS
+
+
+      [HLS](https://en.wikipedia.org/wiki/HTTP_Live_Streaming) (or HTTP Live
+      Streaming) is HTTP-based protocol
+
+      designed by Apple and supported by majority of the video players and web
+      browsers. It is the prefered format
+
+      of video stream for most usecases. Angelcam CDN provides the video as it
+      is generated by the camera so
+
+      the properties such as bitrate or image quality can vary depending on the
+      camera settings and the encoder
+
+      implementation. Please note that playback of H.264 video is resource
+      intensive and playing multiple
+
+      streams at once can cause signicant load on the viewers system.
+
+
+      ### fMP4 (experimental)
+
+
+      [fMP4](https://tools.ietf.org/html/draft-pantos-http-live-streaming-23#section-3.3)
+      (or Fragmented MP4)
+
+      is video format provided by Angelcam CDN as an experimental feature for
+      usecases requiring low latency
+
+      between the live stream and real time. It does not contain audio track and
+      can cause playback issues
+
+      in some browser and camera combinations. Therefore we do not recommend
+      using fMP4 in your application.
+
+
+      ## Snapshot
+
+
+      A snapshot is an affordable and quick way to give your users a sample of
+      their on-going live stream, by periodically
+
+      saving a picture of it. It's intended to give a preview of the camera's
+      content without actually creating a connection
+
+      to the live stream, which can be a resource-expensive operation.
+
+
+      Please note, a snapshot may be up to 24 hours old but we'll auto initiate
+      refreshing when you access camera endoints in
+
+      API. If age is important to you, check the created_at field in the
+      snapshots array returned by the
+
+      `cameras/{camera_id}/` and `cameras/` endpoints.
+
+
+      In cases where a more recent image is required, you can use a live
+      snapshot or a MJPEG stream with a low frame rate
+
+      instead.
+
+
+      ## Live snapshot
+
+      The live snapshot is a static picture of what the camera is currently
+      shooting at the moment. This actually creates
+
+      a connection to the camera and extracts the last keyframe from the camera
+      stream.
+
+
+      ## Live stream from camera
+
+
+      The live stream is what the camera is currently shooting at the moment.
+      For H.264 type cameras, you can choose from
+
+      URLs in multiple live stream formats:
+
+       * HLS
+       * fMP4
+       * MJPEG
+
+      For MJPEG type cameras you can output only a MJPEG live stream.
+
+
+      ## Camera applications
+
+
+      Connecting a camera and being able to get a snapshot or watch a live
+      stream is offered to every Angelcam user, but to
+
+      get the most out of a camera, users usually add some apps. Among other
+      information, the cameras/{camera_id}/ and
+
+      cameras/ endpoints will tell you apps added to a user's camera as a list
+      of app codes.
+
+
+      We currently support these applications in this API with the following
+      codes (uppercase):
+
+
+      * LSA - Broadcasting
+
+      * CRA - Cloud Recording
+
+      * VVA - Video Verification
+
+      * VPA - Video Guard
+
+
+      The applications added to a camera depend on the user's country as some of
+      them are not available in every country.
+  - name: shared-camera
+    x-displayName: Shared cameras
+    description: >
+      For access to cameras which somebody shared with you. In general
+      everything is same as in my cameras section, see above, there is only one
+      difference. Together with cameras information you get also a basic
+      information about camera owner, like name and email.
+  - name: camera-guest
+    x-displayName: Manage camera guests
+    description: >
+      You can share your camera with a guest, this means, you allow guests to
+      view stream from your camera. There is also an option to share also
+      recordings together with live stream.
+
+
+      When you adding new guest, you just need their email. Then we send them an
+      email informing them that you share camera with them. In case when there
+      was no account with given email we precreate an account for these guest.
+  - name: recording
+    x-displayName: My cameras recording
+    description: >
+
+      ![Recording sequence diagram](./assets/recording_sequence.png)
+
+
+      The Cloud Recording application (CRA) safely stores any content captured
+      by your camera to the cloud. If a camera
+
+      doesn't have the CRA application, all camera recording endpoints will
+      return 404. Otherwise, you can start by asking general
+
+      recording information using the `cameras/{camera_id}/recording/` endpoint.
+
+
+      Most notably, this endpoint tells you whether the camera is currently
+      recording or not (i.e. recording might not have
+
+      been started by the user yet, there’s an error, etc.). As with all
+      "active" operations, the user must use our web
+
+      application to start a recording.
+
+
+      Another piece of information reported by this endpoint is the retention
+      period, which dictates how long a video will be
+
+      stored. This is particularly useful for obtaining a
+      `cameras/{camera_id}/recording/timeline/`.
+
+
+      ## Timeline and segments
+
+
+      It's important to note that in the Angelcam API there are some terms that
+      sound similar but have different meanings:
+
+
+      * _record_ (noun) - a continuous block of video content, as stored by the
+      recording. To clearly distinguish it from a
+        “recording” we called it a _record segment_ or simply, _segment_.
+      * _recording_ (verb) - the process of capturing a record, or records,
+      which are then stored.
+
+
+      Timeline listening at the `cameras/{camera_id}/recording/timeline/`
+      endpoint is a collection of record segments for a
+
+      given camera and time interval. In  order to save bandwidth and resources,
+      the maximum length of timeline you can
+
+      request, per single call, is 24 hours.
+
+
+      If a recording was running uninterrupted, within a specified start and end
+      time, the result will contain one segment.
+
+      Often "missing" slots will appear on the timeline, usually because the
+      user may have manually stopped the recording or
+
+      there were some camera errors.
+
+
+      ## Recording stream
+
+
+      If you know which video segment(s) from the timeline you want to play,
+      calling `cameras/{camera_id}/recording/stream/`
+
+      will create a stream from that specified segment(s) and tells you its URL
+      and format.
+
+
+      Using `start` and `end` query parameters, you can specify a beginning and
+      ending time of the stream. You can even omit
+
+      the `end` parameter and the stream will play until the very end of the
+      recorded footage or, if the camera is currently
+
+      recording, the stream will continue uninterrupted.
+
+
+      Among other things, the endpoint tells you the URL of
+      `recording/stream/{streamer_name}/{stream_id}/` with the stream's
+
+      additional details.
+
+
+      ## Syncing stream and timeline
+
+
+      Due to various reasons, the time a user spends watching a stream doesn't
+      necessarily have to match the time actually
+
+      elapsed in the recorded video (i.e. a 5-minute long stream takes 6 minutes
+      to watch on a user's slow mobile network
+
+      connection due to lag).
+
+
+      Periodically calling endpoint,
+      `recording/stream/{streamer_name}/{stream_id}/`, comes in handy in this
+      case, because it
+
+      synchronizes the time shown to the user in your UI, with the current time
+      of the stream. This endpoint tells you the
+
+      exact time where the stream is positioned at the current moment. You
+      normally don't have to know the `streamer_name`
+
+      and `streamer_id` path parameters, but use the generated endpoint URL as
+      reported by `stream_info` field from
+
+      `cameras/{camera_id}/recording/stream/`.
+  - name: shared-camera-recording
+    x-displayName: Shared cameras recording
+    description: >
+      Everything is same as in recording for my own cameras. Just replace
+      `cameras` by `shared-cameras` in every endpoints url.
+  - name: clip
+    x-displayName: Recording Clips
+    description: Recording Clips
+  - name: event
+    x-displayName: Events
+    description: >
+      There is one difference in pagination for events list endpoints compared
+      to other list endpoints:
+       There is no offset option available. This limitation has several consequences:
+        - Pagination can be done only using link in `next` attribute that is part of response
+        - Pagination is possible only in one direction (it is not possible to go to previous page)
+
+      However there are filters for `start` and `end` that may be used as an
+      alternative or complement for pagination. Retrieved events list is ordered
+      by occurred at datetime (newest first).
+  - name: client
+    x-displayName: Clients
+    description: >
+      This part of API makes sense only for reseller users. It provides them a
+      way to manage their clients.
+  - name: camera-stream-detection
+    x-displayName: Camera streams detection
+    description: >-
+      Using these endpoints you can verify if there are camera streams available
+      on specified network address. Detection is asynchronous. For this reason
+      there is one endpoint for initializing stream detection and one for
+      retrieving result of detection.
+  - name: arrow-clients
+    x-displayName: Arrow clients
+    description: >
+      Endpoints for managing Arrow clients. Arrow client is an application that
+      powers all Angelcam ready devices such as AngelBoxes, Angelcam ready
+      cameras, etc. You can use these endpoints to pair Arrow clients with a
+      specific user account, to get some useful information about the clients
+      and the services they provide, and to give commands to the clients. Before
+      you are allowed to access an Arrow client, you need to pair it with your
+      user account.
+
+
+      ## Pairing an Arrow client
+
+      In order to pair an Arrow client with the current user account, you need
+      to:
+
+      1. Make sure that the Arrow client is in pairing mode. An Arrow client is
+      in pairing mode only the first 20 minutes after it's started, so you
+      probably need to restart the device with the Arrow client before you
+      initiate the pairing process.
+
+      2. Initiate the pairing process by sending a POST request to the
+      [`arrow-clients/`](#operation/arrow-client-pairing-request) endpoint. The
+      API will respond with Arrow client UUID.
+
+      3. Wait until the Arrow client connects to the Angelcam cloud. You can use
+      the returned UUID to poll the
+      [`arrow-clients/{uuid}/`](#operation/arrow-client-detail) endpoint until
+      the API responds with `online` status.
+  - name: site
+    x-displayName: Sites
+    description: >
+      Endpoints for accessing and managing sites. Sites are hiearchical
+      structure that can be used to organize cameras. Any camera is assigned
+      exactly to one site. Each user has a root site. ID of root site can be
+      obtained from [Current User Info Endpoint](#tag/user).
+
+        Site can be armed or disarmed. If site is in armed state user will be notified when some event occurs on given site. 
+        
+        If site is armed or disarmed all its descendants are also (dis)armed.
+        
+        Camera can be moved from site to site using [Camera Endpoints](#tag/camera)
+  - name: client-device
+    x-displayName: Client Devices
+    description: >-
+      Endpoints for managing Client Devices. Client Device represents a device
+      that user uses to access Angelcam mobile application or website. At this
+      moment Client Device record is used mainly for sending push notifications.
+  - name: broadcasting
+    x-displayName: My cameras broadcasting
+    description: >
+      Endpoints for managing broadcasting settings. If a camera doesn't have the
+      Broadcasting application, all camera broadcasting endpoints will return
+      404.
+  - name: service
+    x-displayName: Available services
+  - name: active-service
+    x-displayName: My services
+  - name: order
+    x-displayName: My Orders
+x-tagGroups:
+  - name: General
+    tags:
+      - user
+      - client-device
+  - name: Billing
+    tags:
+      - service
+      - active-service
+      - order
+  - name: Camera management
+    tags:
+      - camera
+      - shared-camera
+      - camera-guest
+      - camera-stream-detection
+      - arrow-clients
+  - name: Recording
+    tags:
+      - recording
+      - shared-camera-recording
+      - clip
+  - name: Broadcasting
+    tags:
+      - broadcasting
+  - name: Events
+    tags:
+      - event
+  - name: Clients management
+    tags:
+      - client
+  - name: Sites management
+    tags:
+      - site
+servers:
+  - url: 'https://api.angelcam.com/v1'

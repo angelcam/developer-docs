@@ -1,0 +1,87 @@
+get:
+  operationId: my-services
+  summary: Retrieve list of my services
+  tags:
+    - active-service
+  parameters:
+    - name: type
+      in: query
+      required: false
+      description: Filtering by service type
+      schema:
+        type: string
+  security:
+    - OAuth2:
+        - active_services_access
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: Returns list of my active services.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ActiveServiceListResponse'
+    '400':
+      $ref: '#/components/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+post:
+  operationId: activate-service
+  summary: Activate new service
+  tags:
+    - active-service
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - type
+            - code
+            - period
+          properties:
+            type:
+              type: string
+              description: Type of service
+              enum:
+                - account
+                - API
+                - cloud-recording
+                - broadcasting
+                - time-lapse
+                - VVA
+                - VPA
+              example: cloud-recording
+            code:
+              type: string
+              description: Code of service, this code together with type is unique identifier of service
+              example: 3-days
+            period:
+              type: string
+              format: duration
+              enum:
+                - P1M
+                - P1Y
+          example:
+            type: cloud-recording
+            code: 3days
+            period: P1M
+  security:
+    - OAuth2:
+        - active_services_manage
+    - PersonalAccessToken: []
+  responses:
+    '201':
+      description: Newly activated service
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ActiveServiceObject'
+    '400':
+      $ref: '#/components/responses/Error400InvalidBody'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'

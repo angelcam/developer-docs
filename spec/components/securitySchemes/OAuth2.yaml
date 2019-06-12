@@ -1,0 +1,173 @@
+type: oauth2
+description: >
+
+  ![Authorization code grant sequence diagram](./assets/code_grant.png)
+
+
+  The authorization code grant should be very familiar if you've ever signed
+  into a web app using your Facebook or Google
+
+  account.
+
+
+  Authorization code grant type is safer but more difficult to implement and
+  requires the presence of a web browser on
+
+  the user's machine to display an Angelcam account sign-in web page. When users
+  submit the form and confirm that your
+
+  app will have access to their data, we check their credentials and redirect
+  them back to a URL of your app
+
+  (`redirect_uri`), which you have specified. This process works in the very
+  same way as when you click a "Sign-in using
+
+  Google/Facebook" button.
+
+
+  Your app sends GET to `https://api.angelcam.com/oauth/authorize/` with the
+  following query parameters:
+
+
+  * `response_type` (required)- authorization grant type with fixed value `code`
+
+  * `client_id` (required)- your client ID, obtained from Angelcam
+
+  * `redirect_uri` (required)- URI within your app where users will be
+  redirected after a successful authentication. You
+    must ask Angelcam to whitelist chosen `redirect_uri` for your client ID otherwise you will get a 400 response with
+    "Mismatching redirect URI" error.
+  * `scope` (required) - space delimited list of scopes
+
+  * `state` (optional) - value that serves as
+  [CSRF](https://en.wikipedia.org/wiki/Cross-site_request_forgery) token.
+    This parameter is optional but highly recommended. You should store the value of the CSRF token and compare the
+    `state` returned by Angelcam with the value you sent in the original request.
+
+  Here is an example of how the resulting request would look like:
+
+      GET https://api.angelcam.com/oauth/authorize/?response_type=code&client_id=XU0aXeP1299oS48KnZmxhqWUR928jsmFKosdrfMS&scope=user_access,camera_access&state=my_csrf_secret&redirect_uri=http://a948dfc1.ngrok.io
+
+  All of these parameters will be validated by the authorization server. The
+  users will then be asked to log in to
+
+  approve your app.
+
+
+  ![Click to see picture of *OAuth screen asking for user
+  approval](./assets/api_oauth_code_authorize_app.png)
+
+
+  If your `redirect_uri` is for example
+  `https://api.mysuperapp.com/oauth/authorized/`, the resulting URL we redirect
+
+  your users to will be:
+
+      https://api.mysuperapp.com/oauth/authorized/?state=my_csrf_secret&code=hTmV8rbgz2TR2DFr1jha2aOTdMKFHY.
+
+  Note these query parameters were appended to redirect URI:
+
+
+  * `state` - the state parameter sent in the original request. You should
+  compare this with the value you previously
+    saved to ensure that the authorization code obtained through requests were made by the same client
+  * `code` - the authorization code that you will exchange at `oauth/token/` for
+  a bearer token
+  ![Password grant type sequence diagram](./assets/password_grant_type.png)
+
+
+  Password grant type is a more basic and easier way for authorization, but is
+  less safe for Angelcam users. With this
+
+  grant type, it's you who asks for the credentials in the UI and it's your app
+  that calls `oauth/token/` to exchange user
+
+  credentials for the bearer token.
+
+
+  Be aware! DO NOT save the password or username of any user under any
+  circumstances. To implement a "Remember me"
+
+  checkbox in your app, save the refresh token instead and ask for a new access
+  token during the application startup
+
+  using the `oauth/token/` endpoint.
+
+
+flows:
+  authorizationCode:
+    authorizationUrl: 'https://api.angelcam.com/oauth/authorize/'
+    tokenUrl: 'https://api.angelcam.com/oauth/token/'
+    scopes:
+      user_access: Permission to access user information
+      user_delete: Permission to delete the current user account
+      camera_access: Permission to list cameras and to get details of a specific camera
+      camera_create: Permission to create cameras
+      camera_manage: Permission to update cameras
+      camera_delete: Permission to delete cameras
+      camera_guest_access: Permission to access camera guest
+      camera_guest_manage: Permission to manage camera guest
+      arrow_client_access: Permission to access Arrow clients
+      arrow_client_manage: Permission to manage Arrow clients
+      event_access: Permission to access events
+      recording_access: Permission to access camera recordings
+      recording_manage: Permission to manage camera recording (incl. plan changes)
+      recording_start_stop: Permission to start and stop recording on camera
+      recording_clips_access: Permission to access recording clips
+      recording_clips_create: Permission to create recording clips
+      recording_clips_share: Permission to share recording clips
+      broadcasting_start_stop: Permission to start and stop public broadcasting on camera
+      client_access: >-
+        Permission to list resellers clients and get details of a specific
+        client
+      client_create: Permission to create client account
+      client_manage: Permission to update clients detail
+      streams_detect: Permission to detect camera streams
+      sites_access: Permission to access sites
+      sites_manage: 'Permission to create, update and delete sites'
+      client_devices_access: Permission to access client devices
+      client_devices_manage: 'Permission to create, update and delete client devices'
+      services_access: Permission to access available services
+      trials_access: Permission to access available trials
+      trials_activate: Permission to activate a trial
+      active_services_access: Permission to access active services
+      active_services_manage: Permission to manage active services
+      orders_access: Permission to access orders
+
+  password:
+    tokenUrl: 'https://api.angelcam.com/oauth/token/'
+    scopes:
+      user_access: Permission to access user information
+      user_delete: Permission to delete the current user account
+      camera_access: Permission to list cameras and to get details of a specific camera
+      camera_create: Permission to create cameras
+      camera_manage: Permission to update cameras
+      camera_delete: Permission to delete cameras
+      camera_guest_access: Permission to access camera guest
+      camera_guest_manage: Permission to manage camera guest
+      arrow_client_access: Permission to access Arrow clients
+      arrow_client_manage: Permission to manage Arrow clients
+      event_access: Permission to access events
+      recording_access: Permission to access camera recordings
+      recording_manage: Permission to manage camera recording (incl. plan changes)
+      recording_start_stop: Permission to start and stop recording on camera
+      recording_clips_access: Permission to access recording clips
+      recording_clips_create: Permission to create recording clips
+      recording_clips_share: Permission to share recording clips
+      broadcasting_start_stop: Permission to start and stop public broadcasting on camera
+      client_access: >-
+        Permission to list resellers clients and get details of a specific
+        client
+      client_create: Permission to create client account
+      client_manage: Permission to update clients detail
+      streams_detect: Permission to detect camera streams
+      sites_access: Permission to access sites
+      sites_manage: 'Permission to create, update and delete sites'
+      client_devices_access: Permission to access client devices
+      client_devices_manage: 'Permission to create, update and delete client devices'
+      services_access: Permission to access available services
+      trials_access: Permission to access available trials
+      trials_activate: Permission to activate a trial
+      active_services_access: Permission to access active services
+      active_services_manage: Permission to manage active services
+      orders_access: Permission to access orders

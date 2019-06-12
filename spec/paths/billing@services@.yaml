@@ -1,0 +1,29 @@
+get:
+  operationId: services
+  summary: Retrieve list of available services
+  tags:
+    - service
+  parameters:
+    - name: type
+      in: query
+      required: false
+      description: Filtering by service type
+      schema:
+        type: string
+  security:
+    - OAuth2:
+        - services_access
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: Returns list of available services.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServiceListResponse'
+    '400':
+      $ref: '#/components/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'

@@ -1,0 +1,5 @@
+description: Body payload is invalid.
+content:
+  application/json:
+    schema:
+      $ref: '#/components/schemas/Error400InvalidParams'

@@ -1,0 +1,28 @@
+type: object
+title: Service object
+properties:
+  type:
+    type: string
+    description: Type of service
+    enum:
+      - account
+      - API
+      - cloud-recording
+      - broadcasting
+      - time-lapse
+      - VVA
+      - VPA
+    example: cloud-recording
+  code:
+    type: string
+    description: Code of service, this code together with type is unique identifier of service
+    example: 3-days
+  name:
+    type: string
+    description: Human readable name of service
+    example: 3 days
+  description:
+    type: string
+    description: Description of service
+    example: 24x7 cloud recording with 3 days retention
+

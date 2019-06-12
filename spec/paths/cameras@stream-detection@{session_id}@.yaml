@@ -4,19 +4,19 @@ get:
   tags:
     - camera-stream-detection
   parameters:
-    - $ref: '#/parameters/sessionId'
+    - $ref: '#/components/parameters/sessionId'
   security:
-    - OAuth2-accessCode:
-        - streams_detect
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - streams_detect
     - PersonalAccessToken: []
   responses:
     '200':
       description: OK
-      schema:
-        $ref: '#/definitions/CameraResultStreamDetectionResponse'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CameraResultStreamDetectionResponse'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'

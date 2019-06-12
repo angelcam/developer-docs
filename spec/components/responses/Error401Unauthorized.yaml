@@ -1,0 +1,5 @@
+description: Missing or invalid authorization.
+content:
+  application/json:
+    schema:
+      $ref: '#/components/schemas/Error401Unauthorized'

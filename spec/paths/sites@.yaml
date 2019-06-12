@@ -4,40 +4,40 @@ post:
   tags:
     - site
   security:
-    - OAuth2-accessCode:
-        - sites_manage
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - sites_manage
     - PersonalAccessToken: []
-  parameters:
-    - in: body
-      name: site
-      schema:
-        type: object
-        required:
-          - name
-        properties:
-          name:
-            type: string
-            example: Bedroom
-            description: Site name
-          parent:
-            type: integer
-            minimum: 1
-            description: Parent Site ID
-          is_armed:
-            type: boolean
-            description: >-
-              If site is not armed user will not get notifications when
-              something happens
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - name
+          properties:
+            name:
+              type: string
+              example: Bedroom
+              description: Site name
+            parent:
+              type: integer
+              minimum: 1
+              description: Parent Site ID
+            is_armed:
+              type: boolean
+              description: >-
+                If site is not armed user will not get notifications when
+                something happens
   responses:
     '201':
       description: CREATED
-      schema:
-        $ref: '#/definitions/SiteObject'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SiteObject'
     '400':
-      $ref: '#/responses/Error400InvalidParams'
+      $ref: '#/components/responses/Error400InvalidParams'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'

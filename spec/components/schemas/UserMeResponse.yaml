@@ -1,0 +1,51 @@
+type: object
+title: User object
+properties:
+  id:
+    type: integer
+    minimum: 0
+    description: User ID.
+  first_name:
+    type: string
+    description: User's first or given name.
+  last_name:
+    type: string
+    description: User's last or family name.
+  email:
+    type: string
+    format: email
+    description: User's email.
+  phone:
+    description: User's phone.
+    nullable: true
+    type: string
+  root_site:
+    type: integer
+    minimum: 1
+    description: Root site ID for current user
+  my_cameras_count:
+    type: integer
+    description: Count of user cameras
+  shared_cameras_count:
+    type: integer
+    description: Count of cameras shared with user
+  total_cameras_count:
+    type: integer
+    description: Sum of count of user cameras + cameras shared with user
+  cameras_with_guests_count:
+    type: integer
+    description: Count of user cameras that have been shared with others
+required:
+  - id
+  - email
+example:
+  id: 2929
+  first_name: John
+  last_name: Appleseed
+  email: john@apple.com
+  phone: +123 558 951 14
+  root_site: 1
+  my_cameras_count: 3
+  shared_cameras_count: 2
+  total_cameras_count: 5
+  cameras_with_guests_count: 1

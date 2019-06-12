@@ -1,0 +1,26 @@
+type: object
+title: Shared Camera list
+properties:
+  count:
+    type: integer
+    description: Count of all shared cameras
+  next:
+    format: uri
+    description: Next page from pagination
+    nullable: true
+    type: string
+  previous:
+    format: uri
+    description: Previous page from pagination
+    nullable: true
+    type: string
+  results:
+    type: array
+    description: List of cameras shared with the user
+    items:
+      $ref: '#/components/schemas/SharedCameraObject'
+required:
+  - count
+  - next
+  - previous
+  - results

@@ -4,19 +4,17 @@ post:
   tags:
     - broadcasting
   parameters:
-    - $ref: '#/parameters/cameraId'
+    - $ref: '#/components/parameters/cameraId'
   security:
-    - OAuth2-accessCode:
-        - broadcasting_start_stop
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - broadcasting_start_stop
     - PersonalAccessToken: []
   responses:
     '204':
-      $ref: '#/responses/EmptyResponse'
+      $ref: '#/components/responses/EmptyResponse'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
     '404':
-      $ref: '#/responses/Error404NotFound'
+      $ref: '#/components/responses/Error404NotFound'

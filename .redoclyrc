@@ -1,0 +1,8 @@
+
+apiTitle: Angelcam API
+splitSpec: true
+codeSamples: true
+swaggerUI: true
+travis: true
+repo: angelcam/developer-docs
+oasVersion: 3.0.0

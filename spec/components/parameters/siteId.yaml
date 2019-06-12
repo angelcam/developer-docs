@@ -1,0 +1,8 @@
+name: site_id
+in: path
+required: true
+description: Site ID
+example: 1
+schema:
+  type: integer
+  minimum: 1

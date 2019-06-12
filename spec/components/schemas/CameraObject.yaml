@@ -1,0 +1,76 @@
+type: object
+title: Camera object
+properties:
+  id:
+    type: integer
+    minimum: 1
+    description: Camera ID
+  name:
+    type: string
+    description: Camera name
+  type:
+    type: string
+    enum:
+      - h264
+      - mjpeg
+    description: Camera type
+  snapshot:
+    $ref: '#/components/schemas/SnapshotObject'
+  status:
+    type: string
+    enum:
+      - offline
+      - online
+      - unknown
+  event_api_hash:
+    type: string
+    description: >-
+      Event API hash - unique token for posting events to camera timeline from
+      embedded devices without authentication (do not disclose)
+  live_snapshot:
+    format: uri
+    description: Live snapshot URL
+    nullable: true
+    type: string
+  streams:
+    type: array
+    items:
+      $ref: '#/components/schemas/StreamObject'
+    description: Available camera streams
+  applications:
+    type: array
+    items:
+      $ref: '#/components/schemas/ApplicationObject'
+required:
+  - id
+  - name
+  - type
+  - snapshot
+  - status
+  - live_snapshot
+  - streams
+  - applications
+example:
+  id: 157
+  name: Parkside Office
+  type: h264
+  snapshot:
+    url: 'https://dsw4ncxjbie85.cloudfront.net/snapshot/81/y8jol6kbn0ol1gh2.jpg'
+    created_at: 2017-03-29T15:41:39.000Z
+  status: online
+  live_snapshot: >-
+    http://m1.angelcam.com/stream/81/snapshot.jpg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c
+  streams:
+    - format: mjpeg
+      url: >-
+        http://m1.angelcam.com/stream/81/stream.mjpeg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c
+      refresh_rate: 0.1
+    - format: mp4
+      url: >-
+        http://m1.angelcam.com/stream/81/stream.mp4?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjMxNiwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.b5b4cf405cf054701a75b359f4069d2af8a102c5ffd8f33cbb560a4638c7cb71
+    - format: hls
+      url: >-
+        http://m1.angelcam.com/stream/81/playlist.m3u8?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjQwMSwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.8ac35b434e768e8f10161b2d74da492f5fd8a8c115c18cbb421017665acd908a
+  applications:
+    - LSA
+    - CRA

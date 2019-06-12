@@ -1,0 +1,7 @@
+allOf:
+  - $ref: '#/components/schemas/ErrorGeneric'
+title: Error 404 Not Found
+example:
+  title: not_found
+  detail: Not Found
+  status: 404

@@ -6,31 +6,33 @@ get:
   parameters:
     - name: limit
       in: query
-      type: integer
-      minimum: 1
       required: false
       description: 'Limit result set. Example: `1`.'
+      schema:
+        type: integer
+        minimum: 1
     - name: offset
       in: query
-      type: integer
-      minimum: 1
       required: false
       description: 'Return results starting at `offset`. Example: `10`.'
+      schema:
+        type: integer
+        minimum: 1
   security:
-    - OAuth2-accessCode:
-        - client_access
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - client_access
     - PersonalAccessToken: []
   responses:
     '200':
       description: Returns client list.
-      schema:
-        $ref: '#/definitions/ClientListResponse'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClientListResponse'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
 post:
   operationId: create-client
   summary: Create new client account
@@ -39,83 +41,83 @@ post:
     email with link for account activation.
   tags:
     - client
-  parameters:
-    - in: body
-      name: client
-      schema:
-        type: object
-        required:
-          - first_name
-          - last_name
-          - email
-        properties:
-          first_name:
-            type: string
-            description: Clients first name
-          last_name:
-            type: string
-            description: Clients last name
-          email:
-            type: string
-            format: email
-            description: Clients email
-          phone:
-            type: string
-            description: Clients phone number
-          invoice_to:
-            type: string
-            enum:
-              - me
-              - client
-            default: me
-            description: All services are invoice to reseller (me) or directly to client.
-          limited_account:
-            type: boolean
-            default: false
-            description: >
-              Limited clients cannot connect new cameras or purchase any
-              services, by themselves.
-          allowed_access:
-            type: boolean
-            default: true
-            description: >
-              This option can be used to give away access to the client user
-              account. A client action is required in order to get the access
-              again.
-          activated:
-            type: boolean
-            default: false
-            description: >
-              Create the client account as already activated (i.e. do not send
-              the activation email). A special permission is required for the
-              reseller account in order to use this option.
-          password:
-            type: string
-            description: >
-              Create the client account with a given default password. A special
-              permission is required for the reseller account in order to use
-              this option.
-        example:
-          first_name: Joe
-          last_name: Parker
-          email: joe@angelcam.com
-          phone: +1 111 222 333
-          invoice_to: me
-          limited_account: false
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - first_name
+            - last_name
+            - email
+          properties:
+            first_name:
+              type: string
+              description: Clients first name
+            last_name:
+              type: string
+              description: Clients last name
+            email:
+              type: string
+              format: email
+              description: Clients email
+            phone:
+              type: string
+              description: Clients phone number
+            invoice_to:
+              type: string
+              enum:
+                - me
+                - client
+              default: me
+              description: All services are invoice to reseller (me) or directly to client.
+            limited_account:
+              type: boolean
+              default: false
+              description: >
+                Limited clients cannot connect new cameras or purchase any
+                services, by themselves.
+            allowed_access:
+              type: boolean
+              default: true
+              description: >
+                This option can be used to give away access to the client user
+                account. A client action is required in order to get the access
+                again.
+            activated:
+              type: boolean
+              default: false
+              description: >
+                Create the client account as already activated (i.e. do not send
+                the activation email). A special permission is required for the
+                reseller account in order to use this option.
+            password:
+              type: string
+              description: >
+                Create the client account with a given default password. A
+                special permission is required for the reseller account in order
+                to use this option.
+          example:
+            first_name: Joe
+            last_name: Parker
+            email: joe@angelcam.com
+            phone: +1 111 222 333
+            invoice_to: me
+            limited_account: false
   security:
-    - OAuth2-accessCode:
-        - client_create
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - client_create
     - PersonalAccessToken: []
   responses:
     '201':
       description: Newly created client object
-      schema:
-        $ref: '#/definitions/ClientObject'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClientObject'
     '400':
-      $ref: '#/responses/Error400InvalidBody'
+      $ref: '#/components/responses/Error400InvalidBody'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'

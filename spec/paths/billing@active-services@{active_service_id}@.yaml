@@ -1,0 +1,106 @@
+get:
+  operationId: my-service-detail
+  summary: Retrieve my service detail
+  tags:
+    - active-service
+  parameters:
+    - $ref: '#/components/parameters/activeServiceId'
+  security:
+    - OAuth2:
+        - active_services_access
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: Returns detail of my active service.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ActiveServiceObject'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+put:
+  operationId: my-service-update
+  summary: Change service
+  tags:
+    - active-service
+  parameters:
+    - $ref: '#/components/parameters/activeServiceId'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - type
+            - code
+            - period
+          properties:
+            type:
+              type: string
+              description: Type of service
+              enum:
+                - account
+                - API
+                - cloud-recording
+                - broadcasting
+                - time-lapse
+                - VVA
+                - VPA
+              example: cloud-recording
+            code:
+              type: string
+              description: Code of service, this code together with type is unique identifier of service
+              example: 3-days
+            period:
+              type: string
+              format: duration
+              enum:
+                - P1M
+                - P1Y
+          example:
+            type: cloud-recording
+            code: 3days
+            period: P1M
+  security:
+    - OAuth2:
+        - active_services_manage
+    - PersonalAccessToken: []
+  responses:
+    '201':
+      description: Newly activated service
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ActiveServiceObject'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'
+    '400':
+      $ref: '#/components/responses/Error400InvalidBody'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+delete:
+  operationId: my-service-cancel
+  summary: Cancel active service
+  tags:
+    - active-service
+  parameters:
+    - $ref: '#/components/parameters/activeServiceId'
+  security:
+    - OAuth2:
+        - active_services_manage
+    - PersonalAccessToken: []
+  responses:
+    '204':
+      $ref: '#/components/responses/EmptyResponse'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'

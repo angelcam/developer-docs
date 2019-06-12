@@ -1,0 +1,27 @@
+type: object
+title: Recording stream object
+properties:
+  url:
+    type: string
+    description: URL of a stream.
+    example: >
+      https://rec-streamer-eu-central-1.angelcam.com/streams/cefa6471a38f469585b46675fc992614/playlist.m3u8
+  format:
+    type: string
+    enum:
+      - hls
+      - fmp4
+      - mjpeg
+    description: Stream format.
+    example: hls
+  stream_info:
+    type: string
+    description: URL of a recorded stream info endpoint.
+    example: >-
+      https://api.angelcam.com/v1/recording/stream/rec-streamer-eu-central-1/cefa6471a38f469585b46675fc992614/
+example:
+  url: >-
+    https://rec-streamer-eu-central-1.angelcam.com/streams/df0600b7487a44d480217db7713720d3/playlist.m3u8
+  format: hls
+  stream_info: >-
+    https://api.angelcam.com/v1/recording/stream/rec-streamer-eu-central-1/df0600b7487a44d480217db7713720d3/

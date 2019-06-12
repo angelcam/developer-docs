@@ -1,0 +1,8 @@
+name: guest_id
+in: path
+required: true
+description: Guest ID
+example: 4
+schema:
+  type: integer
+  minimum: 1

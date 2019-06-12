@@ -1,0 +1,21 @@
+type: object
+title: Order list
+properties:
+  count:
+    type: integer
+    description: Count of all services
+  next:
+    format: uri
+    description: Next page from pagination
+    nullable: true
+    type: string
+  previous:
+    format: uri
+    description: Previous page from pagination
+    nullable: true
+    type: string
+  results:
+    type: array
+    description: List of orders
+    items:
+      $ref: '#/components/schemas/OrderObject'

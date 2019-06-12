@@ -1,0 +1,26 @@
+type: object
+title: Active service list
+properties:
+  count:
+    type: integer
+    description: Count of all services
+  next:
+    format: uri
+    description: Next page from pagination
+    nullable: true
+    type: string
+  previous:
+    format: uri
+    description: Previous page from pagination
+    nullable: true
+    type: string
+  results:
+    type: array
+    description: List of services available for user
+    items:
+      $ref: '#/components/schemas/ActiveServiceObject'
+required:
+  - count
+  - next
+  - previous
+  - results

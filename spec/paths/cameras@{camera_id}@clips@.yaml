@@ -5,26 +5,27 @@ get:
     - clip
   description: Retrieves the list of recording clips of given camera
   security:
-    - OAuth2-accessCode:
-        - recording_clips_access
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - recording_clips_access
     - PersonalAccessToken: []
   parameters:
-    - $ref: '#/parameters/cameraId'
+    - $ref: '#/components/parameters/cameraId'
   responses:
     '200':
       description: OK
-      schema:
-        $ref: '#/definitions/ClipListResponse'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClipListResponse'
     '400':
-      $ref: '#/responses/Error400InvalidParams'
+      $ref: '#/components/responses/Error400InvalidParams'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
     '404':
-      $ref: '#/responses/Error404NotFound'
+      $ref: '#/components/responses/Error404NotFound'
+
 post:
   operationId: my-cameras-clips-create
   summary: Create clip
@@ -32,52 +33,55 @@ post:
     - clip
   description: Retrieves the list of recording clips of given camera
   parameters:
-    - $ref: '#/parameters/cameraId'
-    - in: body
-      name: clip
-      schema:
-        type: object
-        title: clip
-        required:
-          - name
-          - start
-          - end
-        properties:
-          name:
-            type: string
-            description: Clip name
-          start:
-            type: string
-            format: date-time
-            description: Start time of clip (ISO 8601)
-          end:
-            type: string
-            format: date-time
-            description: End time of clip (ISO 8601)
-        example:
-          name: Frontdoor loitering
-          start: 2017-01-01T00:00:00.000Z
-          end: 2017-01-01T00:25:00.000Z
+    - $ref: '#/components/parameters/cameraId'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          title: clip
+          required:
+            - name
+            - start
+            - end
+          properties:
+            name:
+              type: string
+              description: Clip name
+            start:
+              type: string
+              format: date-time
+              description: Start time of clip (ISO 8601)
+            end:
+              type: string
+              format: date-time
+              description: End time of clip (ISO 8601)
+          example:
+            name: Frontdoor loitering
+            start: 2017-01-01T00:00:00.000Z
+            end: 2017-01-01T00:25:00.000Z
   security:
-    - OAuth2-accessCode:
-        - recording_clips_access
-        - recording_clips_create
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - recording_clips_access
         - recording_clips_create
     - PersonalAccessToken: []
   responses:
     '201':
       description: Clip request was received and clip processing will start
-      schema:
-        $ref: '#/definitions/ClipObject'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClipObject'
     '400':
       description: >-
         No recording data exists for given timeframe, requested clip lenght
         exceeds 3 hours or there's another error in the request
-      schema:
-        $ref: '#/definitions/Error400Invalid'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error400Invalid'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
+

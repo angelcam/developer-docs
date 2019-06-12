@@ -1,0 +1,26 @@
+type: object
+title: Camera guests list
+properties:
+  count:
+    type: integer
+    description: Count of all camera guests
+  next:
+    format: uri
+    description: Next page from pagination
+    nullable: true
+    type: string
+  previous:
+    format: uri
+    description: Previous page from pagination
+    nullable: true
+    type: string
+  results:
+    type: array
+    description: List of camera guests
+    items:
+      $ref: '#/components/schemas/CameraGuestObject'
+required:
+  - count
+  - next
+  - previous
+  - results

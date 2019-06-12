@@ -1,0 +1,38 @@
+type: object
+title: Order object
+properties:
+  id:
+    type: integer
+    description: Order id
+    example: 1
+  closed_at:
+    type: string
+    format: datetime
+    description: Date when order was closed
+    example: 2017-01-01T00:00:20.000Z
+  paid_at:
+    type: string
+    nullable: true
+    format: datetime
+    description: Date when order was paid
+    example: 2017-01-01T00:00:20.000Z
+  due_at:
+    type: string
+    nullable: true
+    format: datetime
+    description: Date when order is due
+    example: 2017-01-01T00:00:20.000Z
+  total_price:
+    type: string
+    format: number
+    description: Decimal price in USD
+    example: 3.99
+  state:
+    type: string
+    description: Status of an order
+    enum:
+      - purchase
+      - unpaid
+      - pending-payment
+      - canceled
+      - paid

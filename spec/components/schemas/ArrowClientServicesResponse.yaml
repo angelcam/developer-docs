@@ -1,0 +1,26 @@
+type: object
+title: A list of Arrow services
+properties:
+  count:
+    type: integer
+    description: Number of all services
+  next:
+    format: uri
+    description: Next page from pagination
+    nullable: true
+    type: string
+  previous:
+    format: uri
+    description: Previous page from pagination
+    nullable: true
+    type: string
+  results:
+    type: array
+    description: A list of Arrow services
+    items:
+      $ref: '#/components/schemas/ArrowServiceObject'
+required:
+  - count
+  - next
+  - previous
+  - results

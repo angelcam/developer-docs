@@ -1,4 +1,0 @@
-type: array
-description: List of cameras on site
-items:
-  $ref: '#/definitions/CameraObject'

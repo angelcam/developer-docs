@@ -1,0 +1,45 @@
+type: object
+title: Event object
+properties:
+  camera:
+    description: Camera ID
+    nullable: true
+    type: integer
+  site:
+    description: Site ID
+    nullable: true
+    type: integer
+  title:
+    description: Event title
+    nullable: true
+    type: string
+  category:
+    type: string
+    description: event category
+  source:
+    type: string
+    description: Name of event source
+  occurred_at:
+    type: string
+    format: datetime
+    description: Time when event occurred or was received by Angelcam
+  received_at:
+    type: string
+    format: datetime
+    description: Time when event was received by Angelcam
+required:
+  - camera
+  - site
+  - title
+  - category
+  - source
+  - received_at
+  - occurred_at
+example:
+  title: Door open
+  camera: 20
+  site: null
+  source: smtp
+  category: motion_detected
+  received_at: 2018-10-24T11:21:59.000Z
+  occurred_at: 2018-10-24T11:21:39.000Z

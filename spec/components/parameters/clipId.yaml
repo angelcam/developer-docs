@@ -1,0 +1,8 @@
+name: clip_id
+in: path
+required: true
+description: Clip UUID
+example: cd13975b-0b08-48f5-bd39-3f7d2a0c935a
+schema:
+  type: string
+  format: uuid

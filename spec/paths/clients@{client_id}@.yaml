@@ -4,89 +4,90 @@ get:
   tags:
     - client
   parameters:
-    - $ref: '#/parameters/clientId'
+    - $ref: '#/components/parameters/clientId'
   security:
-    - OAuth2-accessCode:
-        - client_access
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - client_access
     - PersonalAccessToken: []
   responses:
     '200':
       description: Client object
-      schema:
-        $ref: '#/definitions/ClientObject'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClientObject'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
     '404':
-      $ref: '#/responses/Error404NotFound'
+      $ref: '#/components/responses/Error404NotFound'
 put:
   operationId: update-client
   summary: Update client account
   tags:
     - client
   parameters:
-    - $ref: '#/parameters/clientId'
-    - in: body
-      name: client
-      schema:
-        type: object
-        title: client
-        properties:
-          first_name:
-            type: string
-            description: Clients first name
-          last_name:
-            type: string
-            description: Clients last name
-          phone:
-            type: string
-            description: Clients phone number
-          invoice_to:
-            type: string
-            enum:
-              - me
-              - client
-            description: All services are invoice to reseller (me) or directly to client.
-          limited_account:
-            type: boolean
-            description: >
-              Limited clients cannot connect new cameras or purchase any
-              services, by themselves.
-          allowed_access:
-            type: boolean
-            description: >
-              This option can be used to give away access to the client user
-              account. A client action is required in order to get the access
-              again. (It is only possible to change this value from true to
-              false using this endpoint.)
-          password:
-            type: string
-            description: >
-              Set password for the client account. A special permission is
-              required for the reseller account in order to use this option.
-        example:
-          first_name: Joe
-          last_name: Parker
-          phone: +1 111 222 333
-          invoice_to: client
-          limited_account: false
+    - $ref: '#/components/parameters/clientId'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          title: client
+          properties:
+            first_name:
+              type: string
+              description: Clients first name
+            last_name:
+              type: string
+              description: Clients last name
+            phone:
+              type: string
+              description: Clients phone number
+            invoice_to:
+              type: string
+              enum:
+                - me
+                - client
+              description: All services are invoice to reseller (me) or directly to client.
+            limited_account:
+              type: boolean
+              description: >
+                Limited clients cannot connect new cameras or purchase any
+                services, by themselves.
+            allowed_access:
+              type: boolean
+              description: >
+                This option can be used to give away access to the client user
+                account. A client action is required in order to get the access
+                again. (It is only possible to change this value from true to
+                false using this endpoint.)
+            password:
+              type: string
+              description: >
+                Set password for the client account. A special permission is
+                required for the reseller account in order to use this option.
+          example:
+            first_name: Joe
+            last_name: Parker
+            phone: +1 111 222 333
+            invoice_to: client
+            limited_account: false
   security:
-    - OAuth2-accessCode:
-        - client_manage
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - client_manage
     - PersonalAccessToken: []
   responses:
     '200':
       description: Client object
-      schema:
-        $ref: '#/definitions/ClientObject'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ClientObject'
     '400':
-      $ref: '#/responses/Error400InvalidBody'
+      $ref: '#/components/responses/Error400InvalidBody'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'

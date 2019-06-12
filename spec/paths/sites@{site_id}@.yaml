@@ -4,67 +4,68 @@ get:
   tags:
     - site
   parameters:
-    - $ref: '#/parameters/siteId'
+    - $ref: '#/components/parameters/siteId'
   security:
-    - OAuth2-accessCode:
-        - sites_access
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - sites_access
     - PersonalAccessToken: []
   responses:
     '200':
       description: OK
-      schema:
-        $ref: '#/definitions/SiteObject'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SiteObject'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
     '404':
-      $ref: '#/responses/Error404NotFound'
+      $ref: '#/components/responses/Error404NotFound'
 put:
   operationId: site-detail-update
   summary: Update Site
   tags:
     - site
   parameters:
-    - $ref: '#/parameters/siteId'
-    - in: body
-      name: site
-      schema:
-        type: object
-        properties:
-          name:
-            type: string
-            description: Site name
-          parent:
-            type: integer
-            minimum: 1
-            description: Parent Site ID
-          is_armed:
-            type: boolean
-            description: >-
-              If site is not armed user will not get notifications when
-              something happens
+    - $ref: '#/components/parameters/siteId'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Site name
+            parent:
+              type: integer
+              minimum: 1
+              description: Parent Site ID
+            is_armed:
+              type: boolean
+              description: >-
+                If site is not armed user will not get notifications when
+                something happens
   security:
-    - OAuth2-accessCode:
-        - sites_manage
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - sites_manage
     - PersonalAccessToken: []
   responses:
     '200':
       description: OK
-      schema:
-        $ref: '#/definitions/SiteObject'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SiteObject'
     '400':
-      $ref: '#/responses/Error400InvalidParams'
+      $ref: '#/components/responses/Error400InvalidParams'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
     '404':
-      $ref: '#/responses/Error404NotFound'
+      $ref: '#/components/responses/Error404NotFound'
 delete:
   operationId: site-detail-destroy
   summary: Destroy Site
@@ -75,19 +76,17 @@ delete:
   tags:
     - site
   parameters:
-    - $ref: '#/parameters/siteId'
+    - $ref: '#/components/parameters/siteId'
   security:
-    - OAuth2-accessCode:
-        - sites_manage
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - sites_manage
     - PersonalAccessToken: []
   responses:
     '204':
       description: No content
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
     '404':
-      $ref: '#/responses/Error404NotFound'
+      $ref: '#/components/responses/Error404NotFound'

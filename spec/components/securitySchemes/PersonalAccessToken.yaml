@@ -1,0 +1,15 @@
+type: http
+scheme: bearer
+bearerFormat: PersonalAccessToken
+description: >
+  This authentication method should be used when your are accessing your
+  account. Only what you need is token which you send in all API request headers
+  for authentication. It's possible to restrict for what API call is this token
+  valid.
+
+  There is no expiration time, but it can be revoked manually.
+
+
+  Example of usage:
+
+      $ curl -H "Authorization: PersonalAccessToken" -X GET "https://api.angelcam.com/v1/me/"

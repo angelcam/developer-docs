@@ -1,0 +1,26 @@
+type: object
+title: Client list
+properties:
+  count:
+    type: integer
+    description: Count of client
+  next:
+    format: uri
+    description: Next page from pagination
+    nullable: true
+    type: string
+  previous:
+    format: uri
+    description: Previous page from pagination
+    nullable: true
+    type: string
+  results:
+    type: array
+    description: List of clients of reseller
+    items:
+      $ref: '#/components/schemas/ClientObject'
+required:
+  - count
+  - next
+  - previous
+  - results

@@ -1,0 +1,8 @@
+name: active_service_id
+in: path
+required: true
+description: Active service ID
+example: 3
+schema:
+  type: integer
+  minimum: 1

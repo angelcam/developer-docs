@@ -1,0 +1,49 @@
+type: object
+title: Recording information
+required:
+  - status
+  - retention
+properties:
+  status:
+    type: string
+    enum:
+      - READY
+      - CONNECTING
+      - RECORDING
+      - STOPPING
+      - ERROR
+    description: >
+      Recording status values have the following meaning:
+
+      * `READY` - Not recording (recording is ready to be started)
+
+      * `CONNECTING` - Recorder is trying to connect to the stream (this usually
+      indicates camera connectivity problems; the recorder keeps trying to
+      connect).
+
+      * `RECORDING` - Recorder is connected to the stream and records are being
+      created
+
+      * `STOPPING` - Recording is stopping
+
+      * `ERROR` - Error occurred when recording (this indicates a possible issue
+      with Angelcam infrastructure)
+  retention:
+    description: >
+      Retention period in ISO 8601 duration format tells how long in past we
+      store the footage. Example: P7D means 7 days.
+    nullable: true
+    type: string
+  active_service_id:
+    type: integer
+    description: Active service ID
+  deactivated_at:
+    type: string
+    format: datetime
+    nullable: true
+    description: Datetime when recording service has been deactivated, if null then recording is active.
+example:
+  status: RECORDING
+  retention: P7D
+  active_service_id: 2
+  deactivated_at: null

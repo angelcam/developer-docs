@@ -1,0 +1,24 @@
+get:
+  operationId: order-items
+  summary: Retrieve list of items on order
+  tags:
+    - order
+  parameters:
+    - $ref: '#/components/parameters/orderId'
+  security:
+    - OAuth2:
+        - orders_access
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: Returns list of order items.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OrderItemListResponse'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'

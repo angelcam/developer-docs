@@ -1,0 +1,96 @@
+type: object
+title: Recording plans
+properties:
+  count:
+    type: integer
+    minimum: 0
+    description: Number of all plans
+  next:
+    format: uri
+    description: Next page from pagination
+    nullable: true
+    type: string
+  previous:
+    format: uri
+    description: Previous page from pagination
+    nullable: true
+    type: string
+  results:
+    type: array
+    description: A list of recording plans
+    items:
+      $ref: '#/components/schemas/RecordingPlanObject'
+required:
+  - count
+  - next
+  - previous
+  - results
+example:
+  count: 16
+  next: null
+  previous: null
+  results:
+    - code: cra-3days-monthly-v2
+      retention: P3D
+      price: '3.99'
+      billing_period: month
+    - code: cra-7days-monthly-v2
+      retention: P7D
+      price: '5.99'
+      billing_period: month
+    - code: cra-30days-monthly-v2
+      retention: P30D
+      price: '13.99'
+      billing_period: month
+    - code: cra-60days-monthly-v2
+      retention: P60D
+      price: '18.99'
+      billing_period: month
+    - code: cra-3months-monthly-v2
+      retention: P90D
+      price: '24.99'
+      billing_period: month
+    - code: cra-6months-monthly-v2
+      retention: P180D
+      price: '39.99'
+      billing_period: month
+    - code: cra-3days-yearly-v2
+      retention: P3D
+      price: '47.88'
+      billing_period: year
+    - code: cra-1year-monthly-v2
+      retention: P365D
+      price: '69.99'
+      billing_period: month
+    - code: cra-7days-yearly-v2
+      retention: P7D
+      price: '71.88'
+      billing_period: year
+    - code: cra-2years-monthly-v2
+      retention: P730D
+      price: '129.99'
+      billing_period: month
+    - code: cra-30days-yearly-v2
+      retention: P30D
+      price: '167.88'
+      billing_period: year
+    - code: cra-60days-yearly-v2
+      retention: P60D
+      price: '227.88'
+      billing_period: year
+    - code: cra-3months-yearly-v2
+      retention: P90D
+      price: '299.88'
+      billing_period: year
+    - code: cra-6months-yearly-v2
+      retention: P180D
+      price: '479.88'
+      billing_period: year
+    - code: cra-1year-yearly-v2
+      retention: P365D
+      price: '839.88'
+      billing_period: year
+    - code: cra-2years-yearly-v2
+      retention: P730D
+      price: '1559.88'
+      billing_period: year

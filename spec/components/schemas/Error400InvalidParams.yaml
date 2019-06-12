@@ -1,0 +1,23 @@
+type: object
+title: Error 400 Invalid Parameters
+properties:
+  title:
+    type: string
+  detail:
+    type: object
+  status:
+    type: integer
+required:
+  - title
+  - detail
+  - status
+example:
+  title: invalid
+  detail:
+    - refresh_rate:
+        - valid number is required.
+        - Ensure this value is greater than 0.
+    - max_width:
+        - valid number is required.
+        - Ensure this value is greater than or equal to 1.
+  status: 400

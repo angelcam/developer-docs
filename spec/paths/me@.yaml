@@ -4,35 +4,33 @@ get:
   tags:
     - user
   security:
-    - OAuth2-accessCode:
-        - user_access
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - user_access
     - PersonalAccessToken: []
   responses:
     '200':
       description: OK
-      schema:
-        $ref: '#/definitions/UserMeResponse'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserMeResponse'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
 delete:
   operationId: me-delete
   summary: Delete current user
   tags:
     - user
   security:
-    - OAuth2-accessCode:
-        - user_delete
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - user_delete
     - PersonalAccessToken: []
   responses:
     '204':
-      $ref: '#/responses/EmptyResponse'
+      $ref: '#/components/responses/EmptyResponse'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'

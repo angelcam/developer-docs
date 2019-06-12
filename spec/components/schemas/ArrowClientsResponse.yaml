@@ -1,0 +1,26 @@
+type: object
+title: A list of Arrow clients
+properties:
+  count:
+    type: integer
+    description: Number of all clients
+  next:
+    format: uri
+    description: Next page from pagination
+    nullable: true
+    type: string
+  previous:
+    format: uri
+    description: Previous page from pagination
+    nullable: true
+    type: string
+  results:
+    type: array
+    description: A list of Arrow clients
+    items:
+      $ref: '#/components/schemas/ArrowClientListObject'
+required:
+  - count
+  - next
+  - previous
+  - results

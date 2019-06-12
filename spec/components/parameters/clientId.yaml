@@ -1,0 +1,8 @@
+name: client_id
+in: path
+required: true
+description: Client ID
+example: 6
+schema:
+  type: integer
+  minimum: 1

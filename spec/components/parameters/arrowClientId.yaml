@@ -1,0 +1,8 @@
+name: uuid
+in: path
+required: true
+description: Arrow client UUID
+example: c95227c4-218c-4dee-899d-f3fa2ce9c39b
+schema:
+  type: string
+  format: uuid

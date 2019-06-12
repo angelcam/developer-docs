@@ -1,0 +1,5 @@
+description: Query params are invalid.
+content:
+  application/json:
+    schema:
+      $ref: '#/components/schemas/Error400InvalidParams'

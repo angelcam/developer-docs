@@ -1,0 +1,13 @@
+type: object
+title: Price object
+properties:
+  period:
+    type: string
+    format: duration
+    description: Period of time
+    example: P1M
+  price:
+    type: string
+    format: number
+    description: Decimal price in USD
+    example: 3.99

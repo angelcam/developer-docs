@@ -5,41 +5,44 @@ get:
     - event
   description: Retrieves list of events belonging to the specified camera
   parameters:
-    - $ref: '#/parameters/cameraId'
+    - $ref: '#/components/parameters/cameraId'
     - name: start
       in: query
-      type: string
-      format: date-time
       description: 'Example: `2017-03-07T14:00:00Z`.'
       required: false
+      schema:
+        type: string
+        format: date-time
     - name: end
       in: query
-      type: string
-      format: date-time
       description: 'Example: `2017-03-07T16:00:00Z`.'
       required: false
+      schema:
+        type: string
+        format: date-time
     - name: limit
       in: query
-      type: integer
-      minimum: 1
       description: 'Limit result set. Example: `1`.'
       required: false
+      schema:
+        type: integer
+        minimum: 1
   security:
-    - OAuth2-accessCode:
-        - event_access
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - event_access
     - PersonalAccessToken: []
   responses:
     '200':
       description: OK
-      schema:
-        $ref: '#/definitions/EventListResponse'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EventListResponse'
     '400':
-      $ref: '#/responses/Error400InvalidParams'
+      $ref: '#/components/responses/Error400InvalidParams'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
     '404':
-      $ref: '#/responses/Error404NotFound'
+      $ref: '#/components/responses/Error404NotFound'

@@ -1,0 +1,26 @@
+get:
+  operationId: order-detail
+  summary: Retrieve order detail
+  tags:
+    - order
+  parameters:
+    - $ref: '#/components/parameters/orderId'
+  security:
+    - OAuth2:
+        - orders_access
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: Returns list of available services.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OrderObject'
+    '400':
+      $ref: '#/components/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'

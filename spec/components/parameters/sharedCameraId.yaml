@@ -1,0 +1,8 @@
+name: camera_id
+in: path
+required: true
+description: Camera ID
+example: 21
+schema:
+  type: integer
+  minimum: 1

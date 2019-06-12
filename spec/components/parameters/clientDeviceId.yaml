@@ -1,0 +1,8 @@
+name: device_id
+in: path
+required: true
+description: Device ID
+example: 1
+schema:
+  type: integer
+  minimum: 1

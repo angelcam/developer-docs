@@ -1,0 +1,10 @@
+name: session_id
+in: path
+required: true
+description: >
+  `session_id` that you received from [start stream detection
+  endpoint](/#operation/stream-detection-start)
+example: c95227c4-218c-4dee-899d-f3fa2ce9c39b
+schema:
+  type: string
+  format: uuid

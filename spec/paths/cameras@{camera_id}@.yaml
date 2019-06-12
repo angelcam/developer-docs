@@ -4,135 +4,139 @@ get:
   tags:
     - camera
   parameters:
-    - $ref: '#/parameters/cameraId'
+    - $ref: '#/components/parameters/cameraId'
     - name: refresh_rate
       in: query
-      type: number
-      format: float
-      minimum: 0
       required: false
       description: >-
         Set a maximum number of keyframes sent in MJPEG stream per second. For
         example if you want to have MJPEG stream with keyframe sent every 10
         seconds, post value 0.1.
+      schema:
+        type: number
+        format: float
+        minimum: 0
     - name: max_width
       in: query
-      type: integer
-      minimum: 1
       required: false
       description: Maximum width of MJPEG stream and LIVE SNAPSHOT.
+      schema:
+        type: integer
+        minimum: 1
     - name: max_height
       in: query
-      type: integer
-      minimum: 1
       required: false
       description: Maximum height of MJPEG stream and LIVE SNAPSHOT.
+      schema:
+        type: integer
+        minimum: 1
   security:
-    - OAuth2-accessCode:
-        - camera_access
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - camera_access
     - PersonalAccessToken: []
   responses:
     '200':
       description: Camera object
-      schema:
-        $ref: '#/definitions/CameraObject'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CameraObject'
     '400':
-      $ref: '#/responses/Error400InvalidParams'
+      $ref: '#/components/responses/Error400InvalidParams'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
     '404':
-      $ref: '#/responses/Error404NotFound'
+      $ref: '#/components/responses/Error404NotFound'
+
 put:
   operationId: my-cameras-update
   summary: Update camera
   tags:
     - camera
   parameters:
-    - $ref: '#/parameters/cameraId'
-    - in: body
-      name: camera
-      schema:
-        type: object
-        title: camera
-        properties:
-          name:
-            type: string
-            description: Camera name
-          type:
-            type: string
-            enum:
-              - h264
-              - mjpeg
-            description: >-
-              Camera type. We currently support H.264 over RTSP and MJPEG over
-              HTTP cameras.
-          connection_type:
-            type: string
-            enum:
-              - direct
-              - arrow
-            description: >
-              How is the camera connected to Angelcam. The `direct` connection
-              means that the camera stream is available on a public IP address.
-              The `arrow` option can be used for connecting cameras that can be
-              accessed via an Arrow client. Please note that cameras connected
-              via an Arrow client use URL in a specific format. You will need to
-              use the [stream detection](#tag/camera-stream-detection) endpoints
-              to obtain the URL first.
-          url:
-            type: string
-            format: url
-            description: >
-              Complete URL of a camera stream. H.264 cameras must use "rtsp"
-              scheme, for MJPEG cameras it's allowed to use "http" and "https"
-              schemes. The "https" scheme is valid only for cameras using the
-              `direct` connection type.
-        example:
-          name: My updated shiny camera
-          type: h264
-          url: 'rtsp://username:password@175.36.248.73:554/live.sdp'
+    - $ref: '#/components/parameters/cameraId'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          title: camera
+          properties:
+            name:
+              type: string
+              description: Camera name
+            type:
+              type: string
+              enum:
+                - h264
+                - mjpeg
+              description: >-
+                Camera type. We currently support H.264 over RTSP and MJPEG over
+                HTTP cameras.
+            connection_type:
+              type: string
+              enum:
+                - direct
+                - arrow
+              description: >
+                How is the camera connected to Angelcam. The `direct` connection
+                means that the camera stream is available on a public IP
+                address. The `arrow` option can be used for connecting cameras
+                that can be accessed via an Arrow client. Please note that
+                cameras connected via an Arrow client use URL in a specific
+                format. You will need to use the [stream
+                detection](#tag/camera-stream-detection) endpoints to obtain the
+                URL first.
+            url:
+              type: string
+              format: url
+              description: >
+                Complete URL of a camera stream. H.264 cameras must use "rtsp"
+                scheme, for MJPEG cameras it's allowed to use "http" and "https"
+                schemes. The "https" scheme is valid only for cameras using the
+                `direct` connection type.
+          example:
+            name: My updated shiny camera
+            type: h264
+            url: 'rtsp://username:password@175.36.248.73:554/live.sdp'
   security:
-    - OAuth2-accessCode:
-        - camera_manage
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - camera_manage
     - PersonalAccessToken: []
   responses:
     '200':
       description: Camera object
-      schema:
-        $ref: '#/definitions/CameraObject'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CameraObject'
     '400':
-      $ref: '#/responses/Error400InvalidParams'
+      $ref: '#/components/responses/Error400InvalidParams'
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
     '404':
-      $ref: '#/responses/Error404NotFound'
+      $ref: '#/components/responses/Error404NotFound'
 delete:
   operationId: my-cameras-remove
   summary: Remove camera
   tags:
     - camera
   parameters:
-    - $ref: '#/parameters/cameraId'
+    - $ref: '#/components/parameters/cameraId'
   security:
-    - OAuth2-accessCode:
-        - camera_delete
-    - OAuth2-passwordGrant:
+    - OAuth2:
         - camera_delete
     - PersonalAccessToken: []
   responses:
     '204':
       description: No content
     '401':
-      $ref: '#/responses/Error401Unauthorized'
+      $ref: '#/components/responses/Error401Unauthorized'
     '403':
-      $ref: '#/responses/Error403PermissionDenied'
+      $ref: '#/components/responses/Error403PermissionDenied'
     '404':
-      $ref: '#/responses/Error404NotFound'
+      $ref: '#/components/responses/Error404NotFound'

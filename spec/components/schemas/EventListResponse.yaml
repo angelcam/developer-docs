@@ -1,0 +1,25 @@
+type: object
+title: Event list
+properties:
+  count:
+    type: integer
+    minimum: 0
+    description: Count of all events
+  next:
+    format: uri
+    description: Next page from pagination
+    nullable: true
+    type: string
+  previous:
+    description: Previous page from pagination
+    nullable: true
+  results:
+    type: array
+    description: List of events owned by the user
+    items:
+      $ref: '#/components/schemas/EventObject'
+required:
+  - count
+  - next
+  - previous
+  - results

@@ -1,0 +1,7 @@
+allOf:
+  - $ref: '#/components/schemas/ErrorGeneric'
+title: Error 401 Unauthorized
+example:
+  title: not_authenticated
+  detail: Authentication credentials were not provided
+  status: 401

@@ -1,0 +1,26 @@
+type: object
+title: Camera list
+properties:
+  count:
+    type: integer
+    description: Count of all cameras
+  next:
+    format: uri
+    description: Next page from pagination
+    nullable: true
+    type: string
+  previous:
+    format: uri
+    description: Previous page from pagination
+    nullable: true
+    type: string
+  results:
+    type: array
+    description: List of cameras owned by the user
+    items:
+      $ref: '#/components/schemas/CameraObject'
+required:
+  - count
+  - next
+  - previous
+  - results
