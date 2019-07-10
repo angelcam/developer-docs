@@ -1,0 +1,18 @@
+type: object
+title: Camera preview
+description: >-
+  Camera preview that can be used to access the underlying stream in various
+  ways. The preview is available only for 20 minutes.
+properties:
+  live_snapshot:
+    type: string
+    format: url
+    description: A URL that can be used to retrieve a snapshot from the camera
+  streams:
+    type: array
+    description: A list of streams available for the preview
+    items:
+      $ref: '#/components/schemas/CameraStreamDetectionPreviewStream'
+required:
+  - live_snapshot
+  - streams

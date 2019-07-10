@@ -3,3 +3,5 @@ title: Camera Start Stream Detection Response
 properties:
   session_id:
     type: string
+required:
+  - session_id

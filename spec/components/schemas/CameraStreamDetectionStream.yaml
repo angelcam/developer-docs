@@ -1,0 +1,21 @@
+type: object
+title: Detected stream
+properties:
+  url:
+    type: string
+    format: url
+    description: >-
+      URL of the detected stream. This is the URL that should be used to create
+      a new camera.
+  type:
+    type: string
+    enum:
+      - h264
+      - mjpeg
+    description: Camera type
+  preview:
+    $ref: '#/components/schemas/CameraStreamDetectionPreview'
+required:
+  - url
+  - type
+  - preview

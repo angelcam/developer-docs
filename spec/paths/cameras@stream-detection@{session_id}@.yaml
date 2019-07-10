@@ -15,7 +15,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/CameraResultStreamDetectionResponse'
+            $ref: '#/components/schemas/CameraStreamDetectionResponse'
     '401':
       $ref: '#/components/responses/Error401Unauthorized'
     '403':

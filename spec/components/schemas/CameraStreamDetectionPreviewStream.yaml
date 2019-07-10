@@ -1,0 +1,17 @@
+type: object
+title: Camera preview stream
+properties:
+  format:
+    type: string
+    enum:
+      - hls
+      - mjpeg
+      - mp4
+    description: Stream type
+  url:
+    type: string
+    format: url
+    description: Stream URL
+required:
+  - format
+  - url
