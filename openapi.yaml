@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 2019.06.24
+  version: 2019.07.17
   title: Angelcam API
   contact:
     email: support@angelcam.com
@@ -1962,7 +1962,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CameraResultStreamDetectionResponse'
+                $ref: '#/components/schemas/CameraStreamDetectionResponse'
         '401':
           $ref: '#/components/responses/Error401Unauthorized'
         '403':
@@ -3344,7 +3344,50 @@ components:
         applications:
           - LSA
           - CRA
-    CameraResultStreamDetectionResponse:
+    CameraStartStreamDetectionResponse:
+      type: object
+      title: Camera Start Stream Detection Response
+      properties:
+        session_id:
+          type: string
+      required:
+        - session_id
+    CameraStreamDetectionPreview:
+      type: object
+      title: Camera preview
+      description: Camera preview that can be used to access the underlying stream in various ways. The preview is available only for 20 minutes.
+      properties:
+        live_snapshot:
+          type: string
+          format: url
+          description: A URL that can be used to retrieve a snapshot from the camera
+        streams:
+          type: array
+          description: A list of streams available for the preview
+          items:
+            $ref: '#/components/schemas/CameraStreamDetectionPreviewStream'
+      required:
+        - live_snapshot
+        - streams
+    CameraStreamDetectionPreviewStream:
+      type: object
+      title: Camera preview stream
+      properties:
+        format:
+          type: string
+          enum:
+            - hls
+            - mjpeg
+            - mp4
+          description: Stream type
+        url:
+          type: string
+          format: url
+          description: Stream URL
+      required:
+        - format
+        - url
+    CameraStreamDetectionResponse:
       type: object
       title: Camera Result Stream Detection Response
       properties:
@@ -3355,29 +3398,50 @@ components:
             - in-progress
             - error
           description: Result status
-        rtsp_streams:
+        streams:
           type: array
+          description: A list of detected streams
           items:
-            type: string
-            format: url
-          description: Lists RTSP streams
-        mjpeg_streams:
-          type: array
-          items:
-            type: string
-            format: url
-          description: Lists MJPEG streams
+            $ref: '#/components/schemas/CameraStreamDetectionStream'
         error:
           type: string
           description: Error information
       required:
         - status
-    CameraStartStreamDetectionResponse:
+      example:
+        status: ok
+        streams:
+          - url: 'rtsp://1.2.3.4/main'
+            type: h264
+            preview:
+              live_snapshot: 'http://m1.angelcam.com/stream/81/snapshot.jpg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c'
+              streams:
+                - format: mjpeg
+                  url: 'http://m1.angelcam.com/stream/81/stream.mjpeg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c'
+                - format: mp4
+                  url: 'http://m1.angelcam.com/stream/81/stream.mp4?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjMxNiwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.b5b4cf405cf054701a75b359f4069d2af8a102c5ffd8f33cbb560a4638c7cb71'
+                - format: hls
+                  url: 'http://m1.angelcam.com/stream/81/playlist.m3u8?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjQwMSwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.8ac35b434e768e8f10161b2d74da492f5fd8a8c115c18cbb421017665acd908a'
+    CameraStreamDetectionStream:
       type: object
-      title: Camera Start Stream Detection Response
+      title: Detected stream
       properties:
-        session_id:
+        url:
           type: string
+          format: url
+          description: URL of the detected stream. This is the URL that should be used to create a new camera.
+        type:
+          type: string
+          enum:
+            - h264
+            - mjpeg
+          description: Camera type
+        preview:
+          $ref: '#/components/schemas/CameraStreamDetectionPreview'
+      required:
+        - url
+        - type
+        - preview
     ClientDeviceListObject:
       type: object
       title: Client Device List object
