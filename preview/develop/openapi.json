@@ -6668,7 +6668,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "PersonalAccessToken",
-        "description": "This authentication method should be used when your are accessing your account. Only what you need is token which you send in all API request headers for authentication. It's possible to restrict for what API call is this token valid.\nThere is no expiration time, but it can be revoked manually.\n\nExample of usage:\n\n    $ curl -H \"Authorization: PersonalAccessToken\" -X GET \"https://api.angelcam.com/v1/me/\"\n"
+        "description": "This authentication method should be used when your are accessing your account. Only what you need is token which you send in all API request headers for authentication. It's possible to restrict for what API call is this token valid.\nThere is no expiration time, but it can be revoked manually.\n\nExample of usage:\n\n    $ curl -H \"Authorization: PersonalAccessToken 6245988d57a427aa6cc02769b5559f4f8e09abee\" -X GET \"https://api.angelcam.com/v1/me/\"\n"
       }
     }
   }
