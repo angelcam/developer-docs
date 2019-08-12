@@ -4852,4 +4852,4 @@ components:
 
         Example of usage:
 
-            $ curl -H "Authorization: PersonalAccessToken" -X GET "https://api.angelcam.com/v1/me/"
+            $ curl -H "Authorization: PersonalAccessToken 6245988d57a427aa6cc02769b5559f4f8e09abee" -X GET "https://api.angelcam.com/v1/me/"
