@@ -279,6 +279,8 @@ tags:
 
       For MJPEG type cameras you can output only a MJPEG live stream.
 
+      The live stream is intended for private live video monitoring just to the camera owner only. If you want to broadcast a video to public audience, please use our [broadcasting service](https://www.angelcam.com/apps/camera-broadcasting).
+
       ## Camera applications
 
       Connecting a camera and being able to get a snapshot or watch a live stream is offered to every Angelcam user, but to
