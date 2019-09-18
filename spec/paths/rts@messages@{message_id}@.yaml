@@ -1,0 +1,60 @@
+get:
+  operationId: rts-message-detail
+  summary: Retrieve message detail
+  description: Retrieve message detail
+  tags:
+    - rts
+  security:
+    - OAuth2:
+        - messages_access
+    - PersonalAccessToken: []
+  parameters:
+    - $ref: '#/components/parameters/messageId'
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageObject'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'
+
+put:
+  operationId: rts-message-update
+  summary: Update message
+  description: Update messages
+  tags:
+    - rts
+  security:
+    - OAuth2:
+        - messages_manage
+    - PersonalAccessToken: []
+  parameters:
+    - $ref: '#/components/parameters/messageId'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            is_read:
+              type: boolean
+              description: Was message read by user?
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageObject'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'

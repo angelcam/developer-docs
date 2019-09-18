@@ -1,0 +1,25 @@
+get:
+  operationId: rts-message-unread-count
+  summary: Retrieve unread messages count
+  description: Retrieve unread messages count
+  tags:
+    - rts
+  security:
+    - OAuth2:
+        - messages_access
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              unread_count:
+                type: number
+                description: Unread messages count
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'

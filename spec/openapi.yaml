@@ -752,12 +752,6 @@ tags:
         If site is armed or disarmed all its descendants are also (dis)armed.
         
         Camera can be moved from site to site using [Camera Endpoints](#tag/camera)
-  - name: client-device
-    x-displayName: Client Devices
-    description: >-
-      Endpoints for managing Client Devices. Client Device represents a device
-      that user uses to access Angelcam mobile application or website. At this
-      moment Client Device record is used mainly for sending push notifications.
   - name: broadcasting
     x-displayName: My cameras broadcasting
     description: >
@@ -770,6 +764,8 @@ tags:
     x-displayName: My services
   - name: order
     x-displayName: My Orders
+  - name: rts
+    x-displayName: Message management
 x-tagGroups:
   - name: General
     tags:
@@ -804,5 +800,8 @@ x-tagGroups:
   - name: Sites management
     tags:
       - site
+  - name: RTS
+    tags:
+      - rts
 servers:
   - url: 'https://api.angelcam.com/v1'

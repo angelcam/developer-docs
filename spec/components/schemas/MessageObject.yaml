@@ -1,0 +1,58 @@
+type: object
+title: Message object
+properties:
+  id:
+    type: number
+    minimum: 1
+    description: Message ID
+  created_at:
+    type: string
+    description: Time when message was created, format `%Y-%m-%dT%H:%M:%SZ`
+  title:
+    type: string
+    description: Message title
+  short_message:
+    type: string
+    description: Short version of message. Use short version for example in notification list
+  long_message:
+    type: string
+    description: More detailed version of message. Use long version in message detail or when sending via e-mail.
+  is_read:
+    type: boolean
+    description: Whether message was read by user.
+  read_at:
+    type: string
+    description: Time when message was read, format `%Y-%m-%dT%H:%M:%SZ`
+  image:
+    type: string
+    description: URL of image that is related to the message.
+  action_url:
+    type: string
+    description: URL to a particular screen in webapp or mobile app that is related to this message. Required when `show_detail == false`
+  action_label:
+    type: string
+    description: Label for button that should redirect to action_url
+  show_detail:
+    type: boolean
+    description: Whether to show detail of message or redirect user directly to `action_url`
+required:
+  - id
+  - created_at
+  - title
+  - is_read
+  - short_message
+  - long_message
+  - show_detail
+example:
+  id: 1
+  created_at: 2019-08-09T13:23:23Z
+  title: Sensor My Sensor detected motion
+  short_message: Your sensor with name My Sensor detected motion.
+  long_message: Your sensor with name My Sensor detected motion. Find out more at <url>.
+  is_read: false
+  read_at: 2019-08-09T13:23:30Z
+  image: >-
+    https://s3.us-west-2.amazonaws.com/rec-prod.us-west-2.angelcam.com/c/944c8ee2-0230-4dbf-b03d-de09dc4a79da.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJ6CMNV7APGJB5JYQ%2F20180416%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20180416T093432Z&X-Amz-Expires=86400&X-Amz-Signature=40b3701f85114ed22f76a97e6b0c099b1dc7301645bd2db8380c5fa824c59455&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22Frontdoor%20loitering.jpg%22
+  action_url: https://my.angelcam.com/camera/1/
+  action_label: Show camera
+  show_detail: false

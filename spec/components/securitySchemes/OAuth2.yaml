@@ -125,14 +125,14 @@ flows:
       streams_detect: Permission to detect camera streams
       sites_access: Permission to access sites
       sites_manage: 'Permission to create, update and delete sites'
-      client_devices_access: Permission to access client devices
-      client_devices_manage: 'Permission to create, update and delete client devices'
       services_access: Permission to access available services
       trials_access: Permission to access available trials
       trials_activate: Permission to activate a trial
       active_services_access: Permission to access active services
       active_services_manage: Permission to manage active services
       orders_access: Permission to access orders
+      messages_access: Permission to access RTS messages
+      messages_manage: Permission to manage RTS messages
 
   password:
     tokenUrl: 'https://api.angelcam.com/oauth/token/'
@@ -163,11 +163,11 @@ flows:
       streams_detect: Permission to detect camera streams
       sites_access: Permission to access sites
       sites_manage: 'Permission to create, update and delete sites'
-      client_devices_access: Permission to access client devices
-      client_devices_manage: 'Permission to create, update and delete client devices'
       services_access: Permission to access available services
       trials_access: Permission to access available trials
       trials_activate: Permission to activate a trial
       active_services_access: Permission to access active services
       active_services_manage: Permission to manage active services
       orders_access: Permission to access orders
+      messages_access: Permission to access RTS messages
+      messages_manage: Permission to manage RTS messages

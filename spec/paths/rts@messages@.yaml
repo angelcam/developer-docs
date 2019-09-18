@@ -1,0 +1,40 @@
+get:
+  operationId: rts-messages
+  summary: Retrieve messages
+  tags:
+    - rts
+  description: Retrieves list of user messages
+  parameters:
+    - name: limit
+      in: query
+      required: false
+      description: 'Limit result set. Example: `1`.'
+      schema:
+        type: integer
+        minimum: 1
+    - name: offset
+      in: query
+      required: false
+      description: 'Return results starting at `offset`. Example: `10`.'
+      schema:
+        type: integer
+        minimum: 1
+  security:
+    - OAuth2:
+        - messages_access
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageListResponse'
+    '400':
+      $ref: '#/components/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'
