@@ -72,11 +72,6 @@
       "description": "Endpoints for accessing and managing sites. Sites are hiearchical structure that can be used to organize cameras. Any camera is assigned exactly to one site. Each user has a root site. ID of root site can be obtained from [Current User Info Endpoint](#tag/user).\n\n  Site can be armed or disarmed. If site is in armed state user will be notified when some event occurs on given site. \n  \n  If site is armed or disarmed all its descendants are also (dis)armed.\n  \n  Camera can be moved from site to site using [Camera Endpoints](#tag/camera)\n"
     },
     {
-      "name": "client-device",
-      "x-displayName": "Client Devices",
-      "description": "Endpoints for managing Client Devices. Client Device represents a device that user uses to access Angelcam mobile application or website. At this moment Client Device record is used mainly for sending push notifications."
-    },
-    {
       "name": "broadcasting",
       "x-displayName": "My cameras broadcasting",
       "description": "Endpoints for managing broadcasting settings. If a camera doesn't have the Broadcasting application, all camera broadcasting endpoints will return 404.\n"
@@ -92,6 +87,10 @@
     {
       "name": "order",
       "x-displayName": "My Orders"
+    },
+    {
+      "name": "rts",
+      "x-displayName": "Message management"
     }
   ],
   "x-tagGroups": [
@@ -150,6 +149,12 @@
       "name": "Sites management",
       "tags": [
         "site"
+      ]
+    },
+    {
+      "name": "RTS",
+      "tags": [
+        "rts"
       ]
     }
   ],
@@ -2686,231 +2691,6 @@
         }
       }
     },
-    "/client-devices/": {
-      "get": {
-        "operationId": "client-device-list",
-        "summary": "Retrieve list of devices owned by user",
-        "tags": [
-          "client-device"
-        ],
-        "security": [
-          {
-            "OAuth2": [
-              "client_devices_access"
-            ]
-          },
-          {
-            "PersonalAccessToken": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ClientDeviceListObject"
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Error401Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Error403PermissionDenied"
-          }
-        }
-      },
-      "post": {
-        "operationId": "client-device-create",
-        "summary": "Create new device",
-        "tags": [
-          "client-device"
-        ],
-        "security": [
-          {
-            "OAuth2": [
-              "client_devices_manage"
-            ]
-          },
-          {
-            "PersonalAccessToken": []
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "description": "Human readable device name",
-                    "example": "iPhone 5",
-                    "nullable": true,
-                    "type": "string"
-                  },
-                  "platform": {
-                    "type": "string",
-                    "enum": [
-                      "ios",
-                      "android",
-                      "web"
-                    ]
-                  },
-                  "fcm_token": {
-                    "description": "Firebase Cloud Messaging registration token used for sending push notifications",
-                    "example": "lm5s16hzr7",
-                    "nullable": true,
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "platform"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "CREATED",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ClientDeviceObject"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/Error400InvalidParams"
-          },
-          "401": {
-            "$ref": "#/components/responses/Error401Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Error403PermissionDenied"
-          }
-        }
-      }
-    },
-    "/client-devices/{device_id}/": {
-      "get": {
-        "operationId": "client-device-retrieve",
-        "summary": "Retrieve device",
-        "tags": [
-          "client-device"
-        ],
-        "security": [
-          {
-            "OAuth2": [
-              "client_devices_access"
-            ]
-          },
-          {
-            "PersonalAccessToken": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/clientDeviceId"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ClientDeviceObject"
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Error401Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Error403PermissionDenied"
-          }
-        }
-      },
-      "put": {
-        "operationId": "client-device-update",
-        "summary": "Update device",
-        "tags": [
-          "client-device"
-        ],
-        "security": [
-          {
-            "OAuth2": [
-              "client_devices_manage"
-            ]
-          },
-          {
-            "PersonalAccessToken": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/clientDeviceId"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "description": "Human readable device name",
-                    "example": "iPhone 5",
-                    "nullable": true,
-                    "type": "string"
-                  },
-                  "platform": {
-                    "type": "string",
-                    "enum": [
-                      "ios",
-                      "android",
-                      "web"
-                    ]
-                  },
-                  "fcm_token": {
-                    "description": "Firebase Cloud Messaging registration token used for sending push notifications",
-                    "example": "lm5s16hzr7",
-                    "nullable": true,
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ClientDeviceObject"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/Error400InvalidParams"
-          },
-          "401": {
-            "$ref": "#/components/responses/Error401Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Error403PermissionDenied"
-          }
-        }
-      }
-    },
     "/clients/": {
       "get": {
         "operationId": "my-clients-list",
@@ -3536,6 +3316,221 @@
             "source": "curl -H \"Accept: application/json\" -H \"Authorization: Bearer {access_token}\" -X GET \"https://api.angelcam.com/v1/recording/stream/{streamer_name}/{streamer_id}/\""
           }
         ]
+      }
+    },
+    "/rts/messages/": {
+      "get": {
+        "operationId": "rts-messages",
+        "summary": "Retrieve messages",
+        "tags": [
+          "rts"
+        ],
+        "description": "Retrieves list of user messages",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Limit result set. Example: `1`.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Return results starting at `offset`. Example: `10`.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "messages_access"
+            ]
+          },
+          {
+            "PersonalAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400InvalidParams"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403PermissionDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404NotFound"
+          }
+        }
+      }
+    },
+    "/rts/messages/{message_id}/": {
+      "get": {
+        "operationId": "rts-message-detail",
+        "summary": "Retrieve message detail",
+        "description": "Retrieve message detail",
+        "tags": [
+          "rts"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "messages_access"
+            ]
+          },
+          {
+            "PersonalAccessToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageObject"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403PermissionDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404NotFound"
+          }
+        }
+      },
+      "put": {
+        "operationId": "rts-message-update",
+        "summary": "Update message",
+        "description": "Update messages",
+        "tags": [
+          "rts"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "messages_manage"
+            ]
+          },
+          {
+            "PersonalAccessToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "is_read": {
+                    "type": "boolean",
+                    "description": "Was message read by user?"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageObject"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403PermissionDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404NotFound"
+          }
+        }
+      }
+    },
+    "/rts/messages/unread-count/": {
+      "get": {
+        "operationId": "rts-message-unread-count",
+        "summary": "Retrieve unread messages count",
+        "description": "Retrieve unread messages count",
+        "tags": [
+          "rts"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "messages_access"
+            ]
+          },
+          {
+            "PersonalAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "unread_count": {
+                      "type": "number",
+                      "description": "Unread messages count"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403PermissionDenied"
+          }
+        }
       }
     },
     "/shared-cameras/": {
@@ -4902,83 +4897,6 @@
           "preview"
         ]
       },
-      "ClientDeviceListObject": {
-        "type": "object",
-        "title": "Client Device List object",
-        "properties": {
-          "count": {
-            "type": "integer",
-            "minimum": 0,
-            "description": "Count of first level sites"
-          },
-          "next": {
-            "format": "uri",
-            "description": "Next page from pagination",
-            "nullable": true,
-            "type": "string"
-          },
-          "previous": {
-            "format": "uri",
-            "description": "Previous page from pagination",
-            "nullable": true,
-            "type": "string"
-          },
-          "results": {
-            "type": "array",
-            "description": "List of sites owned by the user",
-            "items": {
-              "$ref": "#/components/schemas/ClientDeviceObject"
-            }
-          }
-        },
-        "required": [
-          "count",
-          "next",
-          "previous",
-          "results"
-        ]
-      },
-      "ClientDeviceObject": {
-        "type": "object",
-        "title": "Client Device object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "minimum": 1,
-            "description": "Device ID"
-          },
-          "name": {
-            "description": "Human readable device name",
-            "example": "iPhone 5",
-            "nullable": true,
-            "type": "string"
-          },
-          "platform": {
-            "type": "string",
-            "enum": [
-              "ios",
-              "android",
-              "web"
-            ]
-          },
-          "fcm_token": {
-            "description": "Firebase Cloud Messaging registration token used for sending push notifications",
-            "example": "lm5s16hzr7",
-            "nullable": true,
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "platform"
-        ],
-        "example": {
-          "id": 1,
-          "name": "iPhone 5",
-          "platform": "ios",
-          "fcm_token": "lm5s16hzr7"
-        }
-      },
       "ClientListResponse": {
         "type": "object",
         "title": "Client list",
@@ -5438,6 +5356,134 @@
           "category": "motion_detected",
           "received_at": "2018-10-24T11:21:59.000Z",
           "occurred_at": "2018-10-24T11:21:39.000Z"
+        }
+      },
+      "MessageListResponse": {
+        "type": "object",
+        "title": "Message list",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Count of all messages"
+          },
+          "next": {
+            "format": "uri",
+            "description": "Next page from pagination",
+            "nullable": true,
+            "type": "string"
+          },
+          "previous": {
+            "format": "uri",
+            "description": "Previous page from pagination",
+            "nullable": true,
+            "type": "string"
+          },
+          "results": {
+            "type": "array",
+            "description": "List of messages",
+            "items": {
+              "$ref": "#/components/schemas/MessageObject"
+            }
+          }
+        },
+        "required": [
+          "count",
+          "next",
+          "previous",
+          "results"
+        ],
+        "example": {
+          "count": 10,
+          "next": null,
+          "previous": null,
+          "results": [
+            {
+              "id": 1,
+              "created_at": "2019-08-09T13:23:23.000Z",
+              "title": "Sensor My Sensor detected motion",
+              "short_message": "Your sensor with name My Sensor detected motion.",
+              "long_message": "Your sensor with name My Sensor detected motion. Find out more at <url>.",
+              "is_read": false,
+              "image": "https://s3.us-west-2.amazonaws.com/rec-prod.us-west-2.angelcam.com/c/944c8ee2-0230-4dbf-b03d-de09dc4a79da.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJ6CMNV7APGJB5JYQ%2F20180416%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20180416T093432Z&X-Amz-Expires=86400&X-Amz-Signature=40b3701f85114ed22f76a97e6b0c099b1dc7301645bd2db8380c5fa824c59455&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22Frontdoor%20loitering.jpg%22",
+              "action_url": "https://my.angelcam.com/camera/1/",
+              "action_label": "Show camera",
+              "show_detail": false
+            }
+          ]
+        }
+      },
+      "MessageObject": {
+        "type": "object",
+        "title": "Message object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Message ID"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Time when message was created, format `%Y-%m-%dT%H:%M:%SZ`"
+          },
+          "title": {
+            "type": "string",
+            "description": "Message title"
+          },
+          "short_message": {
+            "type": "string",
+            "description": "Short version of message. Use short version for example in notification list"
+          },
+          "long_message": {
+            "type": "string",
+            "description": "More detailed version of message. Use long version in message detail or when sending via e-mail."
+          },
+          "is_read": {
+            "type": "boolean",
+            "description": "Whether message was read by user."
+          },
+          "read_at": {
+            "type": "string",
+            "description": "Time when message was read, format `%Y-%m-%dT%H:%M:%SZ`"
+          },
+          "image": {
+            "type": "string",
+            "description": "URL of image that is related to the message."
+          },
+          "action_url": {
+            "type": "string",
+            "description": "URL to a particular screen in webapp or mobile app that is related to this message. Required when `show_detail == false`"
+          },
+          "action_label": {
+            "type": "string",
+            "description": "Label for button that should redirect to action_url"
+          },
+          "show_detail": {
+            "type": "boolean",
+            "description": "Whether to show detail of message or redirect user directly to `action_url`"
+          }
+        },
+        "required": [
+          "id",
+          "created_at",
+          "title",
+          "is_read",
+          "short_message",
+          "long_message",
+          "show_detail"
+        ],
+        "example": {
+          "id": 1,
+          "created_at": "2019-08-09T13:23:23.000Z",
+          "title": "Sensor My Sensor detected motion",
+          "short_message": "Your sensor with name My Sensor detected motion.",
+          "long_message": "Your sensor with name My Sensor detected motion. Find out more at <url>.",
+          "is_read": false,
+          "read_at": "2019-08-09T13:23:30.000Z",
+          "image": "https://s3.us-west-2.amazonaws.com/rec-prod.us-west-2.angelcam.com/c/944c8ee2-0230-4dbf-b03d-de09dc4a79da.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJ6CMNV7APGJB5JYQ%2F20180416%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20180416T093432Z&X-Amz-Expires=86400&X-Amz-Signature=40b3701f85114ed22f76a97e6b0c099b1dc7301645bd2db8380c5fa824c59455&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22Frontdoor%20loitering.jpg%22",
+          "action_url": "https://my.angelcam.com/camera/1/",
+          "action_label": "Show camera",
+          "show_detail": false
         }
       },
       "OrderItemListResponse": {
@@ -6528,6 +6574,17 @@
           "minimum": 1
         }
       },
+      "messageId": {
+        "name": "message_id",
+        "in": "path",
+        "required": true,
+        "description": "Message ID",
+        "example": 3,
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
       "orderId": {
         "name": "order_id",
         "in": "path",
@@ -6615,14 +6672,14 @@
               "streams_detect": "Permission to detect camera streams",
               "sites_access": "Permission to access sites",
               "sites_manage": "Permission to create, update and delete sites",
-              "client_devices_access": "Permission to access client devices",
-              "client_devices_manage": "Permission to create, update and delete client devices",
               "services_access": "Permission to access available services",
               "trials_access": "Permission to access available trials",
               "trials_activate": "Permission to activate a trial",
               "active_services_access": "Permission to access active services",
               "active_services_manage": "Permission to manage active services",
-              "orders_access": "Permission to access orders"
+              "orders_access": "Permission to access orders",
+              "messages_access": "Permission to access RTS messages",
+              "messages_manage": "Permission to manage RTS messages"
             }
           },
           "password": {
@@ -6652,14 +6709,14 @@
               "streams_detect": "Permission to detect camera streams",
               "sites_access": "Permission to access sites",
               "sites_manage": "Permission to create, update and delete sites",
-              "client_devices_access": "Permission to access client devices",
-              "client_devices_manage": "Permission to create, update and delete client devices",
               "services_access": "Permission to access available services",
               "trials_access": "Permission to access available trials",
               "trials_activate": "Permission to activate a trial",
               "active_services_access": "Permission to access active services",
               "active_services_manage": "Permission to manage active services",
-              "orders_access": "Permission to access orders"
+              "orders_access": "Permission to access orders",
+              "messages_access": "Permission to access RTS messages",
+              "messages_manage": "Permission to manage RTS messages"
             }
           }
         }
