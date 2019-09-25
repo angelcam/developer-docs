@@ -382,17 +382,15 @@ tags:
   - name: sensor
     x-displayName: My sensors
     description: |
-      With the sensors/ endpoint, you can obtain a paginated list of the current user's sensors, create a new sensor, attach it to a user's camera, set recording duration upon received event via sensor and other.
+      With sensor endpoints you can view, manage and connect sensors to the user account.
 
-      If you know a sensor's ID you can get the same information using the sensors/{sensor_id}/ endpoint, update sensor settings or delete sensor.
-
-      Sensor can be bind to one particular already connected [camera](#tag/camera) to mark received [events](#tag/event) on camera timeline. If camera that sensor is bind to has active [Cloud Recording](#tag/recording) event recording can be enabled using these endpoints. Recording settings applied on camera without Cloud Recording will take no effect until recording is activated.
+      Sensor can be bind to one particular already connected [camera](#tag/camera) to mark received [events](#tag/event) on camera timeline. If camera that sensor is bind to has active [Cloud Recording](#tag/recording) event recording can be enabled using these endpoints. Event recording will not be applied in the case that the camera assigned to the sensor doesn't have Cloud Recording activated.
 
       To specify event recording length [duration](#section/Angelcam-API/Time-and-duration-formats) format must be used and currently options for recording length are limited to:
         - 30 seconds
         - 1 minute
         - 2 minutes
-        - 5minutes
+        - 5 minutes
 
       Each sensor is given a unique email and unique hash. Those can be used to send [events](#tag/event) to Angelcam. 
   - name: client
@@ -2701,7 +2699,7 @@ paths:
                     - PT1M
                     - PT2M
                     - PT5M
-                  description: Duration of Cloud Recording after received event. Settings applied to sensor bind to camera without active Cloud recording or sensor not bind to camera at all will take no effect until sensor is bind to camera with active Cloud Recording.
+                  description: Duration of event Recording triggered by an event from this sensor. This setting is applied only if sensor has an assigned camera with active Cloud Recording.
               example:
                 name: My updated shiny sensor
                 type: smoke
@@ -4595,7 +4593,7 @@ components:
             - PT1M
             - PT2M
             - PT5M
-          description: Duration of Cloud Recording after received event. Settings applied to sensor bind to camera without active Cloud recording or sensor not bind to camera at all will take no effect until sensor is bind to camera with active Cloud Recording.
+          description: Duration of event Recording triggered by an event from this sensor. This setting is applied only if sensor has an assigned camera with active Cloud Recording.
         created_at:
           type: string
           description: DateTime when sensor was created
