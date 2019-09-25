@@ -67,7 +67,7 @@ properties:
     description: DateTime when sensor was created
   updated_at:
     type: string
-    description: Time when sensor was last updated
+    description: DateTime when sensor was last updated
   events_count_ifttt:
     type: integer
     description: Total count of events received from this sensor via IFTTT
