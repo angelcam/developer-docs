@@ -6457,7 +6457,7 @@
           },
           "updated_at": {
             "type": "string",
-            "description": "Time when sensor was last updated"
+            "description": "DateTime when sensor was last updated"
           },
           "events_count_ifttt": {
             "type": "integer",
