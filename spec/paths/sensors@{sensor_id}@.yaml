@@ -67,7 +67,7 @@ put:
               type: boolean
               description: >-
                 Defaults to True. Indicates if sensor is enabled or not. If
-                disabled then it ignores all events from this sensor.
+                disabled then all events from the sensor are ignored.
             camera:
               type: integer
               minimum: 1
