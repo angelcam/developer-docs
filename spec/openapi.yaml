@@ -725,7 +725,7 @@ tags:
       effect until recording is activated.
 
 
-      To sepcify recording length upon reveived event
+      To specify event recording length
       [duration](#section/Angelcam-API/Time-and-duration-formats) format must be
       used and currently options for recording length are limited to:
         - 30 seconds
