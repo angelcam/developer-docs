@@ -39,7 +39,7 @@ properties:
     description: Event API hash (a unique token for each sensor)
   email:
     type: string
-    description: Unique email address to deliver device events to Angelcam
+    description: Unique email address that can be used to receive events from this sensor by Angelcam
   enabled:
     type: boolean
     description: >-
