@@ -39,7 +39,9 @@ properties:
     description: Event API hash (a unique token for each sensor)
   email:
     type: string
-    description: Unique email address that can be used to receive events from this sensor by Angelcam
+    description: >-
+      Unique email address that can be used to receive events from this sensor
+      by Angelcam
   enabled:
     type: boolean
     description: >-
@@ -58,10 +60,9 @@ properties:
       - PT2M
       - PT5M
     description: >-
-      Duration of Cloud Recording after received event. Settings applied to
-      sensor bind to camera without active Cloud recording or sensor not bind to
-      camera at all will take no effect until sensor is bind to camera with
-      active Cloud Recording.
+      Duration of event Recording triggered by an event from this sensor. This
+      setting is applied only if sensor has an assigned camera with active Cloud
+      Recording.
   created_at:
     type: string
     description: DateTime when sensor was created
