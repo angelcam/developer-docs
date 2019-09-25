@@ -720,7 +720,7 @@ tags:
       [camera](#tag/camera) to mark received [events](#tag/event) on camera
       timeline. If
       camera that sensor is bind to has active [Cloud Recording](#tag/recording)
-      you can enable recording for specified duration upon received event.
+      event recording can be enabled using these endpoints.
       Recording settings applied on camera without Cloud Recording will take no
       effect until recording is activated.
 
