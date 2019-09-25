@@ -388,7 +388,7 @@ tags:
 
       Sensor can be bind to one particular already connected [camera](#tag/camera) to mark received [events](#tag/event) on camera timeline and to be able to easier verify if something is happening. If camera that sensor is bind to has active [Cloud Recording](#tag/recording) you can enable recording for specified duration upon received event. Recording settings applied on camera without Cloud Recording will take no effect until recording is activated.
 
-      To sepcify recording length upon reveived event [duration](#section/Angelcam-API/Time-and-duration-formats) format must be used and currently options for recording length are limited to:
+      To specify event recording length [duration](#section/Angelcam-API/Time-and-duration-formats) format must be used and currently options for recording length are limited to:
         - 30 seconds
         - 1 minute
         - 2 minutes
