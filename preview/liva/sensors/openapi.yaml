@@ -386,7 +386,7 @@ tags:
 
       If you know a sensor's ID you can get the same information using the sensors/{sensor_id}/ endpoint, update sensor settings or delete sensor.
 
-      Sensor can be bind to one particular already connected [camera](#tag/camera) to mark received [events](#tag/event) on camera timeline. If camera that sensor is bind to has active [Cloud Recording](#tag/recording) you can enable recording for specified duration upon received event. Recording settings applied on camera without Cloud Recording will take no effect until recording is activated.
+      Sensor can be bind to one particular already connected [camera](#tag/camera) to mark received [events](#tag/event) on camera timeline. If camera that sensor is bind to has active [Cloud Recording](#tag/recording) event recording can be enabled using these endpoints. Recording settings applied on camera without Cloud Recording will take no effect until recording is activated.
 
       To specify event recording length [duration](#section/Angelcam-API/Time-and-duration-formats) format must be used and currently options for recording length are limited to:
         - 30 seconds
@@ -2688,7 +2688,7 @@ paths:
                   description: Any note related to sensor
                 enabled:
                   type: boolean
-                  description: Defaults to True. Indicates if sensor is enabled or not. If disabled then it ignores all events from this sensor.
+                  description: Defaults to True. Indicates if sensor is enabled or not. If disabled then all events from the sensor are ignored.
                 camera:
                   type: integer
                   minimum: 1
