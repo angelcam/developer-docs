@@ -72,8 +72,8 @@ description: >
   compare this with the value you previously
     saved to ensure that the authorization code obtained through requests were made by the same client
   * `code` - the authorization code that you will exchange at `oauth/token/` for
-  a bearer token
-  ![Password grant type sequence diagram](./assets/password_grant_type.png)
+  a bearer token ![Password grant type sequence
+  diagram](./assets/password_grant_type.png)
 
 
   Password grant type is a more basic and easier way for authorization, but is
@@ -92,8 +92,6 @@ description: >
   token during the application startup
 
   using the `oauth/token/` endpoint.
-
-
 flows:
   authorizationCode:
     authorizationUrl: 'https://api.angelcam.com/oauth/authorize/'
@@ -116,6 +114,8 @@ flows:
       recording_clips_access: Permission to access recording clips
       recording_clips_create: Permission to create recording clips
       recording_clips_share: Permission to share recording clips
+      sensor_access: Permission to list sensors and to get details of a specific sensor
+      sensor_manage: 'Permission to create, update and delete sensors'
       broadcasting_start_stop: Permission to start and stop public broadcasting on camera
       client_access: >-
         Permission to list resellers clients and get details of a specific
@@ -133,7 +133,6 @@ flows:
       orders_access: Permission to access orders
       messages_access: Permission to access RTS messages
       messages_manage: Permission to manage RTS messages
-
   password:
     tokenUrl: 'https://api.angelcam.com/oauth/token/'
     scopes:
@@ -154,6 +153,8 @@ flows:
       recording_clips_access: Permission to access recording clips
       recording_clips_create: Permission to create recording clips
       recording_clips_share: Permission to share recording clips
+      sensor_access: Permission to list sensors and to get details of a specific sensor
+      sensor_manage: 'Permission to create, update and delete sensors'
       broadcasting_start_stop: Permission to start and stop public broadcasting on camera
       client_access: >-
         Permission to list resellers clients and get details of a specific

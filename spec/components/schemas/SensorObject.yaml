@@ -1,0 +1,115 @@
+type: object
+title: Sensor object
+properties:
+  id:
+    type: integer
+    minimum: 1
+    description: Sensor ID
+  user:
+    type: integer
+    minimum: 1
+    description: User ID
+  name:
+    type: string
+    description: Sensor name
+  type:
+    type: string
+    enum:
+      - motion
+      - camera_motion
+      - door_window
+      - smoke
+      - fire
+      - glass_break
+      - shock_vibration
+      - water
+      - perimeter_entry
+    description: Sensor type
+  manufacturer:
+    type: string
+    description: Sensor manufacturer
+  model:
+    type: string
+    description: Sensor model
+  note:
+    type: string
+    description: Any note related to sensor
+  hash:
+    type: string
+    description: Event API hash (a unique token for each sensor)
+  email:
+    type: string
+    description: Unique email address to deliver device events to Angelcam
+  enabled:
+    type: boolean
+    description: >-
+      Defaults to True. Indicates if sensor is enabled or not. If disabled then
+      it ignores all events from this sensor.
+  camera:
+    type: integer
+    minimum: 1
+    description: Camera ID sensor is bind to
+  enable_cloud_recording_for:
+    type: string
+    format: duration
+    enum:
+      - PT30S
+      - PT1M
+      - PT2M
+      - PT5M
+    description: >-
+      Duration of Cloud Recording after received event. Settings applied to
+      sensor bind to camera without active Cloud recording or sensor not bind to
+      camera at all will take no effect until sensor is bind to camera with
+      active Cloud Recording.
+  created_at:
+    type: string
+    description: Time when sensor was created
+  updated_at:
+    type: string
+    description: Time when sensor was last updated
+  events_count_ifttt:
+    type: integer
+    description: Total count of events received from this sensor via IFTTT
+  events_count_email:
+    type: integer
+    description: Total count of events received from this sensor via email
+  events_count_api:
+    type: integer
+    description: Total count of events received from this sensor via API
+required:
+  - id
+  - user
+  - name
+  - type
+  - manufacturer
+  - model
+  - note
+  - hash
+  - email
+  - enabled
+  - camera
+  - enable_cloud_recording_for
+  - created_at
+  - updated_at
+  - events_count_ifttt
+  - events_count_email
+  - events_count_api
+example:
+  id: 34
+  user: 4
+  name: Front door sensor
+  type: motion
+  manufacturer: SensorsX
+  model: XTF-666
+  note: Testing this sensor
+  hash: dy3ovys2ol
+  email: dy3ovys2ol@angel.cam
+  enabled: true
+  camera: 32
+  enable_cloud_recording_for: PT1M
+  created_at: '2019-09-24T13:16:23.899357+02:00'
+  updated_at: '2019-09-24T13:16:23.899384+02:00'
+  events_count_ifttt: 0
+  events_count_email: 0
+  events_count_api: 5

@@ -21,13 +21,13 @@ post:
             hash:
               type: string
               description: >
-                Event API hash (a unique token for each camera found in My
+                Event API hash (a unique token for each sensor found in My
                 Angelcam dashboard or obtained
 
-                via Camera Resource) - used to authenticate the request and pair
+                via Sensor Resource) - used to authenticate the request and pair
                 the event with corresponding
 
-                camera.
+                sensor.
             title:
               type: string
             occurred_at:

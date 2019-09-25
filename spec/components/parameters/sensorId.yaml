@@ -1,0 +1,8 @@
+name: sensor_id
+in: path
+required: true
+description: Sensor ID
+example: 3
+schema:
+  type: integer
+  minimum: 1
