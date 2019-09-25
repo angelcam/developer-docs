@@ -16,7 +16,7 @@ properties:
     type: string
   results:
     type: array
-    description: List of all not deleted sensors for user
+    description: List of sensors owned by the user
     items:
       $ref: '#/components/schemas/SensorObject'
 required:
