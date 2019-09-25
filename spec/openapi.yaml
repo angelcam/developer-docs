@@ -707,22 +707,16 @@ tags:
   - name: sensor
     x-displayName: My sensors
     description: >
-      With the sensors/ endpoint, you can obtain a paginated list of the current
-      user's sensors, create a new sensor, attach it to a user's camera, set
-      recording duration upon received event via sensor and other.
-
-
-      If you know a sensor's ID you can get the same information using the
-      sensors/{sensor_id}/ endpoint, update sensor settings or delete sensor.
+      With sensor endpoints you can view, manage and connect sensors to the user
+      account.
 
 
       Sensor can be bind to one particular already connected
       [camera](#tag/camera) to mark received [events](#tag/event) on camera
-      timeline. If
-      camera that sensor is bind to has active [Cloud Recording](#tag/recording)
-      you can enable recording for specified duration upon received event.
-      Recording settings applied on camera without Cloud Recording will take no
-      effect until recording is activated.
+      timeline. If camera that sensor is bind to has active [Cloud
+      Recording](#tag/recording) you can enable recording for specified duration
+      upon received event. Recording settings applied on camera without Cloud
+      Recording will take no effect until recording is activated.
 
 
       To specify event recording length
@@ -731,10 +725,10 @@ tags:
         - 30 seconds
         - 1 minute
         - 2 minutes
-        - 5minutes
+        - 5 minutes
 
-      Each sensor is given a unique email and unique hash. Those can be used
-      to send [events](#tag/event) to Angelcam. 
+      Each sensor is given a unique email and unique hash. Those can be used to
+      send [events](#tag/event) to Angelcam. 
   - name: client
     x-displayName: Clients
     description: >
