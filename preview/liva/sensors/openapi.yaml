@@ -394,7 +394,7 @@ tags:
         - 2 minutes
         - 5minutes
 
-      After creation each sensor is given a unique sensor hash that can be used to send [events](#tag/event) to Angelcam. 
+      Each sensor is given a unique email and unique hash. Those can be used to send [events](#tag/event) to Angelcam. 
   - name: client
     x-displayName: Clients
     description: |
