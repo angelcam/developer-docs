@@ -64,7 +64,7 @@ properties:
       active Cloud Recording.
   created_at:
     type: string
-    description: Time when sensor was created
+    description: DateTime when sensor was created
   updated_at:
     type: string
     description: Time when sensor was last updated
