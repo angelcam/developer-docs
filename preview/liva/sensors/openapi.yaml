@@ -4598,7 +4598,7 @@ components:
           description: Duration of Cloud Recording after received event. Settings applied to sensor bind to camera without active Cloud recording or sensor not bind to camera at all will take no effect until sensor is bind to camera with active Cloud Recording.
         created_at:
           type: string
-          description: Time when sensor was created
+          description: DateTime when sensor was created
         updated_at:
           type: string
           description: Time when sensor was last updated
