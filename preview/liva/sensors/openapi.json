@@ -3639,6 +3639,38 @@
                       "perimeter_entry"
                     ],
                     "description": "Sensor type"
+                  },
+                  "manufacturer": {
+                    "type": "string",
+                    "description": "Sensor manufacturer"
+                  },
+                  "model": {
+                    "type": "string",
+                    "description": "Sensor model"
+                  },
+                  "note": {
+                    "type": "string",
+                    "description": "Any note related to sensor"
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Defaults to True. Indicates if sensor is enabled or not. If disabled then all events from the sensor are ignored."
+                  },
+                  "camera": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Camera ID sensor is bind to"
+                  },
+                  "enable_cloud_recording_for": {
+                    "type": "string",
+                    "format": "duration",
+                    "enum": [
+                      "PT30S",
+                      "PT1M",
+                      "PT2M",
+                      "PT5M"
+                    ],
+                    "description": "Duration of event Recording triggered by an event from this sensor. This setting is applied only if sensor has an assigned camera with active Cloud Recording."
                   }
                 },
                 "example": {
