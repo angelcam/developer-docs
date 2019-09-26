@@ -1,0 +1,117 @@
+get:
+  operationId: my-sensors-list
+  summary: Retrieve sensor list
+  tags:
+    - sensor
+  parameters:
+    - name: limit
+      in: query
+      required: false
+      description: 'Limit result set. Example: `1`.'
+      schema:
+        type: integer
+        minimum: 1
+    - name: offset
+      in: query
+      required: false
+      description: 'Return results starting at `offset`. Example: `10`.'
+      schema:
+        type: integer
+        minimum: 1
+  security:
+    - OAuth2:
+        - sensor_access
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: Returns sensor list.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SensorListResponse'
+    '400':
+      $ref: '#/components/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+post:
+  operationId: connect-sensors
+  summary: Connect new sensor
+  tags:
+    - sensor
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - name
+            - type
+          properties:
+            name:
+              type: string
+              description: Sensor name
+            type:
+              type: string
+              enum:
+                - motion
+                - camera_motion
+                - door_window
+                - smoke
+                - fire
+                - glass_break
+                - shock_vibration
+                - water
+                - perimeter_entry
+              description: Sensor type
+            manufacturer:
+              type: string
+              description: Sensor manufacturer
+            model:
+              type: string
+              description: Sensor model
+            note:
+              type: string
+              description: Any note related to sensor
+            enabled:
+              type: boolean
+              description: >-
+                Defaults to True. Indicates if sensor is enabled or not. If
+                disabled then all events from the sensor are ignored.
+            camera:
+              type: integer
+              minimum: 1
+              description: Camera ID sensor is bind to
+            enable_cloud_recording_for:
+              type: string
+              format: duration
+              enum:
+                - PT30S
+                - PT1M
+                - PT2M
+                - PT5M
+              description: >-
+                Duration of event Recording triggered by an event from this
+                sensor. This setting is applied only if sensor has an assigned
+                camera with active Cloud Recording.
+          example:
+            name: My brand new sensor
+            type: smoke
+  security:
+    - OAuth2:
+        - sensor_manage
+    - PersonalAccessToken: []
+  responses:
+    '201':
+      description: Newly created sensor object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SensorObject'
+    '400':
+      $ref: '#/components/responses/Error400InvalidBody'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'

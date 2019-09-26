@@ -1,0 +1,130 @@
+get:
+  operationId: my-sensors-detail
+  summary: Retrieve sensor
+  tags:
+    - sensor
+  parameters:
+    - $ref: '#/components/parameters/sensorId'
+  security:
+    - OAuth2:
+        - sensor_access
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: Sensor object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SensorObject'
+    '400':
+      $ref: '#/components/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'
+put:
+  operationId: my-sensors-update
+  summary: Update sensor
+  tags:
+    - sensor
+  parameters:
+    - $ref: '#/components/parameters/sensorId'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          title: sensor
+          properties:
+            name:
+              type: string
+              description: Sensor name
+            type:
+              type: string
+              enum:
+                - motion
+                - camera_motion
+                - door_window
+                - smoke
+                - fire
+                - glass_break
+                - shock_vibration
+                - water
+                - perimeter_entry
+              description: Sensor type
+            manufacturer:
+              type: string
+              description: Sensor manufacturer
+            model:
+              type: string
+              description: Sensor model
+            note:
+              type: string
+              description: Any note related to sensor
+            enabled:
+              type: boolean
+              description: >-
+                Defaults to True. Indicates if sensor is enabled or not. If
+                disabled then all events from the sensor are ignored.
+            camera:
+              type: integer
+              minimum: 1
+              description: Camera ID sensor is bind to
+            enable_cloud_recording_for:
+              type: string
+              format: duration
+              enum:
+                - PT30S
+                - PT1M
+                - PT2M
+                - PT5M
+              description: >-
+                Duration of event Recording triggered by an event from this
+                sensor. This setting is applied only if sensor has an assigned
+                camera with active Cloud Recording.
+          example:
+            name: My updated shiny sensor
+            type: smoke
+            camera: 24
+            enable_cloud_recording_for: PT1M
+  security:
+    - OAuth2:
+        - sensor_manage
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: Sensor object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SensorObject'
+    '400':
+      $ref: '#/components/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'
+delete:
+  operationId: my-sensors-remove
+  summary: Remove sensor
+  tags:
+    - sensor
+  parameters:
+    - $ref: '#/components/parameters/sensorId'
+  security:
+    - OAuth2:
+        - sensor_manage
+    - PersonalAccessToken: []
+  responses:
+    '204':
+      description: No content
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'

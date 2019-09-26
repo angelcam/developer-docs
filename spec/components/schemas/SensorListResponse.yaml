@@ -1,0 +1,26 @@
+type: object
+title: My sensors list
+properties:
+  count:
+    type: integer
+    description: Count of all sensors
+  next:
+    format: uri
+    description: Next page from pagination
+    nullable: true
+    type: string
+  previous:
+    format: uri
+    description: Previous page from pagination
+    nullable: true
+    type: string
+  results:
+    type: array
+    description: List of sensors owned by the user
+    items:
+      $ref: '#/components/schemas/SensorObject'
+required:
+  - count
+  - next
+  - previous
+  - results

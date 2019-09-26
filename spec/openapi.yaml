@@ -227,6 +227,10 @@ info:
     durations:
 
 
+    * PT30S - 30 seconds
+
+    * PT2M - 2 minutes
+
     * P30D - 30 days
 
     * P2M - 2 months
@@ -513,7 +517,10 @@ tags:
       For MJPEG type cameras you can output only a MJPEG live stream.
 
 
-      The live stream is intended for private live video monitoring just to the camera owner only. If you want to broadcast a video to public audience, please use our [broadcasting service](https://www.angelcam.com/apps/camera-broadcasting).
+      The live stream is intended for private live video monitoring just to the
+      camera owner only. If you want to broadcast a video to public audience,
+      please use our [broadcasting
+      service](https://www.angelcam.com/apps/camera-broadcasting).
 
 
       ## Camera applications
@@ -697,6 +704,31 @@ tags:
       However there are filters for `start` and `end` that may be used as an
       alternative or complement for pagination. Retrieved events list is ordered
       by occurred at datetime (newest first).
+  - name: sensor
+    x-displayName: My sensors
+    description: >
+      With sensor endpoints you can view, manage and connect sensors to the user
+      account.
+
+
+      Sensor can be bind to one particular already connected
+      [camera](#tag/camera) to mark received [events](#tag/event) on camera
+      timeline. If camera that sensor is bind to has active [Cloud
+      Recording](#tag/recording) event recording can be enabled using these
+      endpoints. Event recording will not be applied in the case that the camera
+      assigned to the sensor doesn't have Cloud Recording activated.
+
+
+      To specify event recording length
+      [duration](#section/Angelcam-API/Time-and-duration-formats) format must be
+      used and currently options for recording length are limited to:
+        - 30 seconds
+        - 1 minute
+        - 2 minutes
+        - 5 minutes
+
+      Each sensor is given a unique email and unique hash. Those can be used to
+      send [events](#tag/event) to Angelcam. 
   - name: client
     x-displayName: Clients
     description: >
@@ -783,6 +815,9 @@ x-tagGroups:
       - camera-guest
       - camera-stream-detection
       - arrow-clients
+  - name: Sensor management
+    tags:
+      - sensor
   - name: Recording
     tags:
       - recording
