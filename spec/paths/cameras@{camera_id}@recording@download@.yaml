@@ -1,0 +1,60 @@
+get:
+  operationId: my-cameras-recording-download
+  summary: Download a given recording section
+  tags:
+    - recording
+  description: >
+    This endpoint will construct a download URL for a specified recording
+    section of a given camera. If there are no records within the section, the
+    download URL will be still returned, however, the URL will respond with HTTP
+    404. If there are any gaps within the specified recording section, they will
+    be skipped.
+
+
+    Please keep in mind that the maximum downloadable length is 3 hours.
+  parameters:
+    - $ref: '#/components/parameters/cameraId'
+    - name: start
+      in: query
+      required: true
+      description: 'Start time of the download. Example: `2016-03-19T08:00:00Z`.'
+      example: 2017-01-01T00:00:00.000Z
+      schema:
+        type: string
+        format: date-time
+    - name: end
+      in: query
+      required: true
+      description: 'End time of the download. Example: `2016-03-19T14:00:00Z.`'
+      example: 2017-01-01T00:10:00.000Z
+      schema:
+        type: string
+        format: date-time
+    - name: filename
+      in: query
+      required: false
+      description: >
+        Filename suggestion for the download. The filename extension will be
+        added automatically.
+      example: clip
+      schema:
+        type: string
+  security:
+    - OAuth2:
+        - recording_access
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RecordingDownloadResponse'
+    '400':
+      $ref: '#/components/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'

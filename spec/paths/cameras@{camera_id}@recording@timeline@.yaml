@@ -42,4 +42,3 @@ get:
       $ref: '#/components/responses/Error403PermissionDenied'
     '404':
       $ref: '#/components/responses/Error404NotFound'
-
