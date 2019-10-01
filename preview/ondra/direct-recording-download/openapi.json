@@ -2337,7 +2337,7 @@
         "tags": [
           "recording"
         ],
-        "description": "Please keep in mind that the maximum downloadable length is 3 hours.\n",
+        "description": "This endpoint will construct a download URL for a specified recording section of a given camera. If there are no records within the section, the download URL will be still returned, however, the URL will respond with HTTP 404. If there are any gaps within the specified recording section, they will be skipped.\n\nPlease keep in mind that the maximum downloadable length is 3 hours.\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/cameraId"
