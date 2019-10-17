@@ -54,6 +54,12 @@ put:
                 - water
                 - perimeter_entry
               description: Sensor type
+            placement:
+              type: string
+              enum:
+                - indoors
+                - outdoors
+              description: Sensor placement
             manufacturer:
               type: string
               description: Sensor manufacturer
