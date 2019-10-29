@@ -25,6 +25,12 @@ properties:
       - water
       - perimeter_entry
     description: Sensor type
+  placement:
+    type: string
+    enum:
+      - indoors
+      - outdoors
+    description: Sensor placement
   manufacturer:
     type: string
     description: Sensor manufacturer
@@ -83,6 +89,7 @@ required:
   - user
   - name
   - type
+  - placement
   - manufacturer
   - model
   - note
@@ -101,6 +108,7 @@ example:
   user: 4
   name: Front door sensor
   type: motion
+  placement: indoors
   manufacturer: SensorsX
   model: XTF-666
   note: Testing this sensor
