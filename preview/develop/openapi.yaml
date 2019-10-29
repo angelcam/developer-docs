@@ -2653,6 +2653,12 @@ paths:
                     - water
                     - perimeter_entry
                   description: Sensor type
+                placement:
+                  type: string
+                  enum:
+                    - indoors
+                    - outdoors
+                  description: Sensor placement
                 manufacturer:
                   type: string
                   description: Sensor manufacturer
@@ -2755,6 +2761,12 @@ paths:
                     - water
                     - perimeter_entry
                   description: Sensor type
+                placement:
+                  type: string
+                  enum:
+                    - indoors
+                    - outdoors
+                  description: Sensor placement
                 manufacturer:
                   type: string
                   description: Sensor manufacturer
@@ -4653,6 +4665,12 @@ components:
             - water
             - perimeter_entry
           description: Sensor type
+        placement:
+          type: string
+          enum:
+            - indoors
+            - outdoors
+          description: Sensor placement
         manufacturer:
           type: string
           description: Sensor manufacturer
@@ -4704,6 +4722,7 @@ components:
         - user
         - name
         - type
+        - placement
         - manufacturer
         - model
         - note
@@ -4722,6 +4741,7 @@ components:
         user: 4
         name: Front door sensor
         type: motion
+        placement: indoors
         manufacturer: SensorsX
         model: XTF-666
         note: Testing this sensor

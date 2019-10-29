@@ -3721,6 +3721,14 @@
                     ],
                     "description": "Sensor type"
                   },
+                  "placement": {
+                    "type": "string",
+                    "enum": [
+                      "indoors",
+                      "outdoors"
+                    ],
+                    "description": "Sensor placement"
+                  },
                   "manufacturer": {
                     "type": "string",
                     "description": "Sensor manufacturer"
@@ -3878,6 +3886,14 @@
                       "perimeter_entry"
                     ],
                     "description": "Sensor type"
+                  },
+                  "placement": {
+                    "type": "string",
+                    "enum": [
+                      "indoors",
+                      "outdoors"
+                    ],
+                    "description": "Sensor placement"
                   },
                   "manufacturer": {
                     "type": "string",
@@ -6538,6 +6554,14 @@
             ],
             "description": "Sensor type"
           },
+          "placement": {
+            "type": "string",
+            "enum": [
+              "indoors",
+              "outdoors"
+            ],
+            "description": "Sensor placement"
+          },
           "manufacturer": {
             "type": "string",
             "description": "Sensor manufacturer"
@@ -6604,6 +6628,7 @@
           "user",
           "name",
           "type",
+          "placement",
           "manufacturer",
           "model",
           "note",
@@ -6623,6 +6648,7 @@
           "user": 4,
           "name": "Front door sensor",
           "type": "motion",
+          "placement": "indoors",
           "manufacturer": "SensorsX",
           "model": "XTF-666",
           "note": "Testing this sensor",
