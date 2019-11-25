@@ -1712,7 +1712,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StreamObject"
+                  "$ref": "#/components/schemas/RecordingStreamResponse"
                 }
               }
             }
