@@ -46,7 +46,7 @@ description: >
 
   Here is an example of how the resulting request would look like:
 
-      GET https://api.angelcam.com/oauth/authorize/?response_type=code&client_id=XU0aXeP1299oS48KnZmxhqWUR928jsmFKosdrfMS&scope=user_access,camera_access&state=my_csrf_secret&redirect_uri=http://a948dfc1.ngrok.io
+      GET https://api.angelcam.com/oauth/authorize/?response_type=code&client_id=XU0aXeP1299oS48KnZmxhqWUR928jsmFKosdrfMS&scope=user_access%20camera_access&state=my_csrf_secret&redirect_uri=http://a948dfc1.ngrok.io
 
   All of these parameters will be validated by the authorization server. The
   users will then be asked to log in to

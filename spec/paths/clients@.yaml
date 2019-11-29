@@ -35,9 +35,9 @@ get:
       $ref: '#/components/responses/Error403PermissionDenied'
 post:
   operationId: create-client
-  summary: Create new client account
+  summary: Creates new client account
   description: >
-    Client a new client account. After successful creation client receives an
+    Creates a new client account. After successful creation client receives an
     email with link for account activation.
   tags:
     - client
