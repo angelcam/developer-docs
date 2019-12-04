@@ -22,7 +22,7 @@ info:
     2. Perform your first successful API request:
 
 
-        curl -H "Authorization: PersonalAccessToken  <Your Token>" -X GET "https://api.angelcam.com/v1/me/"
+        curl -H "Authorization: PersonalAccessToken <Your Token>" -X GET "https://api.angelcam.com/v1/me/"
 
 
     3. Congrats! You've just successfully retrieved info about your user account.
