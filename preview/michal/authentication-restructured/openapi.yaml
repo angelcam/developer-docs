@@ -5289,25 +5289,22 @@ components:
 
              {"status":401,"title":"not_authenticated","detail":"Authentication credentials were not provided."}
 
-           A new `access_token` can be obtained using a `refresh_token` when the
-           current one expires. A `refresh_token` has no expiration date but it can only be used once. A new `refresh_token` is
-           issued when the client refreshes the `access_token`, which causes all previous tokens to become invalid.
+        A new `access_token` can be obtained using a `refresh_token` when the current one expires. A `refresh_token` has no expiration date but it can only be used once. A new `refresh_token` is issued when the client refreshes the `access_token`, which causes all previous tokens to become invalid.
 
-           To refresh the `access_token`, send another `POST` request to `oauth/token/`
-           endpoint with:
+         To refresh the `access_token`, send another `POST` request to `oauth/token/`
+         endpoint with:
 
            * `refresh_token`,
            * `client_id`,
            * `grant_type` with `refresh_token` value
            * `username` and `password` aren't required this time
 
-           The server will then generate a fresh `access_token` and a new
-           `refresh_token`.
+        The server will then generate a fresh `access_token` and a new `refresh_token`.
 
-           A refresh token can be invalidated by the `oauth/token-revoke/` endpoint.
-           This usually occurs when a user logs out of your app or is performed by the Angelcam support team, upon request by the
-           user or due to security concerns. In any case, you will need to then ask the user to grant authorization to your app
-           again.
+         A refresh token can be invalidated by the `oauth/token-revoke/` endpoint.
+         This usually occurs when a user logs out of your app or is performed by the Angelcam support team, upon request by the
+         user or due to security concerns. In any case, you will need to then ask the user to grant authorization to your app
+         again.
 
         ### Available scopes
       flows:
