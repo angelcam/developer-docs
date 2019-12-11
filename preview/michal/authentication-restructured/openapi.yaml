@@ -5204,7 +5204,7 @@ components:
 
         You will need the client ID as well as the username and password of an Angelcam account. For example if your client ID is `DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo` and the Angelcam account is ` user@example.com` with password `mypassword` (this is the password the user would use to login to My Angelcam site; if you were given client secret by Angelcam support, you won't need it at the moment) the request would be:
 
-            curl -X POST https://my.angelcam.com/oauth/token/ -d "client_id=DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo&grant_type=password&username=user%40example.com&password=mypassword"
+            curl -X POST https://my.angelcam.com/oauth/token/ -d "client_id=DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo&scope=user_access&grant_type=password&username=user%40example.com&password=mypassword"
 
         The API response should look like
 
@@ -5225,7 +5225,7 @@ components:
         ![Authorization code grant sequence diagram](./assets/code_grant.png)
 
 
-          The authorization code grant should be very familiar if you've ever signed
+          The authorization code grant type should be very familiar for you if you've ever signed
           into a web app using your Facebook or Google account.
 
           Authorization code grant type is safer but more difficult to implement and
@@ -5274,6 +5274,20 @@ components:
           * `code` - the authorization code that you will exchange at `oauth/token/` for
           a bearer token
 
+        Example of request for exchanging `authorization_code` for `access_token`:
+
+            curl -X POST  https://api.angelcam.com/oauth/token/ -F grant_type=authorization_code -F client_id=XU0aXeP1299oS48KnZmxhqWUR928jsmFKosdrfMS -F client_secret=asdjfghewklcoeru534vj -F code=hTmV8rbgz2TR2DFr1jha2aOTdMKFHY -F redirect_uri=http://a948dfc1.ngrok.io
+
+        Example of correct response:
+
+            {
+                "access_token": "<your access token>",
+                "expires_in": 36000,
+                "token_type": "Bearer",
+                "scope": "user_access",
+                "refresh_token": "<your refresh token>"
+            }
+
 
         ### Refreshing access token with refresh token
         The granted access token is valid just for short period of time (by default it is valid for 10 hours). The exact expiration time can be found in `expires_in` attribute.
@@ -5289,22 +5303,26 @@ components:
 
              {"status":401,"title":"not_authenticated","detail":"Authentication credentials were not provided."}
 
-        A new `access_token` can be obtained using a `refresh_token` when the current one expires. A `refresh_token` has no expiration date but it can only be used once. A new `refresh_token` is issued when the client refreshes the `access_token`, which causes all previous tokens to become invalid.
+        A new `access_token` can be obtained using a `refresh_token` when the current one expires. A `refresh_token` has long expiration time (usually 30 days) and it can be used only once. A new `refresh_token` is issued when the client refreshes the `access_token`, which causes all previous tokens to become invalid.
 
-         To refresh the `access_token`, send another `POST` request to `oauth/token/`
+         To refresh the `access_token`, send `POST` request to `oauth/token/`
          endpoint with the following fields:
 
-           * `refresh_token`,
-           * `client_id`,
+           * `refresh_token`
+           * `client_id`
            * `grant_type` with `refresh_token` value
-           * `username` and `password` aren't required this time
 
-        The server will then generate a fresh `access_token` and a new `refresh_token`.
+        The server will then generate new `access_token` and `refresh_token`.
+
+        Example of request:
+
+            curl -X POST https://api.angelcam.com/oauth/token/ -F grant_type=refresh_token -F client_id=XU0aXeP1299oS48KnZmxhqWUR928jsmFKosdrfMS -F refresh_token=4fjgerkgslgrshg39843fgjdg
+
+        Example of correct response:
+
+            {"access_token": "<your new access token>", "expires_in": 36000, "token_type": "Bearer", "scope": "user_access", "refresh_token": "<your new refresh token>"}
 
          A refresh token can be invalidated by the `oauth/token-revoke/` endpoint.
-         This usually occurs when a user logs out of your app or is performed by the Angelcam support team, upon request by the
-         user or due to security concerns. In any case, you will need to then ask the user to grant authorization to your app
-         again.
 
         ### Available scopes
       flows:
