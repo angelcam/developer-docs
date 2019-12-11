@@ -11,77 +11,40 @@ info:
     # Angelcam API
 
 
-    > If you have any questions please feel free to contact our API team via
-    email at
-
-    > support@angelcam.com.
+    > If you have any questions please feel free to contact our [support
+    team](https://www.angelcam.com/support/).
 
 
-    Welcome! This document will help guide you through how to use Angelcam’s
-    RESTful API. You’ll find that the
-
-    RESTful API is not difficult to use, but does require some understanding of
-    certain concepts behind
-
-    Angelcam service.
+    Welcome! 
 
 
-    To begin, you MUST contact Angelcam support before using the API to request
-    both a client ID and secret, for
+    This document will help guide you through how to use Angelcam’s RESTful API.
+    You’ll find that the
 
-    authorization, and an authorization grant type.
+    RESTful API is not difficult to use, but it requires some understanding of
+    certain concepts behind Angelcam services.
 
+    ## Quickstart guide
 
-    ## Quick-start Guide
-
-
-    > This example assumes you will use the API to access cameras under your
-    Angelcam account. If your service
-
-    > needs to access someone else's camera you will need to use more
-    complicated
-
-    > [Authorization code grant type](authentication).
+    1. [Go to My Angelcam](https://my.angelcam.com/dashboard/personal-token/) and generate Personal Access Token with scope `user_access`
 
 
-    ### Obtain the access token
+    2. Perform your first successful API request:
 
 
-    You will need the client ID as well as the username and password of your
-    Angelcam account. E.g. if your
+        curl -H "Authorization: PersonalAccessToken <Your Token>" -X GET "https://api.angelcam.com/v1/me/"
 
-    client ID is `DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo` and your Angelcam
-    account is ` user@example.com` with
 
-    password `mypassword` (this is the password you use to login to My Angelcam
-    site; if you were given
-
-    client secret by Angelcam support, you don't need it at the moment) the
-    request would be
-
-        $ curl -X POST https://my.angelcam.com/oauth/token/ -d "client_id=DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo&grant_type=password&username=user%40example.com&password=mypassword"
-
-    The API response should look like
-
-        {"refresh_token": "aFBNWhoLnq7hSTEVII5ELd9g20NjxC", "scope": "read write", "access_token": "1CP9xR6tqpRHzaZxWcFAp3GtkFcXEQ", "expires_in": 36000, "token_type": "Bearer"}
-
-    ### Verify the authorization worked
-
-        $ curl -H "Authorization: Bearer 1CP9xR6tqpRHzaZxWcFAp3GtkFcXEQ" -X GET "https://api.angelcam.com/v1/me/"
-
-    You should see information about your account
-
-        {"id":1234,"email":"user@example.com","first_name":"Keyshawn","last_name":"Jacobs","phone":"+1608494652"}
-
-    ### Use the access token to access the API endpoints
-
-        $ curl -H "Authorization: Bearer 1CP9xR6tqpRHzaZxWcFAp3GtkFcXEQ" -X GET "https://api.angelcam.com/v1/cameras/?limit=5"
-
-    See the reference section for available resources and corresponding
-    endpoints.
+    3. Congrats! You've just successfully retrieved info about your user account.
 
 
     ## Nuts and bolts
+
+
+    ### HTTPS
+
+    All API calls have to be made over HTTPS. Calls made over plain HTTP will
+    fail.
 
 
     ### Plain JSON
@@ -244,116 +207,13 @@ info:
 
     # Authentication
 
+    All API requests have to be authenticated. Angelcam API supports two types of
+    authentication:
 
-    All API requests must be made over HTTPS. Calls made over plain HTTP will
-    fail. Additionally, all request must be
+    - [OAuth2](/#section/Authentication/OAuth2)
 
-    authenticated. Angelcam API uses two types of authentication first is based
-    on personal access tokens and second one is OAuth2.
+    - [Personal Access Token](/#section/Authentication/PersonalAccessToken)
 
-
-    Personal Access Token can be preferred authentication when you need to
-    access only to your own account, otherwise OAuth2 needs to be used when you
-    are creating an app for more angelcam users - so for example when you are
-    building your own application based on angelcam platform.
-
-
-    For OAuth2 we support two different authentication workflows (_grant types_
-    in terms of OAuth):
-
-
-    * You ask your users for their Angelcam usernames and passwords (_resource
-    owner password-based_ in terms of OAuth)
-
-    * You ask Angelcam and we authenticate your users, similar to how Google or
-    Facebook works if you choose "Sign-in using
-      Google/Facebook" (_authorization code_ in terms of OAuth)
-
-    Both authentication types result in the same - you exchange
-    username/password or authorization code by calling
-
-    `/oauth/token/` endpoint for access token. All API calls must supply this
-    access token with
-
-    `Authorization: Bearer ` as header. For example, with cURL commandline tool,
-    your request would
-
-    contain something like this:
-
-        $ curl -H "Authorization: Bearer " -X GET  "https://api.angelcam.com/v1/cameras/?limit=5"
-
-    These access tokens also have a limited-time validity (usually 10 hours) and
-    you’ll have to [ask for new access token
-
-    using refresh
-    token](#introduction/authentication/refreshing-access-token-with-refresh-token)
-    when current access token
-
-    expires.
-
-
-    An authenticated user can use `me/` to ask for account details including
-    email, first name, last name, etc.
-
-
-    ### Refreshing access token with refresh token
-
-
-    The granted access_token is valid for expires_in seconds only. By default,
-    it's set at 36000 seconds (10 hours) but you
-
-    must always keep this value in mind and refresh the access token before it
-    expires. A common practice of how to manage
-
-    expiration is to refresh a token when you get a `401 Unauthorized` from any
-    endpoint since all API endpoints must be
-
-    authenticated.
-
-
-    Example of unauthorized response:
-
-        HTTP/1.1 401 Unauthorized
-        Date: Thu, 27 Apr 2017 10:41:58 GMT
-        Content-Type: application/json
-        WWW-Authenticate: Bearer realm="api"
-
-        {"status":401,"title":"not_authenticated","detail":"Authentication credentials were not provided."}
-
-    A new `access_token` can be obtained using a `refresh_token` when the
-    current one expires. A `refresh_token` has no
-
-    expiration date but it can only be used once. A new `refresh_token` is
-    issued when the client refreshes the
-
-    `access_token`, which causes all previous tokens to become invalid.
-
-
-    To refresh the `access_token`, send another `POST` request to `oauth/token/`
-    endpoint with:
-
-
-    * `refresh_token`,
-
-    * `client_id`,
-
-    * `grant_type` with `refresh_token` value
-
-    * `username` and `password` aren't required this time
-
-
-    The server will then generate a fresh `access_token` and a new
-    `refresh_token`.
-
-
-    A refresh token can be invalidated by the `oauth/token-revoke/` endpoint.
-    This usually occurs when a user logs out of
-
-    your app or is performed by the Angelcam support team, upon request by the
-    user or due to security concerns. In any
-
-    case, you will need to then ask the user to grant authorization to your app
-    again.
 tags:
   - name: user
     x-displayName: User
