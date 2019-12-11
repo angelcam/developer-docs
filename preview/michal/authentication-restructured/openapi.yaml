@@ -30,7 +30,7 @@ info:
     ## Nuts and bolts
 
     ### HTTPS
-    All API calls has to be made over HTTPS. Calls made over plain HTTP will fail.
+    All API calls have to be made over HTTPS. Calls made over plain HTTP will fail.
 
     ### Plain JSON
 
@@ -116,7 +116,7 @@ info:
 
 
     # Authentication
-    All API requests has to be authenticated. Angelcam API supports two types of authentication:
+    All API requests have to be authenticated. Angelcam API supports two types of authentication:
     - [OAuth2](/#section/Authentication/OAuth2)
     - [Personal Access Token](/#section/Authentication/PersonalAccessToken)
 tags:
@@ -5195,14 +5195,14 @@ components:
         These access tokens also have a limited-time validity (usually 10 hours) and you’ll have to ask for new access token using refresh token when current access token expires.
         ### Obtaining your OAuth2 Client ID and Client Secret
         To obtain credentials for using OAuth2 please [contact our support](https://www.angelcam.com/support/).
-        ### Obtaining access token using grant type password
+        ### Obtaining access token using password grant type
         ![Password grant type sequence diagram](./assets/password_grant_type.png)
 
         Password grant type is a more basic and easier way for authorization, but it is less safe for Angelcam users. With this grant type, it's you who asks for the credentials in the UI and it's your app that calls `oauth/token/` to exchange user credentials for the bearer token.
 
-        Be aware! DO NOT save the password or username of any user under any circumstances. To implement a "Remember me" checkbox in your app, save the refresh token instead and ask for a new access token during the application startup using the `oauth/token/` endpoint.
+        Be aware! DO NOT save the password or username of any user under any circumstances. To implement a "Remember me" checkbox in your app, save the refresh token instead and ask for a new access token whenever the access token expires. You can get a new access token using the refresh token and the `oauth/token/` endpoint.
 
-        You will need the client ID as well as the username and password of your Angelcam account. E.g. if your client ID is `DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo` and your Angelcam account is ` user@example.com` with password `mypassword` (this is the password you use to login to My Angelcam site; if you were given client secret by Angelcam support, you don't need it at the moment) the request would be
+        You will need the client ID as well as the username and password of an Angelcam account. For example if your client ID is `DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo` and the Angelcam account is ` user@example.com` with password `mypassword` (this is the password the user would use to login to My Angelcam site; if you were given client secret by Angelcam support, you won't need it at the moment) the request would be:
 
             curl -X POST https://my.angelcam.com/oauth/token/ -d "client_id=DBaJcGbAT2Tbvbrz0fLh1uRmYURprJAQPxwFsgoo&grant_type=password&username=user%40example.com&password=mypassword"
 
@@ -5221,7 +5221,7 @@ components:
 
 
 
-        ### Obtaining access token using grant type code
+        ### Obtaining access token using authorization code grant type
         ![Authorization code grant sequence diagram](./assets/code_grant.png)
 
 
@@ -5229,11 +5229,11 @@ components:
           into a web app using your Facebook or Google account.
 
           Authorization code grant type is safer but more difficult to implement and
-          requires the presence of a web browser on the user's machine to display an Angelcam account sign-in web page. When users
+          requires the presence of a web browser on the user's device to display the Angelcam account sign-in web page. When users
           submit the form and confirm that your app will have access to their data, we check their credentials and redirect
           them back to a URL of your app (`redirect_uri`), which you have specified. This process works in the very same way as when you click a "Sign-in using Google/Facebook" button.
 
-        Your app sends GET to `https://api.angelcam.com/oauth/authorize/` with the
+        Your app sends GET request to `https://api.angelcam.com/oauth/authorize/` with the
           following query parameters:
           * `response_type` (required)- authorization grant type with fixed value `code`
           * `client_id` (required)- your client ID, obtained from Angelcam
@@ -5292,7 +5292,7 @@ components:
         A new `access_token` can be obtained using a `refresh_token` when the current one expires. A `refresh_token` has no expiration date but it can only be used once. A new `refresh_token` is issued when the client refreshes the `access_token`, which causes all previous tokens to become invalid.
 
          To refresh the `access_token`, send another `POST` request to `oauth/token/`
-         endpoint with:
+         endpoint with the following fields:
 
            * `refresh_token`,
            * `client_id`,
@@ -5388,7 +5388,7 @@ components:
       scheme: bearer
       bearerFormat: PersonalAccessToken
       description: |
-        This authentication method is intended for personal use only. If you're business, integrator or you intend to use Angelcam API for commercial usage you are obligated to use [OAuth2](/#section/Authentication/OAuth2) authentication method.
+        This authentication method is intended for personal use only. If you're business, integrator or you intend to use Angelcam API for commercial purpose you are obligated to use [OAuth2](/#section/Authentication/OAuth2) authentication method.
 
         Personal Access Token can be obtained in [MyAngelcam Dashboard](https://my.angelcam.com/dashboard/personal-token/).
 
