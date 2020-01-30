@@ -389,9 +389,6 @@ x-tagGroups:
   - name: Clients management
     tags:
       - client
-  - name: Sites management
-    tags:
-      - site
   - name: RTS
     tags:
       - rts
