@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 2019.12.11
+  version: 2020.02.10
   title: Angelcam API
   contact:
     email: support@angelcam.com
@@ -353,8 +353,10 @@ tags:
     x-displayName: My services
   - name: order
     x-displayName: My Orders
-  - name: rts
-    x-displayName: Message management
+  - name: rts_messages
+    x-displayName: Messages
+  - name: rts_settings
+    x-displayName: Settings
 x-tagGroups:
   - name: General
     tags:
@@ -391,7 +393,8 @@ x-tagGroups:
       - client
   - name: RTS
     tags:
-      - rts
+      - rts_messages
+      - rts_settings
 servers:
   - url: 'https://api.angelcam.com/v1'
 paths:
@@ -2378,12 +2381,108 @@ paths:
       x-code-samples:
         - lang: cURL
           source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/recording/stream/{streamer_name}/{streamer_id}/"'
+  /rts/:
+    get:
+      operationId: rts-settings-retrieve
+      summary: RTS settings
+      tags:
+        - rts_settings
+      security:
+        - OAuth2:
+            - rts_settings_access
+        - PersonalAccessToken: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RTSSettingsObject'
+        '401':
+          $ref: '#/components/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Error403PermissionDenied'
+    put:
+      operationId: rts-settings-update
+      summary: Update RTS settings
+      tags:
+        - rts_settings
+      security:
+        - OAuth2:
+            - rts_settings_manage
+        - PersonalAccessToken: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              title: RTS settings
+              properties:
+                incident_ttl:
+                  type: string
+                  enum:
+                    - PT1M
+                    - PT3M
+                    - PT5M
+                    - PT10M
+                    - PT30M
+                    - PT1H
+                  description: ISO 8601 duration format. The value represents the minimal delay between two events triggered by the same sensor that has to pass before Angelcam sends another notification to the user.
+              example:
+                incident_ttl: PT1M
+      responses:
+        '200':
+          description: RTSSettings object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RTSSettingsObject'
+        '400':
+          $ref: '#/components/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/components/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Error403PermissionDenied'
+  /rts/arm/:
+    post:
+      operationId: rts-arm
+      summary: Arm RTS
+      tags:
+        - rts_settings
+      security:
+        - OAuth2:
+            - rts_arming_manage
+        - PersonalAccessToken: []
+      responses:
+        '204':
+          $ref: '#/components/responses/EmptyResponse'
+        '401':
+          $ref: '#/components/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Error403PermissionDenied'
+  /rts/disarm/:
+    post:
+      operationId: rts-disarm
+      summary: Disarm RTS
+      tags:
+        - rts_settings
+      security:
+        - OAuth2:
+            - rts_arming_manage
+        - PersonalAccessToken: []
+      responses:
+        '204':
+          $ref: '#/components/responses/EmptyResponse'
+        '401':
+          $ref: '#/components/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Error403PermissionDenied'
   /rts/messages/:
     get:
       operationId: rts-messages
       summary: Retrieve messages
       tags:
-        - rts
+        - rts_messages
       description: Retrieves list of user messages
       parameters:
         - name: limit
@@ -2425,7 +2524,7 @@ paths:
       summary: Retrieve message detail
       description: Retrieve message detail
       tags:
-        - rts
+        - rts_messages
       security:
         - OAuth2:
             - messages_access
@@ -2485,7 +2584,7 @@ paths:
       summary: Retrieve unread messages count
       description: Retrieve unread messages count
       tags:
-        - rts
+        - rts_messages
       security:
         - OAuth2:
             - messages_access
@@ -4518,6 +4617,29 @@ components:
             end: 2017-06-09T03:25:28.000Z
           - start: 2017-06-09T04:19:42.000Z
             end: '2017-06-09T010:39:31Z'
+    RTSSettingsObject:
+      type: object
+      title: RTS Settings object
+      properties:
+        incident_ttl:
+          type: string
+          enum:
+            - PT1M
+            - PT3M
+            - PT5M
+            - PT10M
+            - PT30M
+            - PT1H
+          description: ISO 8601 duration format. The value represents the minimal delay between two events triggered by the same sensor that has to pass before Angelcam sends another notification to the user.
+        is_armed:
+          type: boolean
+          description: If set to `false` user will not reveive any notifications about sensor events
+      required:
+        - incident_ttl
+        - is_armed
+      example:
+        incident_ttl: PT1M
+        is_armed: true
     SegmentObject:
       type: object
       title: Segment object
@@ -5398,6 +5520,9 @@ components:
             orders_access: Permission to access orders
             messages_access: Permission to access RTS messages
             messages_manage: Permission to manage RTS messages
+            rts_settings_access: Permission to access RTS settings
+            rts_settings_manage: Permissioon to manage RTS settings
+            rts_arming_manage: Permission to arm and disarm RTS
     PersonalAccessToken:
       type: http
       scheme: bearer
