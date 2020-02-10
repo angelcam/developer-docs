@@ -3,7 +3,7 @@ get:
   summary: Retrieve unread messages count
   description: Retrieve unread messages count
   tags:
-    - rts
+    - rts_messages
   security:
     - OAuth2:
         - messages_access

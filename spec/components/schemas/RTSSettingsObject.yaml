@@ -1,0 +1,16 @@
+type: object
+title: RTS Settings object
+properties:
+  incident_ttl:
+    type: string
+    enum: [PT1M, PT3M, PT5M, PT10M, PT30M, PT1H]
+    description: ISO 8601 duration format. The value represents the minimal delay between two events triggered by the same sensor that has to pass before Angelcam sends another notification to the user.
+  is_armed:
+    type: boolean
+    description: If set to `false` user will not reveive any notifications about sensor events
+required:
+  - incident_ttl
+  - is_armed
+example:
+  incident_ttl: "PT1M"
+  is_armed: true

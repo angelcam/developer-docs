@@ -256,3 +256,7 @@ flows:
       orders_access: Permission to access orders
       messages_access: Permission to access RTS messages
       messages_manage: Permission to manage RTS messages
+      rts_settings_access: Permission to access RTS settings
+      rts_settings_manage: Permissioon to manage RTS settings
+      rts_arming_manage: Permission to arm and disarm RTS
+

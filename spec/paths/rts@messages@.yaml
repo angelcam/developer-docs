@@ -2,7 +2,7 @@ get:
   operationId: rts-messages
   summary: Retrieve messages
   tags:
-    - rts
+    - rts_messages
   description: Retrieves list of user messages
   parameters:
     - name: limit
