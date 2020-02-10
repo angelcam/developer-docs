@@ -1,0 +1,56 @@
+get:
+  operationId: rts-settings-retrieve
+  summary: RTS settings
+  tags:
+    - rts_settings
+  security:
+    - OAuth2:
+        - rts_settings_access
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RTSSettingsObject'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+put:
+  operationId: rts-settings-update
+  summary: Update RTS settings
+  tags:
+    - rts_settings
+  security:
+    - OAuth2:
+        - rts_settings_manage
+    - PersonalAccessToken: []
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          title: RTS settings
+          properties:
+            incident_ttl:
+              type: string
+              enum: [PT1M, PT3M, PT5M, PT10M, PT30M, PT1H]
+              description: "ISO 8601 duration format. The value represents the minimal delay between two events triggered by the same sensor that has to pass before Angelcam sends another notification to the user."
+          example:
+            incident_ttl: "PT1M"
+  responses:
+    '200':
+      description: RTSSettings object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RTSSettingsObject'
+    '400':
+      $ref: '#/components/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+

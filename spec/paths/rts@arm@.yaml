@@ -1,0 +1,17 @@
+post:
+  operationId: rts-arm
+  summary: Arm RTS
+  tags:
+    - rts_settings
+  security:
+    - OAuth2:
+        - rts_arming_manage
+    - PersonalAccessToken: []
+  responses:
+    '204':
+      $ref: '#/components/responses/EmptyResponse'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 2019.12.11
+  version: 2020.02.10
   title: Angelcam API
   contact:
     email: support@angelcam.com
@@ -656,8 +656,10 @@ tags:
     x-displayName: My services
   - name: order
     x-displayName: My Orders
-  - name: rts
-    x-displayName: Message management
+  - name: rts_messages
+    x-displayName: Messages
+  - name: rts_settings
+    x-displayName: Settings
 x-tagGroups:
   - name: General
     tags:
@@ -697,6 +699,7 @@ x-tagGroups:
 #      - site
   - name: RTS
     tags:
-      - rts
+      - rts_messages
+      - rts_settings
 servers:
   - url: 'https://api.angelcam.com/v1'
