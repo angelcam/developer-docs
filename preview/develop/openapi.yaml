@@ -2549,7 +2549,7 @@ paths:
       summary: Update message
       description: Update messages
       tags:
-        - rts
+        - rts_messages
       security:
         - OAuth2:
             - messages_manage
