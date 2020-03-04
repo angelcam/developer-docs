@@ -3687,7 +3687,7 @@
         "summary": "Update message",
         "description": "Update messages",
         "tags": [
-          "rts"
+          "rts_messages"
         ],
         "security": [
           {
