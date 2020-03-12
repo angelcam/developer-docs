@@ -3742,6 +3742,50 @@
         }
       }
     },
+    "/rts/messages/set-all-read/": {
+      "post": {
+        "operationId": "rts-message-set-all-read",
+        "summary": "Set all messages as read",
+        "description": "Set all messages as read",
+        "tags": [
+          "rts_messages"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "messages_manage"
+            ]
+          },
+          {
+            "PersonalAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "set_as_read_count": {
+                      "type": "number",
+                      "description": "Number of messages which were marked as read"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403PermissionDenied"
+          }
+        }
+      }
+    },
     "/rts/messages/unread-count/": {
       "get": {
         "operationId": "rts-message-unread-count",
