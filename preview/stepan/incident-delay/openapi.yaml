@@ -4779,6 +4779,10 @@ components:
             - PT2M
             - PT5M
           description: Duration of event Recording triggered by an event from this sensor. This setting is applied only if sensor has an assigned camera with active Cloud Recording.
+        incident_delay:
+          type: string
+          format: duration
+          description: 'A delay before RTS incident is triggered. If the site is disarmed during this period, no incident is forwarded. However the video from the binded camera is recorded. PT0S means no delay and PT3M is the max.'
         created_at:
           type: string
           description: DateTime when sensor was created
@@ -4808,6 +4812,7 @@ components:
         - enabled
         - camera
         - enable_cloud_recording_for
+        - incident_delay
         - created_at
         - updated_at
         - events_count_ifttt
@@ -4827,6 +4832,7 @@ components:
         enabled: true
         camera: 32
         enable_cloud_recording_for: PT1M
+        incident_delay: PT0S
         created_at: '2019-09-24T13:16:23.899357+02:00'
         updated_at: '2019-09-24T13:16:23.899384+02:00'
         events_count_ifttt: 0
