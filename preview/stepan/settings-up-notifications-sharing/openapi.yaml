@@ -3625,7 +3625,7 @@ components:
           x-example: false
         share_notifications:
           type: boolean
-          description: Notifications are shared as well
+          description: Share RTS notifications for a given camera
           x-example: false
     CameraListResponse:
       type: object
