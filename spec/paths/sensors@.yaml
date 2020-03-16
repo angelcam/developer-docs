@@ -85,6 +85,12 @@ post:
               description: >-
                 Defaults to True. Indicates if sensor is enabled or not. If
                 disabled then all events from the sensor are ignored.
+            override_arming:
+              type: boolean
+              description: >-
+                Defaults to False. If enabled, an event received from the sensor
+                will always trigger an incident regardless of the arming
+                settings.
             camera:
               type: integer
               minimum: 1
@@ -105,10 +111,10 @@ post:
               type: string
               format: duration
               description: >-
-                A delay before RTS incident is triggered. If the site is disarmed
-                during this period, no incident is forwarded.
-                However the video from the binded camera is recorded.
-                PT0S means no delay and PT3M is the max.
+                A delay before RTS incident is triggered. If the site is
+                disarmed during this period, no incident is forwarded. However
+                the video from the binded camera is recorded. PT0S means no
+                delay and PT3M is the max.
           example:
             name: My brand new sensor
             type: smoke

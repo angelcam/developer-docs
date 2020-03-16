@@ -53,6 +53,11 @@ properties:
     description: >-
       Defaults to True. Indicates if sensor is enabled or not. If disabled then
       all events from this sensor are ignored.
+  override_arming:
+    type: boolean
+    description: >-
+      Defaults to False. If enabled, an event received from the sensor will
+      always trigger an incident regardless of the arming settings.
   camera:
     type: integer
     minimum: 1
@@ -73,10 +78,9 @@ properties:
     type: string
     format: duration
     description: >-
-      A delay before RTS incident is triggered. If the site is disarmed
-      during this period, no incident is forwarded.
-      However the video from the binded camera is recorded.
-      PT0S means no delay and PT3M is the max.
+      A delay before RTS incident is triggered. If the site is disarmed during
+      this period, no incident is forwarded. However the video from the binded
+      camera is recorded. PT0S means no delay and PT3M is the max.
   created_at:
     type: string
     description: DateTime when sensor was created
@@ -104,6 +108,7 @@ required:
   - hash
   - email
   - enabled
+  - override_arming
   - camera
   - enable_cloud_recording_for
   - incident_delay
@@ -124,6 +129,7 @@ example:
   hash: dy3ovys2ol
   email: dy3ovys2ol@angel.cam
   enabled: true
+  override_arming: false
   camera: 32
   enable_cloud_recording_for: PT1M
   incident_delay: PT0S
