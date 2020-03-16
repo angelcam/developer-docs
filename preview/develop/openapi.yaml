@@ -2716,6 +2716,9 @@ paths:
                 enabled:
                   type: boolean
                   description: Defaults to True. Indicates if sensor is enabled or not. If disabled then all events from the sensor are ignored.
+                override_arming:
+                  type: boolean
+                  description: 'Defaults to False. If enabled, an event received from the sensor will always trigger an incident regardless of the arming settings.'
                 camera:
                   type: integer
                   minimum: 1
@@ -2828,6 +2831,9 @@ paths:
                 enabled:
                   type: boolean
                   description: Defaults to True. Indicates if sensor is enabled or not. If disabled then all events from the sensor are ignored.
+                override_arming:
+                  type: boolean
+                  description: 'Defaults to False. If enabled, an event received from the sensor will always trigger an incident regardless of the arming settings.'
                 camera:
                   type: integer
                   minimum: 1
@@ -4766,6 +4772,9 @@ components:
         enabled:
           type: boolean
           description: Defaults to True. Indicates if sensor is enabled or not. If disabled then all events from this sensor are ignored.
+        override_arming:
+          type: boolean
+          description: 'Defaults to False. If enabled, an event received from the sensor will always trigger an incident regardless of the arming settings.'
         camera:
           type: integer
           minimum: 1
@@ -4810,6 +4819,7 @@ components:
         - hash
         - email
         - enabled
+        - override_arming
         - camera
         - enable_cloud_recording_for
         - incident_delay
@@ -4830,6 +4840,7 @@ components:
         hash: dy3ovys2ol
         email: dy3ovys2ol@angel.cam
         enabled: true
+        override_arming: false
         camera: 32
         enable_cloud_recording_for: PT1M
         incident_delay: PT0S
