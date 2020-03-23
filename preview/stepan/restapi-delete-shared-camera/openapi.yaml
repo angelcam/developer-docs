@@ -3020,7 +3020,7 @@ paths:
         - $ref: '#/components/parameters/sharedCameraId'
       security:
         - OAuth2:
-            - camera_access
+            - camera_manage
         - PersonalAccessToken: []
       responses:
         '204':
