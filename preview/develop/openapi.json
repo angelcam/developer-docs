@@ -1944,7 +1944,7 @@
         "x-code-samples": [
           {
             "lang": "cURL",
-            "source": "curl -d '{\"email\": \"user@example.com\", \"permissions\": {\"can_view_rec\": true}}' -H \"Accept: application/json\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer {access_token}\" -X POST \"https://api.angelcam.com/v1/cameras/{camera_id}/guests/\""
+            "source": "curl -d '{\"email\": \"user@example.com\", \"permissions\": {\"can_view_rec\": true, \"share_notifications\": false}}' -H \"Accept: application/json\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer {access_token}\" -X POST \"https://api.angelcam.com/v1/cameras/{camera_id}/guests/\"\n"
           }
         ]
       }
@@ -2062,7 +2062,7 @@
         "x-code-samples": [
           {
             "lang": "cURL",
-            "source": "curl -d '{\"permissions\": {\"can_view_rec\": true}' -H \"Accept: application/json\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer {access_token}\" -X PUT \"https://api.angelcam.com/v1/cameras/{camera_id}/guests/{guest_id}\""
+            "source": "curl -d '{\"permissions\": {\"can_view_rec\": true, \"share_notifications\": false}' -H \"Accept: application/json\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer {access_token}\" -X PUT \"https://api.angelcam.com/v1/cameras/{camera_id}/guests/{guest_id}\"\n"
           }
         ]
       },
@@ -5310,7 +5310,8 @@
           "last_name": "Michael",
           "email": "michael@angelcam.com",
           "permisions": {
-            "can_view_rec": true
+            "can_view_rec": true,
+            "share_notifications": false
           }
         }
       },
@@ -5321,6 +5322,11 @@
           "can_view_rec": {
             "type": "boolean",
             "description": "Can view camera recordings",
+            "x-example": false
+          },
+          "share_notifications": {
+            "type": "boolean",
+            "description": "Share RTS notifications for a given camera",
             "x-example": false
           }
         }
