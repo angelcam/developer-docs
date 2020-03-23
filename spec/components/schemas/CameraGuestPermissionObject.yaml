@@ -5,3 +5,8 @@ properties:
     type: boolean
     description: Can view camera recordings
     x-example: false
+
+  share_notifications:
+    type: boolean
+    description: Share RTS notifications for a given camera
+    x-example: false
