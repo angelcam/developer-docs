@@ -3013,6 +3013,26 @@ paths:
       x-code-samples:
         - lang: cURL
           source: 'curl -H "Accept: application/json" -H "Authorization: Bearer {access_token}" -X GET "https://api.angelcam.com/v1/shared-cameras/{camera_id}/"'
+    delete:
+      operationId: shared-cameras-remove
+      summary: Remove shared camera
+      tags:
+        - shared-camera
+      parameters:
+        - $ref: '#/components/parameters/sharedCameraId'
+      security:
+        - OAuth2:
+            - camera_manage
+        - PersonalAccessToken: []
+      responses:
+        '204':
+          description: No content
+        '401':
+          $ref: '#/components/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/components/responses/Error404NotFound'
   '/shared-cameras/{camera_id}/recording/':
     get:
       operationId: shared-cameras-recordings-info
