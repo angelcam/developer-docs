@@ -4252,6 +4252,14 @@ components:
         title:
           type: string
           description: Message title
+        type:
+          type: string
+          description: Message type. Can be used to decide for instance priority of the message.
+          enum:
+            - my_incident
+            - shared_incident
+            - arming
+            - other
         short_message:
           type: string
           description: Short version of message. Use short version for example in notification list
@@ -4280,6 +4288,7 @@ components:
         - id
         - created_at
         - title
+        - type
         - is_read
         - short_message
         - long_message
@@ -4288,6 +4297,7 @@ components:
         id: 1
         created_at: 2019-08-09T13:23:23.000Z
         title: Sensor My Sensor detected motion
+        type: my_incident
         short_message: Your sensor with name My Sensor detected motion.
         long_message: Your sensor with name My Sensor detected motion. Find out more at <url>.
         is_read: false
