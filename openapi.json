@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "version": "2020.02.10",
+    "version": "2020.04.06",
     "title": "Angelcam API",
     "contact": {
       "email": "support@angelcam.com"
@@ -1944,7 +1944,7 @@
         "x-code-samples": [
           {
             "lang": "cURL",
-            "source": "curl -d '{\"email\": \"user@example.com\", \"permissions\": {\"can_view_rec\": true}}' -H \"Accept: application/json\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer {access_token}\" -X POST \"https://api.angelcam.com/v1/cameras/{camera_id}/guests/\""
+            "source": "curl -d '{\"email\": \"user@example.com\", \"permissions\": {\"can_view_rec\": true, \"share_notifications\": false}}' -H \"Accept: application/json\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer {access_token}\" -X POST \"https://api.angelcam.com/v1/cameras/{camera_id}/guests/\"\n"
           }
         ]
       }
@@ -2062,7 +2062,7 @@
         "x-code-samples": [
           {
             "lang": "cURL",
-            "source": "curl -d '{\"permissions\": {\"can_view_rec\": true}' -H \"Accept: application/json\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer {access_token}\" -X PUT \"https://api.angelcam.com/v1/cameras/{camera_id}/guests/{guest_id}\""
+            "source": "curl -d '{\"permissions\": {\"can_view_rec\": true, \"share_notifications\": false}' -H \"Accept: application/json\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer {access_token}\" -X PUT \"https://api.angelcam.com/v1/cameras/{camera_id}/guests/{guest_id}\"\n"
           }
         ]
       },
@@ -3742,6 +3742,50 @@
         }
       }
     },
+    "/rts/messages/set-all-read/": {
+      "post": {
+        "operationId": "rts-message-set-all-read",
+        "summary": "Set all messages as read",
+        "description": "Set all messages as read",
+        "tags": [
+          "rts_messages"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "messages_manage"
+            ]
+          },
+          {
+            "PersonalAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "set_as_read_count": {
+                      "type": "number",
+                      "description": "Number of messages which were marked as read"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403PermissionDenied"
+          }
+        }
+      }
+    },
     "/rts/messages/unread-count/": {
       "get": {
         "operationId": "rts-message-unread-count",
@@ -3906,6 +3950,10 @@
                     "type": "boolean",
                     "description": "Defaults to True. Indicates if sensor is enabled or not. If disabled then all events from the sensor are ignored."
                   },
+                  "override_arming": {
+                    "type": "boolean",
+                    "description": "Defaults to False. If enabled, an event received from the sensor will always trigger an incident regardless of the arming settings."
+                  },
                   "camera": {
                     "type": "integer",
                     "minimum": 1,
@@ -3921,6 +3969,11 @@
                       "PT5M"
                     ],
                     "description": "Duration of event Recording triggered by an event from this sensor. This setting is applied only if sensor has an assigned camera with active Cloud Recording."
+                  },
+                  "incident_delay": {
+                    "type": "string",
+                    "format": "duration",
+                    "description": "A delay before RTS incident is triggered. If the site is disarmed during this period, no incident is forwarded. However the video from the binded camera is recorded. PT0S means no delay and PT3M is the max."
                   }
                 },
                 "example": {
@@ -4072,6 +4125,10 @@
                     "type": "boolean",
                     "description": "Defaults to True. Indicates if sensor is enabled or not. If disabled then all events from the sensor are ignored."
                   },
+                  "override_arming": {
+                    "type": "boolean",
+                    "description": "Defaults to False. If enabled, an event received from the sensor will always trigger an incident regardless of the arming settings."
+                  },
                   "camera": {
                     "type": "integer",
                     "minimum": 1,
@@ -4087,13 +4144,19 @@
                       "PT5M"
                     ],
                     "description": "Duration of event Recording triggered by an event from this sensor. This setting is applied only if sensor has an assigned camera with active Cloud Recording."
+                  },
+                  "incident_delay": {
+                    "type": "string",
+                    "format": "duration",
+                    "description": "A delay before RTS incident is triggered. If the site is disarmed during this period, no incident is forwarded. However the video from the binded camera is recorded. PT0S means no delay and PT3M is the max."
                   }
                 },
                 "example": {
                   "name": "My updated shiny sensor",
                   "type": "smoke",
                   "camera": 24,
-                  "enable_cloud_recording_for": "PT1M"
+                  "enable_cloud_recording_for": "PT1M",
+                  "incident_delay": "PT0S"
                 }
               }
             }
@@ -4353,6 +4416,42 @@
             "source": "curl -H \"Accept: application/json\" -H \"Authorization: Bearer {access_token}\" -X GET \"https://api.angelcam.com/v1/shared-cameras/{camera_id}/\""
           }
         ]
+      },
+      "delete": {
+        "operationId": "shared-cameras-remove",
+        "summary": "Remove shared camera",
+        "tags": [
+          "shared-camera"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/sharedCameraId"
+          }
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "camera_manage"
+            ]
+          },
+          {
+            "PersonalAccessToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403PermissionDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404NotFound"
+          }
+        }
       }
     },
     "/shared-cameras/{camera_id}/recording/": {
@@ -5247,7 +5346,8 @@
           "last_name": "Michael",
           "email": "michael@angelcam.com",
           "permisions": {
-            "can_view_rec": true
+            "can_view_rec": true,
+            "share_notifications": false
           }
         }
       },
@@ -5258,6 +5358,11 @@
           "can_view_rec": {
             "type": "boolean",
             "description": "Can view camera recordings",
+            "x-example": false
+          },
+          "share_notifications": {
+            "type": "boolean",
+            "description": "Share RTS notifications for a given camera",
             "x-example": false
           }
         }
@@ -6068,6 +6173,16 @@
             "type": "string",
             "description": "Message title"
           },
+          "type": {
+            "type": "string",
+            "description": "Message type. Can be used to decide for instance priority of the message.",
+            "enum": [
+              "my_incident",
+              "shared_incident",
+              "arming",
+              "other"
+            ]
+          },
           "short_message": {
             "type": "string",
             "description": "Short version of message. Use short version for example in notification list"
@@ -6105,6 +6220,7 @@
           "id",
           "created_at",
           "title",
+          "type",
           "is_read",
           "short_message",
           "long_message",
@@ -6114,6 +6230,7 @@
           "id": 1,
           "created_at": "2019-08-09T13:23:23.000Z",
           "title": "Sensor My Sensor detected motion",
+          "type": "my_incident",
           "short_message": "Your sensor with name My Sensor detected motion.",
           "long_message": "Your sensor with name My Sensor detected motion. Find out more at <url>.",
           "is_read": false,
@@ -6777,6 +6894,10 @@
             "type": "boolean",
             "description": "Defaults to True. Indicates if sensor is enabled or not. If disabled then all events from this sensor are ignored."
           },
+          "override_arming": {
+            "type": "boolean",
+            "description": "Defaults to False. If enabled, an event received from the sensor will always trigger an incident regardless of the arming settings."
+          },
           "camera": {
             "type": "integer",
             "minimum": 1,
@@ -6792,6 +6913,11 @@
               "PT5M"
             ],
             "description": "Duration of event Recording triggered by an event from this sensor. This setting is applied only if sensor has an assigned camera with active Cloud Recording."
+          },
+          "incident_delay": {
+            "type": "string",
+            "format": "duration",
+            "description": "A delay before RTS incident is triggered. If the site is disarmed during this period, no incident is forwarded. However the video from the binded camera is recorded. PT0S means no delay and PT3M is the max."
           },
           "created_at": {
             "type": "string",
@@ -6826,8 +6952,10 @@
           "hash",
           "email",
           "enabled",
+          "override_arming",
           "camera",
           "enable_cloud_recording_for",
+          "incident_delay",
           "created_at",
           "updated_at",
           "events_count_ifttt",
@@ -6846,8 +6974,10 @@
           "hash": "dy3ovys2ol",
           "email": "dy3ovys2ol@angel.cam",
           "enabled": true,
+          "override_arming": false,
           "camera": 32,
           "enable_cloud_recording_for": "PT1M",
+          "incident_delay": "PT0S",
           "created_at": "2019-09-24T13:16:23.899357+02:00",
           "updated_at": "2019-09-24T13:16:23.899384+02:00",
           "events_count_ifttt": 0,
