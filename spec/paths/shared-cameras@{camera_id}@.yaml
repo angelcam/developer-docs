@@ -49,4 +49,23 @@ get:
       $ref: '#/components/responses/Error403PermissionDenied'
     '404':
       $ref: '#/components/responses/Error404NotFound'
-
+delete:
+  operationId: shared-cameras-remove
+  summary: Remove shared camera
+  tags:
+    - shared-camera
+  parameters:
+    - $ref: '#/components/parameters/sharedCameraId'
+  security:
+    - OAuth2:
+        - camera_manage
+    - PersonalAccessToken: []
+  responses:
+    '204':
+      description: No content
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'

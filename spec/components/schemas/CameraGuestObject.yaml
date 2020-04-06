@@ -28,3 +28,4 @@ example:
   email: michael@angelcam.com
   permisions:
     can_view_rec: true
+    share_notifications: false
