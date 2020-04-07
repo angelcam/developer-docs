@@ -34,10 +34,16 @@ properties:
     description: Available camera streams
   applications:
     type: array
+    deprecated: true
+    description: Use `has_recording` and `has_notifications` fields
     items:
       $ref: '#/components/schemas/SharedApplicationObject'
   owner:
     $ref: '#/components/schemas/OwnerObject'
+  has_recording:
+    type: boolean
+  has_notifications:
+    type: boolean
 required:
   - id
   - name
@@ -48,6 +54,8 @@ required:
   - streams
   - applications
   - owner
+  - has_recording
+  - has_notifications
 example:
   id: 157
   name: Parkside Office
@@ -75,3 +83,5 @@ example:
     email: john@apple.com
     first_name: John
     last_name: Appleseed
+  has_recording: false
+  has_notifications: true
