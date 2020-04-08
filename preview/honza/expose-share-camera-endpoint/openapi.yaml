@@ -5052,8 +5052,10 @@ components:
           $ref: '#/components/schemas/OwnerObject'
         has_recording:
           type: boolean
+          description: Indicates whether the user to whom the camera is shared can access camera recordings
         has_notifications:
           type: boolean
+          description: Indicates whether the user to whom the camera is shared will receive notifications (eg. security alerts) related to the camera
       required:
         - id
         - name
