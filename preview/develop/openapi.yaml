@@ -5044,10 +5044,18 @@ components:
           description: Available camera streams
         applications:
           type: array
+          deprecated: true
+          description: Use `has_recording` and `has_notifications` fields
           items:
             $ref: '#/components/schemas/SharedApplicationObject'
         owner:
           $ref: '#/components/schemas/OwnerObject'
+        has_recording:
+          type: boolean
+          description: Indicates whether the user to whom the camera is shared can access camera recordings
+        has_notifications:
+          type: boolean
+          description: Indicates whether the user to whom the camera is shared will receive notifications (eg. security alerts) related to the camera
       required:
         - id
         - name
@@ -5058,6 +5066,8 @@ components:
         - streams
         - applications
         - owner
+        - has_recording
+        - has_notifications
       example:
         id: 157
         name: Parkside Office
@@ -5081,6 +5091,8 @@ components:
           email: john@apple.com
           first_name: John
           last_name: Appleseed
+        has_recording: false
+        has_notifications: true
     SiteCameraList:
       type: array
       description: List of cameras on site
