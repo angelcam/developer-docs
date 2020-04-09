@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 2020.04.06
+  version: 2020.04.09
   title: Angelcam API
   contact:
     email: support@angelcam.com
