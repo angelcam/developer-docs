@@ -5449,7 +5449,7 @@
             "items": {
               "$ref": "#/components/schemas/StreamObject"
             },
-            "description": "Available camera streams"
+            "description": "Available camera streams. [Read about stream URLs expirations](http://help.angelcam.com/en/articles/3952149-how-to-deal-with-stream-url-expiration)."
           },
           "applications": {
             "type": "array",
