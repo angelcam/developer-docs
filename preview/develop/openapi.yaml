@@ -205,21 +205,6 @@ tags:
       For MJPEG type cameras you can output only a MJPEG live stream.
 
       The live stream is intended for private live video monitoring just to the camera owner only. If you want to broadcast a video to public audience, please use our [broadcasting service](https://www.angelcam.com/apps/camera-broadcasting).
-
-      ## Camera applications
-
-      Connecting a camera and being able to get a snapshot or watch a live stream is offered to every Angelcam user, but to
-      get the most out of a camera, users usually add some apps. Among other information, the cameras/{camera_id}/ and
-      cameras/ endpoints will tell you apps added to a user's camera as a list of app codes.
-
-      We currently support these applications in this API with the following codes (uppercase):
-
-      * LSA - Broadcasting
-      * CRA - Cloud Recording
-      * VVA - Video Verification
-      * VPA - Video Guard
-
-      The applications added to a camera depend on the user's country as some of them are not available in every country.
   - name: shared-camera
     x-displayName: Shared cameras
     description: |
