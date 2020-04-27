@@ -1,0 +1,26 @@
+type: object
+title: Public Camera list
+properties:
+  count:
+    type: integer
+    description: Count of all public cameras
+  next:
+    format: uri
+    description: Next page from pagination
+    nullable: true
+    type: string
+  previous:
+    format: uri
+    description: Previous page from pagination
+    nullable: true
+    type: string
+  results:
+    type: array
+    description: List of public cameras with the user
+    items:
+      $ref: '#/components/schemas/PublicCameraObject'
+required:
+  - count
+  - next
+  - previous
+  - results

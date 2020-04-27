@@ -387,6 +387,13 @@ tags:
     description: >
       For access to cameras which somebody shared with you. In general
       everything is same as in my cameras section, see above, there is only one
+      difference. Together with cameras information you get also a camera's public
+      page url
+  - name: public-camera
+    x-displayName: Public cameras
+    description: >
+      For access to public cameras. In general
+      everything is same as in my cameras section, see above, there is only one
       difference. Together with cameras information you get also a basic
       information about camera owner, like name and email.
   - name: camera-guest
@@ -645,6 +652,7 @@ x-tagGroups:
     tags:
       - camera
       - shared-camera
+      - public-camera
       - camera-guest
       - camera-stream-detection
       - arrow-clients

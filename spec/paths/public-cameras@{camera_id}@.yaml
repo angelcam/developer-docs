@@ -1,0 +1,26 @@
+get:
+  operationId: public-cameras-detail
+  summary: Retrieve public camera
+  tags:
+    - public-camera
+  parameters:
+    - $ref: '#/components/parameters/sharedCameraId'
+  security:
+    - OAuth2:
+        - public_cameras_access
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: Camera object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PublicCameraObject'
+    '400':
+      $ref: '#/components/responses/Error400InvalidParams'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'
