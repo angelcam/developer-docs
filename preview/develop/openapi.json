@@ -24,7 +24,12 @@
     {
       "name": "shared-camera",
       "x-displayName": "Shared cameras",
-      "description": "For access to cameras which somebody shared with you. In general everything is same as in my cameras section, see above, there is only one difference. Together with cameras information you get also a basic information about camera owner, like name and email.\n"
+      "description": "For access to cameras which somebody shared with you. In general everything is same as in my cameras section, see above, there is only one difference. Together with cameras information you get also a camera's public page url\n"
+    },
+    {
+      "name": "public-camera",
+      "x-displayName": "Public cameras",
+      "description": "These endpoints allow to obtain information about all cameras that are connected to Angelcam with free public broadcasting enabled.\n"
     },
     {
       "name": "camera-guest",
@@ -125,7 +130,8 @@
         "shared-camera",
         "camera-guest",
         "camera-stream-detection",
-        "arrow-clients"
+        "arrow-clients",
+        "public-camera"
       ]
     },
     {
@@ -3341,6 +3347,116 @@
         }
       }
     },
+    "/public-cameras/": {
+      "get": {
+        "operationId": "public-cameras-list",
+        "summary": "Retrieve public camera list",
+        "tags": [
+          "public-camera"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Limit result set. Example: `1`.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Return results starting at `offset`. Example: `10`.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "public_cameras_access"
+            ]
+          },
+          {
+            "PersonalAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns public camera list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicCameraListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400InvalidParams"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403PermissionDenied"
+          }
+        }
+      }
+    },
+    "/public-cameras/{camera_id}/": {
+      "get": {
+        "operationId": "public-cameras-detail",
+        "summary": "Retrieve public camera",
+        "tags": [
+          "public-camera"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/sharedCameraId"
+          }
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "public_cameras_access"
+            ]
+          },
+          {
+            "PersonalAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Camera object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicCameraObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400InvalidParams"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403PermissionDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404NotFound"
+          }
+        }
+      }
+    },
     "/recording/stream/{streamer_name}/{streamer_id}/": {
       "get": {
         "operationId": "my-cameras-recordings-stream-info",
@@ -6432,6 +6548,100 @@
           }
         }
       },
+      "PublicCameraListResponse": {
+        "type": "object",
+        "title": "Public Camera list",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "description": "Count of all public cameras"
+          },
+          "next": {
+            "format": "uri",
+            "description": "Next page from pagination",
+            "nullable": true,
+            "type": "string"
+          },
+          "previous": {
+            "format": "uri",
+            "description": "Previous page from pagination",
+            "nullable": true,
+            "type": "string"
+          },
+          "results": {
+            "type": "array",
+            "description": "List of public cameras",
+            "items": {
+              "$ref": "#/components/schemas/PublicCameraObject"
+            }
+          }
+        },
+        "required": [
+          "count",
+          "next",
+          "previous",
+          "results"
+        ]
+      },
+      "PublicCameraObject": {
+        "type": "object",
+        "title": "Public camera object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Camera ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Camera name"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "h264",
+              "mjpeg"
+            ],
+            "description": "Camera type"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "offline",
+              "online",
+              "unknown"
+            ]
+          },
+          "live_snapshot": {
+            "format": "uri",
+            "description": "Live snapshot URL",
+            "nullable": true,
+            "type": "string"
+          },
+          "public_page_url": {
+            "format": "uri",
+            "description": "Public page URL",
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type",
+          "status",
+          "live_snapshot",
+          "public_page_url"
+        ],
+        "example": {
+          "id": 157,
+          "name": "Parkside Office",
+          "type": "h264",
+          "status": "online",
+          "live_snapshot": "http://m1.angelcam.com/stream/81/snapshot.jpg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c",
+          "public_page_url": "https://some.url/camera/4564"
+        }
+      },
       "RecordingDownloadResponse": {
         "type": "object",
         "title": "Recording download",
@@ -7671,6 +7881,7 @@
               "camera_delete": "Permission to delete cameras",
               "camera_guest_access": "Permission to access camera guest",
               "camera_guest_manage": "Permission to manage camera guest",
+              "public_cameras_access": "Permission to access public cameras",
               "arrow_client_access": "Permission to access Arrow clients",
               "arrow_client_manage": "Permission to manage Arrow clients",
               "event_access": "Permission to access events",
