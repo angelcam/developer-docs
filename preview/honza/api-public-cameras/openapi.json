@@ -29,7 +29,7 @@
     {
       "name": "public-camera",
       "x-displayName": "Public cameras",
-      "description": "For access to public cameras. In general everything is same as in my cameras section, see above, there is only one difference. Together with cameras information you get also a basic information about camera owner, like name and email.\n"
+      "description": "These endpoints allow to obtain information about all cameras that are connected to Angelcam with free public broadcasting enabled.\n"
     },
     {
       "name": "camera-guest",
@@ -128,10 +128,10 @@
       "tags": [
         "camera",
         "shared-camera",
-        "public-camera",
         "camera-guest",
         "camera-stream-detection",
-        "arrow-clients"
+        "arrow-clients",
+        "public-camera"
       ]
     },
     {
@@ -6570,7 +6570,7 @@
           },
           "results": {
             "type": "array",
-            "description": "List of public cameras with the user",
+            "description": "List of public cameras",
             "items": {
               "$ref": "#/components/schemas/PublicCameraObject"
             }
