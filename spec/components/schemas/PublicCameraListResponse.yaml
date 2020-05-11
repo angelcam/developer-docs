@@ -16,7 +16,7 @@ properties:
     type: string
   results:
     type: array
-    description: List of public cameras with the user
+    description: List of public cameras
     items:
       $ref: '#/components/schemas/PublicCameraObject'
 required:
