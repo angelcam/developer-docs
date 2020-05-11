@@ -387,8 +387,12 @@ tags:
     description: >
       For access to cameras which somebody shared with you. In general
       everything is same as in my cameras section, see above, there is only one
-      difference. Together with cameras information you get also a basic
-      information about camera owner, like name and email.
+      difference. Together with cameras information you get also a camera's public
+      page url
+  - name: public-camera
+    x-displayName: Public cameras
+    description: >
+      These endpoints allow to obtain information about all cameras that are connected to Angelcam with free public broadcasting enabled.
   - name: camera-guest
     x-displayName: Manage camera guests
     description: >
@@ -648,6 +652,8 @@ x-tagGroups:
       - camera-guest
       - camera-stream-detection
       - arrow-clients
+      - public-camera
+
   - name: Sensor management
     tags:
       - sensor
