@@ -382,42 +382,17 @@ tags:
       please use our [broadcasting
       service](https://www.angelcam.com/apps/camera-broadcasting).
 
-
-      ## Camera applications
-
-
-      Connecting a camera and being able to get a snapshot or watch a live
-      stream is offered to every Angelcam user, but to
-
-      get the most out of a camera, users usually add some apps. Among other
-      information, the cameras/{camera_id}/ and
-
-      cameras/ endpoints will tell you apps added to a user's camera as a list
-      of app codes.
-
-
-      We currently support these applications in this API with the following
-      codes (uppercase):
-
-
-      * LSA - Broadcasting
-
-      * CRA - Cloud Recording
-
-      * VVA - Video Verification
-
-      * VPA - Video Guard
-
-
-      The applications added to a camera depend on the user's country as some of
-      them are not available in every country.
   - name: shared-camera
     x-displayName: Shared cameras
     description: >
       For access to cameras which somebody shared with you. In general
       everything is same as in my cameras section, see above, there is only one
-      difference. Together with cameras information you get also a basic
-      information about camera owner, like name and email.
+      difference. Together with cameras information you get also a camera's public
+      page url
+  - name: public-camera
+    x-displayName: Public cameras
+    description: >
+      These endpoints allow to obtain information about all cameras that are connected to Angelcam with free public broadcasting enabled.
   - name: camera-guest
     x-displayName: Manage camera guests
     description: >
@@ -677,6 +652,8 @@ x-tagGroups:
       - camera-guest
       - camera-stream-detection
       - arrow-clients
+      - public-camera
+
   - name: Sensor management
     tags:
       - sensor

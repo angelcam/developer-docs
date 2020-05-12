@@ -189,6 +189,7 @@ flows:
       camera_delete: Permission to delete cameras
       camera_guest_access: Permission to access camera guest
       camera_guest_manage: Permission to manage camera guest
+      public_cameras_access: Permission to access public cameras
       arrow_client_access: Permission to access Arrow clients
       arrow_client_manage: Permission to manage Arrow clients
       event_access: Permission to access events
