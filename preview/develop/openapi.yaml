@@ -2353,6 +2353,12 @@ paths:
           schema:
             type: integer
             minimum: 1
+        - name: online
+          in: query
+          required: false
+          description: '`1` for filtering only cameras that are online. `0` for filtering only cameras that are offline. Be aware that you cannot fully rely on this filtering. The camera status is checked every 10 minutes. Therefore the real status of camera can differ from API status.'
+          schema:
+            type: boolean
       security:
         - OAuth2:
             - public_cameras_access
