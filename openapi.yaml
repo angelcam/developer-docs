@@ -205,25 +205,14 @@ tags:
       For MJPEG type cameras you can output only a MJPEG live stream.
 
       The live stream is intended for private live video monitoring just to the camera owner only. If you want to broadcast a video to public audience, please use our [broadcasting service](https://www.angelcam.com/apps/camera-broadcasting).
-
-      ## Camera applications
-
-      Connecting a camera and being able to get a snapshot or watch a live stream is offered to every Angelcam user, but to
-      get the most out of a camera, users usually add some apps. Among other information, the cameras/{camera_id}/ and
-      cameras/ endpoints will tell you apps added to a user's camera as a list of app codes.
-
-      We currently support these applications in this API with the following codes (uppercase):
-
-      * LSA - Broadcasting
-      * CRA - Cloud Recording
-      * VVA - Video Verification
-      * VPA - Video Guard
-
-      The applications added to a camera depend on the user's country as some of them are not available in every country.
   - name: shared-camera
     x-displayName: Shared cameras
     description: |
-      For access to cameras which somebody shared with you. In general everything is same as in my cameras section, see above, there is only one difference. Together with cameras information you get also a basic information about camera owner, like name and email.
+      For access to cameras which somebody shared with you. In general everything is same as in my cameras section, see above, there is only one difference. Together with cameras information you get also a camera's public page url
+  - name: public-camera
+    x-displayName: Public cameras
+    description: |
+      These endpoints allow to obtain information about all cameras that are connected to Angelcam with free public broadcasting enabled.
   - name: camera-guest
     x-displayName: Manage camera guests
     description: |
@@ -374,6 +363,7 @@ x-tagGroups:
       - camera-guest
       - camera-stream-detection
       - arrow-clients
+      - public-camera
   - name: Sensor management
     tags:
       - sensor
@@ -2342,6 +2332,77 @@ paths:
           $ref: '#/components/responses/Error401Unauthorized'
         '403':
           $ref: '#/components/responses/Error403PermissionDenied'
+  /public-cameras/:
+    get:
+      operationId: public-cameras-list
+      summary: Retrieve public camera list
+      tags:
+        - public-camera
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          description: 'Limit result set. Example: `1`.'
+          schema:
+            type: integer
+            minimum: 1
+        - name: offset
+          in: query
+          required: false
+          description: 'Return results starting at `offset`. Example: `10`.'
+          schema:
+            type: integer
+            minimum: 1
+        - name: online
+          in: query
+          required: false
+          description: '`1` for filtering only cameras that are online. `0` for filtering only cameras that are offline. Be aware that you cannot fully rely on this filtering. The camera status is checked every 10 minutes. Therefore the real status of camera can differ from API status.'
+          schema:
+            type: boolean
+      security:
+        - OAuth2:
+            - public_cameras_access
+        - PersonalAccessToken: []
+      responses:
+        '200':
+          description: Returns public camera list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicCameraListResponse'
+        '400':
+          $ref: '#/components/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/components/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Error403PermissionDenied'
+  '/public-cameras/{camera_id}/':
+    get:
+      operationId: public-cameras-detail
+      summary: Retrieve public camera
+      tags:
+        - public-camera
+      parameters:
+        - $ref: '#/components/parameters/sharedCameraId'
+      security:
+        - OAuth2:
+            - public_cameras_access
+        - PersonalAccessToken: []
+      responses:
+        '200':
+          description: Camera object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicCameraObject'
+        '400':
+          $ref: '#/components/responses/Error400InvalidParams'
+        '401':
+          $ref: '#/components/responses/Error401Unauthorized'
+        '403':
+          $ref: '#/components/responses/Error403PermissionDenied'
+        '404':
+          $ref: '#/components/responses/Error404NotFound'
   '/recording/stream/{streamer_name}/{streamer_id}/':
     get:
       operationId: my-cameras-recordings-stream-info
@@ -3717,7 +3778,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StreamObject'
-          description: Available camera streams
+          description: 'Available camera streams. [Read about stream URLs expirations](http://help.angelcam.com/en/articles/3952149-how-to-deal-with-stream-url-expiration).'
         applications:
           type: array
           items:
@@ -4454,6 +4515,80 @@ components:
           format: number
           description: Decimal price in USD
           example: 3.99
+    PublicCameraListResponse:
+      type: object
+      title: Public Camera list
+      properties:
+        count:
+          type: integer
+          description: Count of all public cameras
+        next:
+          format: uri
+          description: Next page from pagination
+          nullable: true
+          type: string
+        previous:
+          format: uri
+          description: Previous page from pagination
+          nullable: true
+          type: string
+        results:
+          type: array
+          description: List of public cameras
+          items:
+            $ref: '#/components/schemas/PublicCameraObject'
+      required:
+        - count
+        - next
+        - previous
+        - results
+    PublicCameraObject:
+      type: object
+      title: Public camera object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          description: Camera ID
+        name:
+          type: string
+          description: Camera name
+        type:
+          type: string
+          enum:
+            - h264
+            - mjpeg
+          description: Camera type
+        status:
+          type: string
+          enum:
+            - offline
+            - online
+            - unknown
+        live_snapshot:
+          format: uri
+          description: Live snapshot URL
+          nullable: true
+          type: string
+        public_page_url:
+          format: uri
+          description: Public page URL
+          nullable: true
+          type: string
+      required:
+        - id
+        - name
+        - type
+        - status
+        - live_snapshot
+        - public_page_url
+      example:
+        id: 157
+        name: Parkside Office
+        type: h264
+        status: online
+        live_snapshot: 'http://m1.angelcam.com/stream/81/snapshot.jpg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c'
+        public_page_url: 'https://some.url/camera/4564'
     RecordingDownloadResponse:
       type: object
       title: Recording download
@@ -5558,6 +5693,7 @@ components:
             camera_delete: Permission to delete cameras
             camera_guest_access: Permission to access camera guest
             camera_guest_manage: Permission to manage camera guest
+            public_cameras_access: Permission to access public cameras
             arrow_client_access: Permission to access Arrow clients
             arrow_client_manage: Permission to manage Arrow clients
             event_access: Permission to access events
