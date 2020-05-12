@@ -30,7 +30,6 @@ get:
   security:
     - OAuth2:
         - public_cameras_access
-    - PersonalAccessToken: []
   responses:
     '200':
       description: Returns public camera list.
