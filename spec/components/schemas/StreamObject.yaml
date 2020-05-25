@@ -9,6 +9,7 @@ properties:
     enum:
       - hls
       - fmp4
+      - mpegts
       - mjpeg
   refresh_rate:
     type: number

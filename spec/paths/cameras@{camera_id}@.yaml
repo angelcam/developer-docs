@@ -9,9 +9,9 @@ get:
       in: query
       required: false
       description: >-
-        Set a maximum number of keyframes sent in MJPEG stream per second. For
-        example if you want to have MJPEG stream with keyframe sent every 10
-        seconds, post value 0.1.
+        Set a maximum number of frames per second sent in an MJPEG stream. For
+        example, if you want to get an MJPEG stream with frame sent every 10
+        seconds, use value 0.1.
       schema:
         type: number
         format: float
@@ -19,14 +19,14 @@ get:
     - name: max_width
       in: query
       required: false
-      description: Maximum width of MJPEG stream and LIVE SNAPSHOT.
+      description: Maximum frame width for the MJPEG stream and LIVE SNAPSHOT.
       schema:
         type: integer
         minimum: 1
     - name: max_height
       in: query
       required: false
-      description: Maximum height of MJPEG stream and LIVE SNAPSHOT.
+      description: Maximum frame height for the MJPEG stream and LIVE SNAPSHOT.
       schema:
         type: integer
         minimum: 1
@@ -49,7 +49,6 @@ get:
       $ref: '#/components/responses/Error403PermissionDenied'
     '404':
       $ref: '#/components/responses/Error404NotFound'
-
 put:
   operationId: my-cameras-update
   summary: Update camera
