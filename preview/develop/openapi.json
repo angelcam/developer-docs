@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "version": "2020.04.09",
+    "version": "2020.05.12",
     "title": "Angelcam API",
     "contact": {
       "email": "support@angelcam.com"
@@ -3390,9 +3390,6 @@
             "OAuth2": [
               "public_cameras_access"
             ]
-          },
-          {
-            "PersonalAccessToken": []
           }
         ],
         "responses": {
@@ -3435,9 +3432,6 @@
             "OAuth2": [
               "public_cameras_access"
             ]
-          },
-          {
-            "PersonalAccessToken": []
           }
         ],
         "responses": {
