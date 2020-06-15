@@ -3753,6 +3753,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ApplicationObject'
+        low_latency_enabled:
+          type: boolean
+          description: 'Indicates if user enabled [low latency streaming](http://help.angelcam.com/en/articles/372634-enabling-low-latency-streaming) in camera settings.'
+        audio_enabled:
+          type: boolean
+          description: Indicates if audio is enabled for given camera.
       required:
         - id
         - name
@@ -3762,6 +3768,8 @@ components:
         - live_snapshot
         - streams
         - applications
+        - low_latency_enabled
+        - audio_enabled
       example:
         id: 157
         name: Parkside Office
@@ -3784,6 +3792,8 @@ components:
         applications:
           - LSA
           - CRA
+        low_latency_enabled: false
+        audio_enabled: true
     CameraStartStreamDetectionResponse:
       type: object
       title: Camera Start Stream Detection Response
