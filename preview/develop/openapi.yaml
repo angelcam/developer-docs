@@ -4327,6 +4327,9 @@ components:
         show_detail:
           type: boolean
           description: Whether to show detail of message or redirect user directly to `action_url`
+        incident_sharing_url:
+          type: string
+          description: URL that can be used for incident verification by third parties. The URL leads to a web page where all cameras from the affected site can be viewed (live streams + the last two hours of recording). The URL is valid for one hour after the corresponding incident is created. This field will be `null` if the message type isn't `my_incident` or if the URL is no longer valid.
       required:
         - id
         - created_at
@@ -4349,6 +4352,7 @@ components:
         action_url: 'https://my.angelcam.com/camera/1/'
         action_label: Show camera
         show_detail: false
+        incident_sharing_url: null
     OrderItemListResponse:
       type: object
       title: Order list
