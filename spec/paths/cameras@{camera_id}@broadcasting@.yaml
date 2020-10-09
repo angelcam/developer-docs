@@ -1,0 +1,147 @@
+get:
+  operationId: my-cameras-broadcasting-info
+  summary: General broadcasting information
+  tags:
+    - broadcasting
+  parameters:
+    - $ref: '#/components/parameters/cameraId'
+  security:
+    - OAuth2:
+        - broadcasting_access
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: Returns general broadcasting information.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BroadcastingResponse'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'
+post:
+  operationId: my-cameras-broadcasting-create
+  summary: Activate broadcasting for a given camera
+  tags:
+    - broadcasting
+  parameters:
+    - $ref: '#/components/parameters/cameraId'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            active_service_id:
+              type: integer
+              minimum: 1
+              description: >-
+                Active Service ID. Active service must not be in use for another
+                camera.
+            enabled:
+              type: boolean
+              description: >-
+                Whether the public broadcasting should be enabled for this
+                camera. This settings affects only the public page and the HTML
+                embed code.
+            public_page:
+              type: boolean
+              description: >-
+                Whether the public page (i.e. xyz.click2stream.com) should be
+                enabled for this camera.
+          required:
+            - active_service_id
+          example:
+            active_service_id: 2
+  security:
+    - OAuth2:
+        - broadcasting_manage
+    - PersonalAccessToken: []
+  responses:
+    '201':
+      description: Returns general broadcasting information.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BroadcastingResponse'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'
+put:
+  operationId: my-cameras-broadcasting-update
+  summary: Update broadcasting settings of a camera
+  tags:
+    - broadcasting
+  parameters:
+    - $ref: '#/components/parameters/cameraId'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            active_service_id:
+              type: integer
+              minimum: 1
+              description: >-
+                Active Service ID. Active service must not be in use for another
+                camera. Currenly used active service will be swapped for new one
+                (old one will be marked as not in use).
+            enabled:
+              type: boolean
+              description: >-
+                Whether the public broadcasting should be enabled for this
+                camera. This settings affects only the public page and the HTML
+                embed code.
+            public_page:
+              type: boolean
+              description: >-
+                Whether the public page (i.e. xyz.click2stream.com) should be
+                enabled for this camera.
+          example:
+            active_service_id: 2
+            enabled: true
+            public_page: false
+  security:
+    - OAuth2:
+        - broadcasting_manage
+    - PersonalAccessToken: []
+  responses:
+    '200':
+      description: Returns general broadcasting information.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BroadcastingResponse'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'
+delete:
+  operationId: my-cameras-broadcasting-delete
+  summary: Delete broadcasting settings of a camera
+  tags:
+    - broadcasting
+  parameters:
+    - $ref: '#/components/parameters/cameraId'
+  security:
+    - OAuth2:
+        - broadcasting_manage
+    - PersonalAccessToken: []
+  responses:
+    '204':
+      $ref: '#/components/responses/EmptyResponse'
+    '401':
+      $ref: '#/components/responses/Error401Unauthorized'
+    '403':
+      $ref: '#/components/responses/Error403PermissionDenied'
+    '404':
+      $ref: '#/components/responses/Error404NotFound'

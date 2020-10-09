@@ -3,6 +3,8 @@ title: Recording information
 required:
   - status
   - retention
+  - active_service_id
+  - deactivated_at
 properties:
   status:
     type: string
@@ -41,7 +43,9 @@ properties:
     type: string
     format: datetime
     nullable: true
-    description: Datetime when recording service has been deactivated, if null then recording is active.
+    description: >-
+      Datetime when recording service has been deactivated, if null then
+      recording is active.
 example:
   status: RECORDING
   retention: P7D

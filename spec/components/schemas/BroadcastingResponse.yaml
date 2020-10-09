@@ -1,58 +1,38 @@
 type: object
-title: Public camera object
+title: Broadcasting information
+required:
+  - active_service_id
+  - enabled
+  - public_page
+  - streams
 properties:
-  id:
+  active_service_id:
     type: integer
-    minimum: 1
-    description: Camera ID
-  name:
-    type: string
-    description: Camera name
-  type:
-    type: string
-    enum:
-      - h264
-      - mjpeg
-    description: Camera type
-  status:
-    type: string
-    enum:
-      - offline
-      - online
-      - unknown
-  live_snapshot:
-    format: uri
-    description: Live snapshot URL
-    nullable: true
-    type: string
-  public_page_url:
-    format: uri
-    description: Public page URL
-    nullable: true
-    type: string
+    description: Active service ID
+  enabled:
+    type: boolean
+    description: >-
+      True if the public broadcasting is enabled for this camera, false
+      otherwise This settings affects only the public page and the HTML embed
+      code.
+  public_page:
+    type: boolean
+    description: >-
+      True if the public page (i.e. xyz.click2stream.com) is enabled for this
+      camera, false otherwise.
   streams:
     type: array
+    nullable: true
     items:
       $ref: '#/components/schemas/StreamObject'
     description: >-
-      Available broadcasting streams. [Read about stream URLs
+      Available broadcasting streams or `null` if the current broadcasting
+      service plan does not allow broadcasting via API. [Read about stream URLs
       expirations.](http://help.angelcam.com/en/articles/3952149-how-to-deal-with-stream-url-expiration)
-required:
-  - id
-  - name
-  - type
-  - status
-  - live_snapshot
-  - public_page_url
-  - streams
 example:
-  id: 157
-  name: Parkside Office
-  type: h264
-  status: online
-  live_snapshot: >-
-    http://m1.angelcam.com/stream/81/snapshot.jpg?token=eyJ0aW1lIjogMTQ5NjkzNDYyODE5NjIxOCwgInRpbWVvdXQiOiAzNjAwLCAiYWxpYXMiOiAiODEifQ==.85b552be2b7f0abaa0a3b5b4f412877f8af92f691c7d0c6db6b8c517ea8f921c
-  public_page_url: 'https://some.url/camera/4564'
+  active_service_id: 2
+  enabled: true
+  public_page: false
   streams:
     - format: mjpeg
       url: >-

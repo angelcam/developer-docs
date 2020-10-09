@@ -251,9 +251,13 @@ tags:
 
 
       **Important:** The live stream feature is intended for private live video
-      monitoring acessible only by the camera owner. If you need to broadcast
-      the video to general public, please use our [broadcasting
-      service](https://www.angelcam.com/apps/camera-broadcasting).
+      monitoring acessible only by the camera owner. The amount of stream
+      consumers per camera is limited to 10 concurrent consumers. Angelcam web
+      app and Angelcam mobile app also count to this limit. Recording is
+      excluded. If you need to broadcast the video to general public or you
+      simply need more concurrent stream consumers, use the [broadcasting
+      service](https://www.angelcam.com/apps/camera-broadcasting). The
+      broadcasting service can be also consumed via API.
 
 
       A live stream from a camera can be retrieved from Angelcam CDN. For MJPEG
@@ -350,11 +354,6 @@ tags:
       everything is same as in my cameras section, see above, there is only one
       difference. Together with cameras information you get also a camera's
       public page url
-  - name: public-camera
-    x-displayName: Public cameras
-    description: >
-      These endpoints allow to obtain information about all cameras that are
-      connected to Angelcam with free public broadcasting enabled.
   - name: camera-guest
     x-displayName: Manage camera guests
     description: >
@@ -584,9 +583,19 @@ tags:
   - name: broadcasting
     x-displayName: My cameras broadcasting
     description: >
-      Endpoints for managing broadcasting settings. If a camera doesn't have the
-      Broadcasting application, all camera broadcasting endpoints will return
-      404.
+      Endpoints for managing broadcasting settings and retrieving broadcasting
+      streams. If a camera doesn't have the Broadcasting service activated, all
+      camera broadcasting endpoints will return HTTP 404.
+
+
+      The broadcasting service can be used whenever you need more concurrent
+      stream consumers. It does not necessarily mean that the stream from your
+      camera has to be public.
+  - name: public-camera
+    x-displayName: Public cameras
+    description: >
+      These endpoints allow to obtain information about all cameras that are
+      connected to Angelcam with free public broadcasting enabled.
   - name: service
     x-displayName: Available services
   - name: active-service
@@ -614,7 +623,6 @@ x-tagGroups:
       - camera-guest
       - camera-stream-detection
       - arrow-clients
-      - public-camera
   - name: Sensor management
     tags:
       - sensor
@@ -626,6 +634,7 @@ x-tagGroups:
   - name: Broadcasting
     tags:
       - broadcasting
+      - public-camera
   - name: Events
     tags:
       - event

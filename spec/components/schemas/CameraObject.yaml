@@ -38,14 +38,21 @@ properties:
       $ref: '#/components/schemas/StreamObject'
     description: >-
       Available camera streams. [Read about stream URLs
-      expirations](http://help.angelcam.com/en/articles/3952149-how-to-deal-with-stream-url-expiration).
+      expirations.](http://help.angelcam.com/en/articles/3952149-how-to-deal-with-stream-url-expiration)
+      Please note that the amount of stream consumers per camera is limited to
+      10 concurrent consumers. Angelcam web app and Angelcam mobile app also
+      count to this limit. Recording is excluded. If you need more concurrent
+      stream consumers, use the broadcasting service.
   applications:
     type: array
     items:
       $ref: '#/components/schemas/ApplicationObject'
   low_latency_enabled:
     type: boolean
-    description: Indicates if user enabled [low latency streaming](http://help.angelcam.com/en/articles/372634-enabling-low-latency-streaming) in camera settings.
+    description: >-
+      Indicates if user enabled [low latency
+      streaming](http://help.angelcam.com/en/articles/372634-enabling-low-latency-streaming)
+      in camera settings.
   audio_enabled:
     type: boolean
     description: Indicates if audio is enabled for given camera.
