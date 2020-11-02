@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Reference | ReDoc</title>
+    <!-- needed for adaptive design -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="favicon.ico">
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({
+            'gtm.start':
+                new Date().getTime(), event: 'gtm.js'
+        });
+        var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+        j.async = true;
+        j.src =
+            'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-P7SNZMP');</script>
+    <!-- End Google Tag Manager -->
+    <!--
+    ReDoc uses font options from the parent element
+    So override default browser styles
+    -->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P7SNZMP"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe>
+</noscript>
+<!-- End Google Tag Manager (noscript) -->
+<div id="redoc_container"></div>
+    <script src="https://cdn.jsdelivr.net/npm/redoc/bundles/redoc.standalone.js"></script>
+    <script>
+      Redoc.init(
+        './openapi.json',
+        {"theme":{"colors":{"primary":{"main":"#32329f"}}}},
+        document.getElementById("redoc_container")
+      );
+    </script>
+</body>
+</html>
