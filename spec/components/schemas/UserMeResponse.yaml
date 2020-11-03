@@ -35,6 +35,15 @@ properties:
   cameras_with_guests_count:
     type: integer
     description: Count of user cameras that have been shared with others
+  available_features:
+    type: object
+    description: Features available to the user
+    properties:
+      live_view:
+        type: boolean
+        description: >-
+          true if the live-view feature is available to the user, false
+          otherwise
 required:
   - id
   - email
@@ -49,3 +58,5 @@ example:
   shared_cameras_count: 2
   total_cameras_count: 5
   cameras_with_guests_count: 1
+  available_features:
+    live_view: true
