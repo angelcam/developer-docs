@@ -7960,6 +7960,10 @@
             "type": "integer",
             "description": "Count of user cameras that have been shared with others"
           },
+          "require_qualification": {
+            "type": "boolean",
+            "description": "true if the user hasn't filled in the qualification form, false otherwise"
+          },
           "available_features": {
             "type": "object",
             "description": "Features available to the user",
@@ -7986,6 +7990,7 @@
           "shared_cameras_count": 2,
           "total_cameras_count": 5,
           "cameras_with_guests_count": 1,
+          "require_qualification": false,
           "available_features": {
             "live_view": true
           }
